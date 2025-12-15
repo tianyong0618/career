@@ -5,6 +5,24 @@
         <div class="logo-section">
           <h1 class="logo-text" @click="router.push('/')" style="cursor: pointer; user-select: none;">MyCareer OS</h1>
         </div>
+        
+        <!-- 桌面端导航菜单 -->
+        <nav class="desktop-nav">
+          <router-link to="/" class="nav-link" :class="{ active: $route.path === '/' }">
+            <span class="nav-link-text">首页</span>
+          </router-link>
+          <router-link to="/path-sandbox" class="nav-link" :class="{ active: $route.path === '/path-sandbox' }">
+            <span class="nav-link-text">路径沙盒</span>
+          </router-link>
+          <router-link to="/ai-partner" class="nav-link" :class="{ active: $route.path === '/ai-partner' }">
+            <span class="nav-link-icon">🤖</span>
+            <span class="nav-link-text">AI合伙人</span>
+          </router-link>
+          <router-link to="/growth-center" class="nav-link" :class="{ active: $route.path === '/growth-center' }">
+            <span class="nav-link-text">成长中心</span>
+          </router-link>
+        </nav>
+        
         <div class="header-actions">
           <!-- 主题切换按钮 -->
           <button 
@@ -195,6 +213,65 @@ const toggleTasks = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--spacing-xl);
+}
+
+/* 桌面端导航菜单 */
+.desktop-nav {
+  display: flex;
+  gap: var(--spacing-xl);
+  align-items: center;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.nav-link:hover {
+  background-color: var(--bg-secondary);
+  color: var(--primary-color);
+}
+
+.nav-link.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.nav-link-icon {
+  font-size: var(--font-size-lg);
+}
+
+.nav-link-text {
+  font-size: var(--font-size-md);
+}
+
+/* AI合伙人特殊样式 */
+.nav-link[to="/ai-partner"] .nav-link-icon {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* 移动端隐藏桌面导航 */
+@media (max-width: 1024px) {
+  .desktop-nav {
+    display: none;
+  }
 }
 
 .logo-section {

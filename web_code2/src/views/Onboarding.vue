@@ -47,21 +47,21 @@
           <p>选择一种方式快速生成您的初始职业镜像</p>
           
           <div class="profile-options">
-            <div class="profile-card" @click="selectProfileMethod('upload')">
+            <div class="profile-card" @click="selectProfileMethod('upload')" :class="{ selected: profileMethod === 'upload' }">
               <div class="profile-icon">📁</div>
               <div class="profile-name">上传简历</div>
               <div class="profile-desc">上传PDF/Word格式简历，AI自动解析</div>
               <div class="profile-duration">约1分钟</div>
             </div>
             
-            <div class="profile-card" @click="selectProfileMethod('assessment')">
+            <div class="profile-card" @click="selectProfileMethod('assessment')" :class="{ selected: profileMethod === 'assessment' }">
               <div class="profile-icon">📝</div>
               <div class="profile-name">AI测评</div>
               <div class="profile-desc">10分钟情景题+语音面试，深度了解您</div>
               <div class="profile-duration">约10分钟</div>
             </div>
             
-            <div class="profile-card" @click="selectProfileMethod('authorize')">
+            <div class="profile-card" @click="selectProfileMethod('authorize')" :class="{ selected: profileMethod === 'authorize' }">
               <div class="profile-icon">🔗</div>
               <div class="profile-name">授权平台</div>
               <div class="profile-desc">授权飞书/钉钉，仅读取日历与文档标题</div>
@@ -188,7 +188,7 @@ const dataSources = ref([
 
 // 选择身份
 const selectIdentity = (identity) => {
-  selectedIdentity.value = identity
+  selectedIdentity.value = identity.value
 }
 
 // 选择画像生成方式
@@ -476,6 +476,13 @@ const completeOnboarding = () => {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   border-color: var(--primary-color);
+}
+
+.profile-card.selected {
+  border-color: var(--primary-color);
+  background-color: rgba(24, 144, 255, 0.05);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .profile-icon {

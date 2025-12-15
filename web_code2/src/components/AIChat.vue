@@ -10,7 +10,7 @@
         <div 
           class="message" 
           :class="{ 'user-message': msg.role === 'user', 'ai-message': msg.role === 'ai' }"
-          v-for="msg in chatHistory" 
+          v-for="msg in chatMessages" 
           :key="msg.id"
         >
           <div class="message-avatar">

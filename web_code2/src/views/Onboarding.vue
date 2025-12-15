@@ -70,8 +70,49 @@
           </div>
         </div>
         
+        <!-- AI测评环节 -->
+        <div v-if="isAIAssessment" class="step-content compact-step">
+          <h2>AI职业测评</h2>
+          <p>请回答以下问题，帮助我们更了解您</p>
+          
+          <!-- 测评进度 -->
+          <div class="assessment-progress-section">
+            <div class="progress-bar">
+              <div class="progress-fill" :style="{ width: assessmentProgress + '%' }"></div>
+            </div>
+            <div class="progress-text">{{ assessmentProgress }}% 完成</div>
+            <div class="question-counter">
+              第 {{ currentQuestionIndex + 1 }} / {{ aiQuestions.length }} 题
+            </div>
+          </div>
+          
+          <!-- 测评题目 -->
+          <div class="assessment-question" v-if="aiQuestions[currentQuestionIndex]">
+            <h3 class="question-text">
+              {{ aiQuestions[currentQuestionIndex].question }}
+            </h3>
+            <div class="options-list">
+              <div 
+                class="option-item" 
+                v-for="option in aiQuestions[currentQuestionIndex].options" 
+                :key="option.value"
+                @click="answerQuestion(option)"
+              >
+                <div class="option-radio"></div>
+                <div class="option-text">{{ option.text }}</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 测评完成提示 -->
+          <div class="assessment-completing" v-else>
+            <div class="loading-spinner"></div>
+            <div class="completing-text">正在生成测评结果...</div>
+          </div>
+        </div>
+        
         <!-- 步骤3：生成镜像 -->
-        <div v-if="step === 3" class="step-content compact-step">
+        <div v-if="step === 3 && !isAIAssessment" class="step-content compact-step">
           <div class="loading-container">
             <div class="loading-animation">
               <div class="loading-spinner"></div>
@@ -215,10 +256,88 @@ const selectProfileMethod = (method) => {
   
   if (method === 'upload') {
     showFileUpload.value = true
+  } else if (method === 'assessment') {
+    // 进入AI测评环节
+    startAIAssessment()
   } else {
     // 自动进入下一步
     nextStep()
   }
+}
+
+// AI测评相关状态
+const isAIAssessment = ref(false)
+const currentQuestionIndex = ref(0)
+const assessmentProgress = ref(0)
+const assessmentAnswers = ref([])
+
+// 模拟AI测评题目
+const aiQuestions = ref([
+  {
+    id: 1,
+    type: 'radio',
+    question: '你更倾向于哪种工作方式？',
+    options: [
+      { value: 'individual', text: '独立完成任务' },
+      { value: 'team', text: '团队协作' },
+      { value: 'hybrid', text: '混合方式' }
+    ]
+  },
+  {
+    id: 2,
+    type: 'radio',
+    question: '你更感兴趣的职业方向是？',
+    options: [
+      { value: 'tech', text: '技术研发' },
+      { value: 'product', text: '产品设计' },
+      { value: 'business', text: '商业运营' }
+    ]
+  },
+  {
+    id: 3,
+    type: 'radio',
+    question: '你学习新技能的主要方式是？',
+    options: [
+      { value: 'courses', text: '在线课程' },
+      { value: 'projects', text: '实战项目' },
+      { value: 'books', text: '书籍学习' }
+    ]
+  }
+])
+
+// 开始AI测评
+const startAIAssessment = () => {
+  isAIAssessment.value = true
+  currentQuestionIndex.value = 0
+  assessmentProgress.value = 0
+  assessmentAnswers.value = []
+}
+
+// 回答问题
+const answerQuestion = (option) => {
+  // 保存答案
+  assessmentAnswers.value[currentQuestionIndex.value] = {
+    questionId: aiQuestions.value[currentQuestionIndex.value].id,
+    answer: option.value
+  }
+  
+  // 进入下一题或完成测评
+  if (currentQuestionIndex.value < aiQuestions.value.length - 1) {
+    currentQuestionIndex.value++
+    assessmentProgress.value = Math.round(((currentQuestionIndex.value + 1) / aiQuestions.value.length) * 100)
+  } else {
+    // 完成测评
+    completeAIAssessment()
+  }
+}
+
+// 完成AI测评
+const completeAIAssessment = () => {
+  // 模拟测评处理时间
+  setTimeout(() => {
+    isAIAssessment.value = false
+    nextStep()
+  }, 1000)
 }
 
 // 文件拖放处理
@@ -869,6 +988,104 @@ const completeOnboarding = () => {
 
 .loading-text {
   font-size: var(--font-size-md);
+}
+
+/* AI测评样式 */
+.assessment-progress-section {
+  margin: var(--spacing-lg) 0;
+  text-align: center;
+}
+
+.question-counter {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-top: var(--spacing-xs);
+}
+
+.assessment-question {
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-lg);
+}
+
+.question-text {
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.option-item:hover {
+  background-color: rgba(24, 144, 255, 0.05);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.option-radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.option-item:hover .option-radio {
+  border-color: var(--primary-color);
+}
+
+.option-item.selected .option-radio::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+}
+
+.option-text {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.assessment-completing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.completing-text {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 /* 文件上传模态框 */

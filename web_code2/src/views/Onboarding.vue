@@ -357,6 +357,11 @@ const generateProfile = () => {
         source.statusText = '已完成'
         source.progress = 100
       })
+      
+      // 进度达到100%后自动完成冷启动
+      setTimeout(() => {
+        completeOnboarding()
+      }, 500) // 延迟500ms，让用户看到完成状态
     }
   }, 300)
 }

@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from './views/Home.vue'
 import PathSandbox from './views/PathSandbox.vue'
 import AIPartner from './views/AIPartner.vue'
@@ -8,7 +8,7 @@ import AIAssessment from './views/AIAssessment.vue'
 import AuthorizationPlatform from './views/AuthorizationPlatform.vue'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',

@@ -61,8 +61,21 @@ import SkillCloud from '../components/SkillCloud.vue'
 import GrowthProgress from '../components/GrowthProgress.vue'
 import { todayRecommendations } from '../assets/mock/data'
 import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 
 const router = useRouter()
+
+// 页面加载时检查是否已生成用户镜像
+onMounted(() => {
+  // 检查是否已完成onboarding和生成用户镜像
+  const onboardingCompleted = localStorage.getItem('onboardingCompleted')
+  const userProfile = localStorage.getItem('userProfile')
+  
+  // 如果没有完成onboarding或没有生成用户镜像，默认进入onboarding
+  if (!onboardingCompleted || !userProfile) {
+    router.push('/onboarding')
+  }
+})
 
 // 处理推荐项点击事件
 const handleRecommendationClick = (item) => {

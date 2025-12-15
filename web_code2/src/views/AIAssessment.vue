@@ -70,7 +70,7 @@
         </div>
         <div class="result-actions">
           <button class="action-btn" @click="startNewAssessment">重新测评</button>
-          <button class="action-btn primary" @click="router.push('/growth-center')">查看成长建议</button>
+          <button class="action-btn primary" @click="router.push('/onboarding?step=3')">继续冷启动</button>
         </div>
       </div>
       
@@ -139,26 +139,6 @@ const aiQuestions = reactive([
       { value: 'courses', text: '在线课程' },
       { value: 'projects', text: '实战项目' },
       { value: 'books', text: '书籍学习' }
-    ]
-  },
-  {
-    id: 4,
-    type: 'radio',
-    question: '你在团队中更适合什么角色？',
-    options: [
-      { value: 'leader', text: '团队领导' },
-      { value: 'executor', text: '执行者' },
-      { value: 'creator', text: '创意者' }
-    ]
-  },
-  {
-    id: 5,
-    type: 'radio',
-    question: '你更看重工作中的什么？',
-    options: [
-      { value: 'growth', text: '成长空间' },
-      { value: 'salary', text: '薪资待遇' },
-      { value: 'balance', text: '工作生活平衡' }
     ]
   }
 ])

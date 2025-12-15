@@ -70,49 +70,10 @@
           </div>
         </div>
         
-        <!-- AI测评环节 -->
-        <div v-if="isAIAssessment" class="step-content compact-step">
-          <h2>AI职业测评</h2>
-          <p>请回答以下问题，帮助我们更了解您</p>
-          
-          <!-- 测评进度 -->
-          <div class="assessment-progress-section">
-            <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: assessmentProgress + '%' }"></div>
-            </div>
-            <div class="progress-text">{{ assessmentProgress }}% 完成</div>
-            <div class="question-counter">
-              第 {{ currentQuestionIndex + 1 }} / {{ aiQuestions.length }} 题
-            </div>
-          </div>
-          
-          <!-- 测评题目 -->
-          <div class="assessment-question" v-if="aiQuestions[currentQuestionIndex]">
-            <h3 class="question-text">
-              {{ aiQuestions[currentQuestionIndex].question }}
-            </h3>
-            <div class="options-list">
-              <div 
-                class="option-item" 
-                v-for="option in aiQuestions[currentQuestionIndex].options" 
-                :key="option.value"
-                @click="answerQuestion(option)"
-              >
-                <div class="option-radio"></div>
-                <div class="option-text">{{ option.text }}</div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 测评完成提示 -->
-          <div class="assessment-completing" v-else>
-            <div class="loading-spinner"></div>
-            <div class="completing-text">正在生成测评结果...</div>
-          </div>
-        </div>
+
         
         <!-- 步骤3：生成镜像 -->
-        <div v-if="step === 3 && !isAIAssessment" class="step-content compact-step">
+        <div v-if="step === 3" class="step-content compact-step">
           <div class="loading-container">
             <div class="loading-animation">
               <div class="loading-spinner"></div>
@@ -213,10 +174,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 
 // 冷启动步骤
 const step = ref(1)
@@ -253,92 +215,21 @@ const selectIdentity = (identity) => {
 // 选择画像生成方式
 const selectProfileMethod = (method) => {
   profileMethod.value = method
+  // 立即保存到localStorage，确保跳转前已保存
+  localStorage.setItem('profileMethod', method)
   
   if (method === 'upload') {
     showFileUpload.value = true
   } else if (method === 'assessment') {
-    // 进入AI测评环节
-    startAIAssessment()
-  } else {
-    // 自动进入下一步
-    nextStep()
+    // 跳转到单独的AI测评页面
+    router.push('/ai-assessment')
+  } else if (method === 'authorize') {
+    // 跳转到授权平台页面
+    router.push('/authorization-platform')
   }
 }
 
-// AI测评相关状态
-const isAIAssessment = ref(false)
-const currentQuestionIndex = ref(0)
-const assessmentProgress = ref(0)
-const assessmentAnswers = ref([])
 
-// 模拟AI测评题目
-const aiQuestions = ref([
-  {
-    id: 1,
-    type: 'radio',
-    question: '你更倾向于哪种工作方式？',
-    options: [
-      { value: 'individual', text: '独立完成任务' },
-      { value: 'team', text: '团队协作' },
-      { value: 'hybrid', text: '混合方式' }
-    ]
-  },
-  {
-    id: 2,
-    type: 'radio',
-    question: '你更感兴趣的职业方向是？',
-    options: [
-      { value: 'tech', text: '技术研发' },
-      { value: 'product', text: '产品设计' },
-      { value: 'business', text: '商业运营' }
-    ]
-  },
-  {
-    id: 3,
-    type: 'radio',
-    question: '你学习新技能的主要方式是？',
-    options: [
-      { value: 'courses', text: '在线课程' },
-      { value: 'projects', text: '实战项目' },
-      { value: 'books', text: '书籍学习' }
-    ]
-  }
-])
-
-// 开始AI测评
-const startAIAssessment = () => {
-  isAIAssessment.value = true
-  currentQuestionIndex.value = 0
-  assessmentProgress.value = 0
-  assessmentAnswers.value = []
-}
-
-// 回答问题
-const answerQuestion = (option) => {
-  // 保存答案
-  assessmentAnswers.value[currentQuestionIndex.value] = {
-    questionId: aiQuestions.value[currentQuestionIndex.value].id,
-    answer: option.value
-  }
-  
-  // 进入下一题或完成测评
-  if (currentQuestionIndex.value < aiQuestions.value.length - 1) {
-    currentQuestionIndex.value++
-    assessmentProgress.value = Math.round(((currentQuestionIndex.value + 1) / aiQuestions.value.length) * 100)
-  } else {
-    // 完成测评
-    completeAIAssessment()
-  }
-}
-
-// 完成AI测评
-const completeAIAssessment = () => {
-  // 模拟测评处理时间
-  setTimeout(() => {
-    isAIAssessment.value = false
-    nextStep()
-  }, 1000)
-}
 
 // 文件拖放处理
 const handleFileDrop = (event) => {
@@ -477,10 +368,10 @@ const generateProfile = () => {
         source.progress = 100
       })
       
-      // 进度达到100%后自动完成冷启动
+      // 生成完成后自动跳转到沙盒
       setTimeout(() => {
         completeOnboarding()
-      }, 500) // 延迟500ms，让用户看到完成状态
+      }, 1000) // 延迟1秒，让用户看到完成状态
     }
   }, 300)
 }
@@ -503,6 +394,54 @@ const completeOnboarding = () => {
   // 跳转到路径沙盒，引导设置首个目标
   router.push('/path-sandbox')
 }
+
+// 处理URL参数，自动进入步骤3
+onMounted(() => {
+  // 先从localStorage恢复冷启动状态
+  const savedStep = localStorage.getItem('onboardingStep')
+  const savedIdentity = localStorage.getItem('userIdentity')
+  const savedProfileMethod = localStorage.getItem('profileMethod')
+  
+  if (savedStep && savedIdentity && savedProfileMethod) {
+    step.value = parseInt(savedStep)
+    selectedIdentity.value = savedIdentity
+    profileMethod.value = savedProfileMethod
+  }
+  
+  // 检查URL参数，优先级高于localStorage恢复
+  const stepParam = route.query.step
+  if (stepParam === '3') {
+    // 检查是否已选择身份
+    const identity = localStorage.getItem('userIdentity')
+    if (identity) {
+      selectedIdentity.value = identity
+    }
+    
+    // 设置step为3
+    step.value = 3
+    
+    // 开始生成镜像
+    generateProfile()
+  } else if (step.value === 3) {
+    // 如果是步骤3，开始生成镜像
+    generateProfile()
+  }
+})
+
+// 监听step变化，保存到localStorage
+watch(step, (newStep) => {
+  localStorage.setItem('onboardingStep', newStep.toString())
+})
+
+// 监听selectedIdentity变化，保存到localStorage
+watch(selectedIdentity, (newIdentity) => {
+  localStorage.setItem('userIdentity', newIdentity)
+})
+
+// 监听profileMethod变化，保存到localStorage
+watch(profileMethod, (newMethod) => {
+  localStorage.setItem('profileMethod', newMethod)
+})
 </script>
 
 <style scoped>

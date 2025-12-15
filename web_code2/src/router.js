@@ -5,6 +5,7 @@ import AIPartner from './views/AIPartner.vue'
 import GrowthCenter from './views/GrowthCenter.vue'
 import Onboarding from './views/Onboarding.vue'
 import AIAssessment from './views/AIAssessment.vue'
+import AuthorizationPlatform from './views/AuthorizationPlatform.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -35,11 +36,16 @@ const router = createRouter({
       component: Onboarding
     },
     {
-      path: '/ai-assessment',
-      name: 'AIAssessment',
-      component: AIAssessment
-    }
-  ]
+    path: '/ai-assessment',
+    name: 'AIAssessment',
+    component: AIAssessment
+  },
+  {
+    path: '/authorization-platform',
+    name: 'AuthorizationPlatform',
+    component: AuthorizationPlatform
+  }
+]
 })
 
 export default router

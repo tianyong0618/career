@@ -4,6 +4,7 @@ import PathSandbox from './views/PathSandbox.vue'
 import AIPartner from './views/AIPartner.vue'
 import GrowthCenter from './views/GrowthCenter.vue'
 import Onboarding from './views/Onboarding.vue'
+import AIAssessment from './views/AIAssessment.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/onboarding',
       name: 'Onboarding',
       component: Onboarding
+    },
+    {
+      path: '/ai-assessment',
+      name: 'AIAssessment',
+      component: AIAssessment
     }
   ]
 })

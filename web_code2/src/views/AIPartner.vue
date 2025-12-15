@@ -6,24 +6,7 @@
       <!-- AI对话组件 -->
       <AIChat />
       
-      <!-- 使用提示 -->
-      <div class="usage-tips">
-        <h3 class="section-title">使用提示</h3>
-        <div class="tips-list">
-          <div class="tip-item">
-            <div class="tip-icon">💬</div>
-            <div class="tip-text">你可以直接输入问题，AI会为你提供专业的职业建议</div>
-          </div>
-          <div class="tip-item">
-            <div class="tip-icon">📎</div>
-            <div class="tip-text">支持上传文件，AI可以帮你解析简历、提取项目成果</div>
-          </div>
-          <div class="tip-item">
-            <div class="tip-icon">🎤</div>
-            <div class="tip-text">支持语音输入，让交互更加便捷</div>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 </template>

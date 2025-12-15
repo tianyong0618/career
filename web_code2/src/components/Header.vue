@@ -9,17 +9,11 @@
         <!-- 桌面端导航菜单 -->
         <nav class="desktop-nav">
           <router-link to="/" class="nav-link" :class="{ active: $route.path === '/' }">
-            <span class="nav-link-text">首页</span>
-          </router-link>
-          <router-link to="/path-sandbox" class="nav-link" :class="{ active: $route.path === '/path-sandbox' }">
-            <span class="nav-link-text">路径沙盒</span>
+            <span class="nav-link-text">职业镜像</span>
           </router-link>
           <router-link to="/ai-partner" class="nav-link" :class="{ active: $route.path === '/ai-partner' }">
             <span class="nav-link-icon">🤖</span>
             <span class="nav-link-text">AI合伙人</span>
-          </router-link>
-          <router-link to="/growth-center" class="nav-link" :class="{ active: $route.path === '/growth-center' }">
-            <span class="nav-link-text">成长中心</span>
           </router-link>
         </nav>
         

@@ -2,19 +2,11 @@
   <nav class="bottom-nav">
     <router-link to="/" class="nav-item" :class="{ active: $route.path === '/' }">
       <div class="nav-icon">🏠</div>
-      <div class="nav-text">首页</div>
-    </router-link>
-    <router-link to="/path-sandbox" class="nav-item" :class="{ active: $route.path === '/path-sandbox' }">
-      <div class="nav-icon">🧭</div>
-      <div class="nav-text">路径沙盒</div>
+      <div class="nav-text">职业镜像</div>
     </router-link>
     <router-link to="/ai-partner" class="nav-item" :class="{ active: $route.path === '/ai-partner' }">
       <div class="nav-icon ai-icon">🤖</div>
       <div class="nav-text">AI合伙人</div>
-    </router-link>
-    <router-link to="/growth-center" class="nav-item" :class="{ active: $route.path === '/growth-center' }">
-      <div class="nav-icon">📈</div>
-      <div class="nav-text">成长中心</div>
     </router-link>
   </nav>
 </template>

@@ -70,7 +70,7 @@
         </div>
         <div class="result-actions">
           <button class="action-btn" @click="startNewAssessment">重新测评</button>
-          <button class="action-btn primary" @click="router.push('/onboarding?step=3')">继续冷启动</button>
+          <button class="action-btn primary" @click="router.push('/onboarding?step=3')">生成镜像</button>
         </div>
       </div>
       

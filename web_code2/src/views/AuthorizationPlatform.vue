@@ -55,18 +55,16 @@ const authorizePlatform = (platform) => {
   // 这里模拟授权流程，实际项目中应该跳转到对应平台的授权页面
   console.log(`正在授权${platform}平台...`)
   
-  // 模拟授权成功后返回，并标记为已完成
-  setTimeout(() => {
-    // 保存授权状态到localStorage
-    localStorage.setItem('platformAuthorization', JSON.stringify({
-      platform,
-      authorized: true,
-      authorizedAt: new Date().toISOString()
-    }))
-    
-    // 直接进入冷启动第三步：生成镜像
-    router.push('/onboarding?step=3')
-  }, 1500)
+  // 直接执行授权成功后的逻辑，去掉延时
+  // 保存授权状态到localStorage
+  localStorage.setItem('platformAuthorization', JSON.stringify({
+    platform,
+    authorized: true,
+    authorizedAt: new Date().toISOString()
+  }))
+  
+  // 直接进入冷启动第三步：生成镜像
+  router.push('/onboarding?step=3')
 }
 
 // 返回上一页

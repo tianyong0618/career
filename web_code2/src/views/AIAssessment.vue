@@ -173,7 +173,7 @@ const previousQuestion = () => {
 // 更新进度
 const updateProgress = () => {
   const answeredCount = selectedAnswers.value.filter(answer => answer).length
-  assessmentProgress.value = Math.round(((answeredCount + 1) / aiQuestions.length) * 100)
+  assessmentProgress.value = Math.round((answeredCount / aiQuestions.length) * 100)
 }
 
 // 完成测评
@@ -185,6 +185,8 @@ const completeAssessment = () => {
     generateAssessmentResult()
     isCompleting.value = false
     isCompleted.value = true
+    // 明确设置进度为100%
+    assessmentProgress.value = 100
   }, 2000)
 }
 

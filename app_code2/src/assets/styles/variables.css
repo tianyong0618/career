@@ -1,0 +1,89 @@
+/* CSS变量定义 */
+:root {
+  /* 主题颜色 */
+  --primary-color: #1890ff;
+  --primary-hover: #40a9ff;
+  --secondary-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #f5222d;
+  --success-color: #52c41a;
+  
+  /* 背景颜色 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+  
+  /* 文本颜色 */
+  --text-primary: #262626;
+  --text-secondary: #595959;
+  --text-tertiary: #8c8c8c;
+  --text-disabled: #bfbfbf;
+  
+  /* 边框颜色 */
+  --border-color: #e8e8e8;
+  --border-hover: #d9d9d9;
+  
+  /* 阴影效果 */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+  
+  /* 圆角大小 */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+  
+  /* 间距大小 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  
+  /* 字体大小 */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  
+  /* 过渡效果 */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* 深色主题 */
+[data-theme="dark"] {
+  --bg-primary: #141414;
+  --bg-secondary: #1f1f1f;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-tertiary: #808080;
+  --border-color: #2d2d2d;
+  --border-hover: #3d3d3d;
+}
+
+/* 高对比度主题 */
+[data-theme="high-contrast"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f0f0;
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --border-color: #000000;
+  --primary-color: #0000ff;
+}
+
+/* 深色高对比度主题 */
+[data-theme="dark-high-contrast"] {
+  --bg-primary: #000000;
+  --bg-secondary: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --border-color: #ffffff;
+  --primary-color: #00ffff;
+}

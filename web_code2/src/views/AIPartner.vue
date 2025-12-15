@@ -1,10 +1,7 @@
 <template>
   <div class="ai-partner-view">
     <div class="container">
-      <div class="page-header">
-        <h2>AI职业合伙人</h2>
-        <p>7×24小时职业顾问，替代所有菜单操作</p>
-      </div>
+
       
       <!-- AI对话组件 -->
       <AIChat />

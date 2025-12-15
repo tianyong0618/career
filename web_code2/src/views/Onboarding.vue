@@ -120,17 +120,18 @@
       <div class="nav-buttons">
         <button 
           class="nav-btn back-btn" 
-          @click="previousStep" 
-          :disabled="step === 1"
+          @click="previousStep"
+          v-if="step > 1"
         >
           上一步
         </button>
+        
         <button 
-          class="nav-btn next-btn" 
-          @click="nextStep" 
-          :disabled="(step === 1 && !selectedIdentity) || isLoading"
+          class="nav-btn return-btn" 
+          @click="returnToProfile"
+          v-if="step < 3 && route.query.from === 'profile'"
         >
-          {{ step === 3 ? '完成' : '下一步' }}
+          返回
         </button>
       </div>
       
@@ -221,11 +222,17 @@ const selectProfileMethod = (method) => {
   if (method === 'upload') {
     showFileUpload.value = true
   } else if (method === 'assessment') {
-    // 跳转到单独的AI测评页面
-    router.push('/ai-assessment')
+    // 跳转到单独的AI测评页面，传递来源参数
+    router.push({
+      path: '/ai-assessment',
+      query: { from: route.query.from }
+    })
   } else if (method === 'authorize') {
-    // 跳转到授权平台页面
-    router.push('/authorization-platform')
+    // 跳转到授权平台页面，传递来源参数
+    router.push({
+      path: '/authorization-platform',
+      query: { from: route.query.from }
+    })
   }
 }
 
@@ -267,13 +274,6 @@ const formatFileSize = (bytes) => {
   return (bytes / 1048576).toFixed(1) + ' MB'
 }
 
-// 上一步
-const previousStep = () => {
-  if (step.value > 1) {
-    step.value--
-  }
-}
-
 // 下一步
 const nextStep = () => {
   if (step.value === 1 && !selectedIdentity.value) {
@@ -291,6 +291,37 @@ const nextStep = () => {
       generateProfile()
     }
   }
+}
+
+// 上一步
+const previousStep = () => {
+  if (step.value > 1) {
+    step.value--
+  }
+}
+
+// 返回职业镜像页面
+const returnToProfile = () => {
+  // 确保返回职业镜像页面时有必要的localStorage状态，避免循环跳转
+  // 保存当前选择的身份（如果有）
+  if (selectedIdentity.value) {
+    localStorage.setItem('userIdentity', selectedIdentity.value)
+  }
+  // 保存冷启动完成状态，避免返回后又跳回onboarding
+  localStorage.setItem('onboardingCompleted', 'true')
+  // 保存基本的用户画像（如果还没有）
+  if (!localStorage.getItem('userProfile')) {
+    const basicProfile = {
+      identity: selectedIdentity.value || '',
+      profileMethod: profileMethod.value || '',
+      generatedAt: new Date().toISOString(),
+      version: 'v1'
+    }
+    localStorage.setItem('userProfile', JSON.stringify(basicProfile))
+  }
+  
+  // 跳转到职业镜像页面
+  router.push('/')
 }
 
 // 生成职业镜像
@@ -682,6 +713,20 @@ watch(profileMethod, (newMethod) => {
 .next-btn {
   background-color: var(--primary-color);
   color: white;
+}
+
+.return-btn {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  /* 返回按钮保持次要视觉层级 */
+  opacity: 0.8;
+}
+
+.nav-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  opacity: 1;
 }
 
 .nav-btn:hover:not(:disabled) {

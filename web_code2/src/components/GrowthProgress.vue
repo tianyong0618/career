@@ -69,7 +69,8 @@ const handleAction = (action) => {
     localStorage.removeItem('onboardingCompleted')
     localStorage.removeItem('userProfile')
     localStorage.removeItem('userIdentity')
-    router.push('/onboarding')
+    // 传递来源参数，以便在onboarding页面显示返回按钮
+    router.push('/onboarding?from=profile')
   } else {
     // 处理其他类型的链接
     console.log('处理其他类型的链接:', action.link)

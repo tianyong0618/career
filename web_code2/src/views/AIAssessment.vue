@@ -68,10 +68,7 @@
             </div>
           </div>
         </div>
-        <div class="result-actions">
-          <button class="action-btn" @click="startNewAssessment">重新测评</button>
-          <button class="action-btn primary" @click="router.push('/onboarding?step=3')">生成镜像</button>
-        </div>
+
       </div>
       
       <!-- 导航按钮 -->
@@ -91,16 +88,25 @@
           {{ currentQuestionIndex === aiQuestions.length - 1 ? '完成' : '下一步' }}
         </button>
       </div>
+      
+      <!-- 结果页操作按钮 -->
+      <div class="result-actions" v-if="isCompleted">
+        <button class="action-btn" @click="startNewAssessment">重新测评</button>
+        <button class="action-btn primary" @click="router.push('/onboarding?step=3')">生成镜像</button>
+        
+        <!-- 返回按钮 -->
+        <button class="action-btn secondary" @click="goBack">返回</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
-
+const route = useRoute()
 // AI测评相关状态
 const currentQuestionIndex = ref(0)
 const assessmentProgress = ref(0)
@@ -235,6 +241,17 @@ const startNewAssessment = () => {
   selectedAnswers.value = []
   assessmentResult.value = null
   updateProgress()
+}
+
+// 返回页面，根据来源参数决定返回路径
+const goBack = () => {
+  // 如果是从职业镜像页面进入的，则返回职业镜像页面
+  if (route.query.from === 'profile') {
+    router.push('/')
+  } else {
+    // 否则返回onboarding页面
+    router.push('/onboarding')
+  }
 }
 
 // 初始化
@@ -543,6 +560,20 @@ updateProgress()
 .nav-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* 返回按钮区域样式 */
+.return-section {
+  justify-content: center;
+  margin-top: var(--spacing-lg);
+}
+
+/* 返回按钮样式 */
+.return-btn {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  flex: 0 0 auto;
 }
 
 /* 响应式设计 */

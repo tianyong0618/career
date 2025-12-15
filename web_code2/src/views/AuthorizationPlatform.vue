@@ -39,16 +39,17 @@
       </div>
       
       <div class="nav-buttons">
-        <button class="nav-btn back-btn" @click="goBack">返回</button>
+        <button class="action-btn" @click="goBack">返回</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 
 // 授权平台
 const authorizePlatform = (platform) => {
@@ -67,9 +68,15 @@ const authorizePlatform = (platform) => {
   router.push('/onboarding?step=3')
 }
 
-// 返回上一页
+// 返回页面，根据来源参数决定返回路径
 const goBack = () => {
-  router.back()
+  // 如果是从职业镜像页面进入的，则返回职业镜像页面
+  if (route.query.from === 'profile') {
+    router.push('/')
+  } else {
+    // 否则返回onboarding页面
+    router.push('/onboarding')
+  }
 }
 </script>
 
@@ -212,6 +219,35 @@ const goBack = () => {
 .nav-btn:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+/* 操作按钮样式 */
+.action-btn {
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.action-btn.primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.action-btn.secondary {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
 }
 
 /* 响应式设计 */

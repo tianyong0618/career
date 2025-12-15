@@ -1,10 +1,7 @@
 <template>
   <div class="home-view">
     <div class="container">
-      <div class="page-header">
-        <h2>我的职业镜像</h2>
-        <p>一眼看清当前状态与潜力</p>
-      </div>
+
       
       <!-- 职业身份卡 -->
       <CareerIdentityCard />

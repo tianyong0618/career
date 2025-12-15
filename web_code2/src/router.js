@@ -3,6 +3,7 @@ import Home from './views/Home.vue'
 import PathSandbox from './views/PathSandbox.vue'
 import AIPartner from './views/AIPartner.vue'
 import GrowthCenter from './views/GrowthCenter.vue'
+import Onboarding from './views/Onboarding.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/growth-center',
       name: 'GrowthCenter',
       component: GrowthCenter
+    },
+    {
+      path: '/onboarding',
+      name: 'Onboarding',
+      component: Onboarding
     }
   ]
 })

@@ -22,6 +22,19 @@
       <!-- 成长进度 -->
       <GrowthProgress />
       
+      <!-- 快捷行动区 -->
+      <div class="quick-actions">
+        <button class="action-btn" @click="router.push('/path-sandbox')">
+          🔍 探索职业路径
+        </button>
+        <button class="action-btn" @click="startAIAssessment">
+          🧪 开始AI测评
+        </button>
+        <button class="action-btn">
+          📌 今日推荐
+        </button>
+      </div>
+      
       <!-- 今日推荐 -->
       <div class="recommendations-section">
         <h3 class="section-title">今日推荐</h3>
@@ -73,6 +86,15 @@ const handleRecommendationClick = (item) => {
     alert(`正在跳转到: ${item.title}`)
   }
 }
+
+// 开始AI测评
+const startAIAssessment = () => {
+  // 清除现有冷启动状态，重新开始冷启动流程
+  localStorage.removeItem('onboardingCompleted')
+  localStorage.removeItem('userProfile')
+  localStorage.removeItem('userIdentity')
+  router.push('/onboarding')
+}
 </script>
 
 <style scoped>
@@ -117,6 +139,43 @@ const handleRecommendationClick = (item) => {
   color: var(--text-primary);
   margin-bottom: var(--spacing-lg);
   text-align: center;
+}
+
+/* 快捷行动区 */
+.quick-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 150px;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background-color: #40a9ff;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.action-btn:active {
+  transform: translateY(0);
 }
 
 .recommendations-list {

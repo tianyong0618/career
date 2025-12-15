@@ -1,0 +1,33 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from './views/Home.vue'
+import PathSandbox from './views/PathSandbox.vue'
+import AIPartner from './views/AIPartner.vue'
+import GrowthCenter from './views/GrowthCenter.vue'
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/path-sandbox',
+      name: 'PathSandbox',
+      component: PathSandbox
+    },
+    {
+      path: '/ai-partner',
+      name: 'AIPartner',
+      component: AIPartner
+    },
+    {
+      path: '/growth-center',
+      name: 'GrowthCenter',
+      component: GrowthCenter
+    }
+  ]
+})
+
+export default router

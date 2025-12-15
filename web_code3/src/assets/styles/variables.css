@@ -1,0 +1,19 @@
+/* 主色调 */
+:root {
+  --primary-blue: #1890FF;
+  --success-green: #52C41A;
+  --warning-yellow: #FAAD14;
+  --danger-red: #F5222D;
+  --text-primary: #262626;
+  --text-secondary: #8C8C8C;
+  --text-tertiary: #BFBFBF;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F5F5F5;
+  --bg-tertiary: #FAFAFA;
+  --border-color: #E8E8E8;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --transition: all 0.3s ease;
+}

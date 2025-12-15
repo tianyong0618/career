@@ -71,26 +71,42 @@
         </div>
         
         <!-- 步骤3：生成镜像 -->
-        <div v-if="step === 3" class="step-content">
+        <div v-if="step === 3" class="step-content compact-step">
           <div class="loading-container">
             <div class="loading-animation">
               <div class="loading-spinner"></div>
               <div class="loading-text">正在生成您的职业镜像...</div>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+              <div class="progress-fill" :style="{ width: Math.floor(progress) + '%' }"></div>
             </div>
-            <div class="progress-text">{{ progress }}% 完成</div>
+            <div class="progress-text">{{ Math.floor(progress) }}% 完成</div>
           </div>
           
-          <div class="data-sources" v-if="progress > 0">
+          <!-- 数据融合进度 -->
+          <div class="data-fusion-section" v-if="progress > 0">
             <h3>数据融合中...</h3>
-            <div class="source-item" v-for="source in dataSources" :key="source.id">
-              <div class="source-icon">{{ source.icon }}</div>
-              <div class="source-info">
-                <div class="source-name">{{ source.name }}</div>
-                <div class="source-status" :class="source.status">
-                  {{ source.statusText }}
+            <div class="fusion-progress-container">
+              <div 
+                class="fusion-item" 
+                v-for="source in dataSources" 
+                :key="source.id"
+              >
+                <div class="fusion-header">
+                  <div class="fusion-icon">{{ source.icon }}</div>
+                  <div class="fusion-info">
+                    <div class="fusion-name">{{ source.name }}</div>
+                    <div class="fusion-status" :class="source.status">
+                      {{ source.statusText }}
+                    </div>
+                  </div>
+                </div>
+                <div class="fusion-progress-bar">
+                  <div 
+                    class="fusion-progress-fill" 
+                    :class="source.status"
+                    :style="{ width: source.progress + '%' }"
+                  ></div>
                 </div>
               </div>
             </div>
@@ -271,21 +287,76 @@ const nextStep = () => {
 const generateProfile = () => {
   isLoading.value = true
   
+  // 初始化数据来源状态为进行中
+  dataSources.value.forEach(source => {
+    source.status = 'processing'
+    source.statusText = '进行中'
+    source.progress = 0
+  })
+  
   // 模拟生成过程
   const interval = setInterval(() => {
     if (progress.value < 100) {
-      progress.value += Math.random() * 10
+      // 确保进度只增加整数
+      const increment = Math.floor(Math.random() * 10) + 1
+      progress.value = Math.min(progress.value + increment, 100)
       
-      // 更新数据来源状态
-      if (progress.value > 20) dataSources.value[0].status = 'completed', dataSources.value[0].statusText = '已完成'
-      if (progress.value > 40) dataSources.value[1].status = 'completed', dataSources.value[1].statusText = '已完成'
-      if (progress.value > 60) dataSources.value[2].status = 'completed', dataSources.value[2].statusText = '已完成'
-      if (progress.value > 80) dataSources.value[3].status = 'completed', dataSources.value[3].statusText = '已完成'
-      if (progress.value > 95) dataSources.value[4].status = 'completed', dataSources.value[4].statusText = '已完成'
+      // 更新数据来源状态和进度
+      if (progress.value > 20) {
+        dataSources.value[0].status = 'completed', 
+        dataSources.value[0].statusText = '已完成',
+        dataSources.value[0].progress = 100
+      } else if (progress.value > 10) {
+        dataSources.value[0].status = 'processing',
+        dataSources.value[0].progress = Math.min(progress.value * 5, 100)
+      }
+      
+      if (progress.value > 40) {
+        dataSources.value[1].status = 'completed', 
+        dataSources.value[1].statusText = '已完成',
+        dataSources.value[1].progress = 100
+      } else if (progress.value > 30) {
+        dataSources.value[1].status = 'processing',
+        dataSources.value[1].progress = Math.min((progress.value - 20) * 5, 100)
+      }
+      
+      if (progress.value > 60) {
+        dataSources.value[2].status = 'completed', 
+        dataSources.value[2].statusText = '已完成',
+        dataSources.value[2].progress = 100
+      } else if (progress.value > 50) {
+        dataSources.value[2].status = 'processing',
+        dataSources.value[2].progress = Math.min((progress.value - 40) * 5, 100)
+      }
+      
+      if (progress.value > 80) {
+        dataSources.value[3].status = 'completed', 
+        dataSources.value[3].statusText = '已完成',
+        dataSources.value[3].progress = 100
+      } else if (progress.value > 70) {
+        dataSources.value[3].status = 'processing',
+        dataSources.value[3].progress = Math.min((progress.value - 60) * 5, 100)
+      }
+      
+      if (progress.value > 95) {
+        dataSources.value[4].status = 'completed', 
+        dataSources.value[4].statusText = '已完成',
+        dataSources.value[4].progress = 100
+      } else if (progress.value > 85) {
+        dataSources.value[4].status = 'processing',
+        dataSources.value[4].progress = Math.min((progress.value - 80) * 20, 100)
+      }
     } else {
       progress.value = 100
       clearInterval(interval)
       isLoading.value = false
+      
+      // 确保所有数据来源都标记为已完成
+      dataSources.value.forEach(source => {
+        source.status = 'completed'
+        source.statusText = '已完成'
+        source.progress = 100
+      })
     }
   }, 300)
 }
@@ -397,9 +468,15 @@ const completeOnboarding = () => {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
   text-align: center;
+}
+
+/* 紧凑步骤样式 */
+.compact-step {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
 }
 
 .step-content h2 {
@@ -660,6 +737,133 @@ const completeOnboarding = () => {
 .source-status.completed {
   background-color: rgba(82, 196, 26, 0.1);
   color: var(--success-color);
+}
+
+.source-status.processing {
+  background-color: rgba(24, 144, 255, 0.1);
+  color: var(--primary-color);
+}
+
+/* 数据融合部分样式 */
+.data-fusion-section {
+  margin-top: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.data-fusion-section h3 {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.fusion-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.fusion-item {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.fusion-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.fusion-icon {
+  font-size: var(--font-size-lg);
+  min-width: 24px;
+}
+
+.fusion-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fusion-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.fusion-status {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full, 9999px);
+  display: inline-block;
+}
+
+.fusion-status.pending {
+  background-color: rgba(250, 173, 20, 0.1);
+  color: var(--warning-color);
+}
+
+.fusion-status.processing {
+  background-color: rgba(24, 144, 255, 0.1);
+  color: var(--primary-color);
+}
+
+.fusion-status.completed {
+  background-color: rgba(82, 196, 26, 0.1);
+  color: var(--success-color);
+}
+
+.fusion-progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-full, 9999px);
+  overflow: hidden;
+}
+
+.fusion-progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full, 9999px);
+  transition: width 0.3s ease;
+}
+
+.fusion-progress-fill.pending {
+  background-color: var(--warning-color);
+}
+
+.fusion-progress-fill.processing {
+  background-color: var(--primary-color);
+}
+
+.fusion-progress-fill.completed {
+  background-color: var(--success-color);
+}
+
+/* 加载容器优化 */
+.loading-container {
+  gap: var(--spacing-md);
+}
+
+.loading-animation {
+  gap: var(--spacing-sm);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border-width: 5px;
+}
+
+.loading-text {
+  font-size: var(--font-size-md);
 }
 
 /* 文件上传模态框 */

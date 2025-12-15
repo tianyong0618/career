@@ -30,9 +30,7 @@ const showNavigation = ref(true)
 // 主题列表
 const themes = [
   { value: 'light', label: '浅色模式' },
-  { value: 'dark', label: '深色模式' },
-  { value: 'high-contrast', label: '高对比度模式' },
-  { value: 'dark-high-contrast', label: '深色高对比度模式' }
+  { value: 'dark', label: '深色模式' }
 ]
 
 // 切换主题
@@ -59,10 +57,9 @@ const checkOnboarding = () => {
 
 // 从本地存储加载主题并检查冷启动
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme && themes.some(theme => theme.value === savedTheme)) {
-    currentTheme.value = savedTheme
-  }
+  // 始终使用深色主题，忽略localStorage中的设置
+  currentTheme.value = 'dark'
+  localStorage.setItem('theme', 'dark')
   
   // 检查冷启动状态
   checkOnboarding()

@@ -26,9 +26,7 @@
             title="切换主题"
           >
             <span v-if="currentTheme === 'light'">🌙</span>
-            <span v-else-if="currentTheme === 'dark'">☀️</span>
-            <span v-else-if="currentTheme === 'high-contrast'">🔆</span>
-            <span v-else>🌑</span>
+            <span v-else>☀️</span>
           </button>
           
           <!-- 通知按钮和面板 -->
@@ -163,13 +161,13 @@ const handleThemeChange = () => {
 const getThemeLabel = () => {
   switch (props.currentTheme) {
     case 'light':
-      return '浅色模式，点击切换到深色模式'
+      return '浅色模式'
     case 'dark':
-      return '深色模式，点击切换到高对比度模式'
+      return '深色模式'
     case 'high-contrast':
-      return '高对比度模式，点击切换到深色高对比度模式'
+      return '高对比度模式'
     case 'dark-high-contrast':
-      return '深色高对比度模式，点击切换到浅色模式'
+      return '深色高对比度模式'
     default:
       return '切换主题'
   }
@@ -289,7 +287,7 @@ const toggleTasks = () => {
 
 .header-actions {
   display: flex;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   align-items: center;
 }
 

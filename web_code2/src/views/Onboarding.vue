@@ -189,6 +189,8 @@ const dataSources = ref([
 // 选择身份
 const selectIdentity = (identity) => {
   selectedIdentity.value = identity.value
+  // 自动进入下一步
+  nextStep()
 }
 
 // 选择画像生成方式
@@ -198,6 +200,7 @@ const selectProfileMethod = (method) => {
   if (method === 'upload') {
     showFileUpload.value = true
   } else {
+    // 自动进入下一步
     nextStep()
   }
 }

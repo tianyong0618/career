@@ -60,10 +60,16 @@ import { growthProgress, quickActions } from '../assets/mock/data'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
+// 处理快捷行动点击
 const handleAction = (action) => {
   if (action.link.startsWith('/')) {
     router.push(action.link)
+  } else if (action.text === '开始AI测评') {
+    // 开始AI测评，清除现有冷启动状态，重新开始冷启动流程
+    localStorage.removeItem('onboardingCompleted')
+    localStorage.removeItem('userProfile')
+    localStorage.removeItem('userIdentity')
+    router.push('/onboarding')
   } else {
     // 处理其他类型的链接
     console.log('处理其他类型的链接:', action.link)

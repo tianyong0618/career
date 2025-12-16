@@ -14,18 +14,6 @@
         <span class="nav-icon">🏠</span>
         <span class="nav-text">首页</span>
       </router-link>
-      <router-link to="/biz-plan-gen" class="nav-item">
-        <span class="nav-icon">📄</span>
-        <span class="nav-text">生成BP</span>
-      </router-link>
-      <router-link to="/policy-match" class="nav-item">
-        <span class="nav-icon">🏛️</span>
-        <span class="nav-text">政策匹配</span>
-      </router-link>
-      <router-link to="/risk-alert" class="nav-item">
-        <span class="nav-icon">⚠️</span>
-        <span class="nav-text">风险预警</span>
-      </router-link>
       <router-link to="/ai-tutor" class="nav-item">
         <span class="nav-icon">🤖</span>
         <span class="nav-text">AI导师</span>

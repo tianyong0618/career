@@ -5,33 +5,7 @@ import { userProfile } from '../data/mockData.js'
 
 const router = useRouter()
 
-// 快捷行动按钮配置
-const quickActions = [
-  {
-    icon: '📄',
-    title: '生成BP',
-    description: '快速生成商业计划书',
-    path: '/biz-plan-gen'
-  },
-  {
-    icon: '🏛️',
-    title: '政策匹配',
-    description: '查看可申报的补贴与优惠政策',
-    path: '/policy-match'
-  },
-  {
-    icon: '⚠️',
-    title: '风险预警',
-    description: '实时监测并预警潜在风险',
-    path: '/risk-alert'
-  },
-  {
-    icon: '💼',
-    title: '资源撮合',
-    description: '寻找潜在合伙人、投资人或供应商',
-    path: '/resource-hub'
-  }
-]
+
 
 // 成就+1动画
 const showAchievement = ref(false)
@@ -62,10 +36,7 @@ const navigateTo = (path) => {
     
     <!-- 页面标题 -->
     <header class="page-header">
-      <h1>我的创业概况</h1>
-      <button class="secondary" @click="navigateTo('/ai-tutor')">
-        🤖 AI导师
-      </button>
+      <h1>VenturePilot</h1>
     </header>
     
     <!-- 创业身份卡 -->
@@ -81,15 +52,19 @@ const navigateTo = (path) => {
               {{ tag }}
             </span>
           </div>
-          <div class="milestone">
-            <h3>当前里程碑</h3>
-            <ul>
-              <li v-for="(item, index) in userProfile.currentMilestone" :key="index">
-                ✅ {{ item }}
-              </li>
-            </ul>
-          </div>
         </div>
+      </div>
+    </div>
+    
+    <!-- 当前里程碑 -->
+    <div class="card fade-in">
+      <div class="milestone">
+        <h3>当前里程碑</h3>
+        <ul>
+          <li v-for="(item, index) in userProfile.currentMilestone" :key="index">
+            ✅ {{ item }}
+          </li>
+        </ul>
       </div>
     </div>
     
@@ -121,52 +96,35 @@ const navigateTo = (path) => {
       <div class="actions-grid">
         <div 
           class="action-card" 
-          v-for="action in quickActions" 
-          :key="action.title"
-          @click="navigateTo(action.path)"
+          @click="navigateTo('/biz-plan-gen')"
         >
-          <div class="action-icon">{{ action.icon }}</div>
-          <h4 class="action-title">{{ action.title }}</h4>
-          <p class="action-desc">{{ action.description }}</p>
+          <div class="action-icon">📄</div>
+          <h4 class="action-title">生成BP</h4>
+          <p class="action-desc">快速生成商业计划书</p>
         </div>
-      </div>
-    </div>
-    
-    <!-- 数据概览卡片 -->
-    <div class="stats-section">
-      <div class="card fade-in">
-        <h3>创业数据概览</h3>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-value">5</div>
-            <div class="stat-label">匹配政策</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">3</div>
-            <div class="stat-label">潜在风险</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">8</div>
-            <div class="stat-label">可联系资源</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">1</div>
-            <div class="stat-label">完成BP</div>
-          </div>
+        <div 
+          class="action-card" 
+          @click="navigateTo('/policy-match')"
+        >
+          <div class="action-icon">🏛️</div>
+          <h4 class="action-title">政策匹配</h4>
+          <p class="action-desc">查看可申报的补贴与优惠政策</p>
         </div>
-      </div>
-    </div>
-    
-    <!-- AI导师入口 -->
-    <div class="ai-tutor-section">
-      <div class="card fade-in" @click="navigateTo('/ai-tutor')">
-        <div class="ai-tutor-content">
-          <div class="ai-icon">🤖</div>
-          <div class="ai-info">
-            <h3>AI创业导师</h3>
-            <p>7×24小时在线，随时为您解答创业疑问</p>
-          </div>
-          <div class="arrow-icon">→</div>
+        <div 
+          class="action-card" 
+          @click="navigateTo('/risk-alert')"
+        >
+          <div class="action-icon">⚠️</div>
+          <h4 class="action-title">风险预警</h4>
+          <p class="action-desc">实时监测并预警潜在风险</p>
+        </div>
+        <div 
+          class="action-card" 
+          @click="navigateTo('/resource-hub')"
+        >
+          <div class="action-icon">💼</div>
+          <h4 class="action-title">资源撮合</h4>
+          <p class="action-desc">寻找潜在合伙人、投资人或供应商</p>
         </div>
       </div>
     </div>
@@ -193,19 +151,22 @@ const navigateTo = (path) => {
   font-size: 1.5rem;
 }
 
+
+
 /* 创业身份卡 */
 .profile-section {
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
   align-items: flex-start;
+  padding: 0.5rem 0;
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid var(--primary-color);
+  border: 2px solid var(--primary-color);
 }
 
 .avatar img {
@@ -219,50 +180,51 @@ const navigateTo = (path) => {
 }
 
 .profile-info h2 {
-  margin-bottom: 0.5rem;
-  font-size: 1.3rem;
+  margin: 0 0 0.3rem 0;
+  font-size: 1.2rem;
 }
 
 .tags {
-  margin-bottom: 1rem;
-}
-
-.milestone h3 {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-secondary);
+  margin-bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
 }
 
 .milestone ul {
   list-style: none;
   padding: 0;
+  margin: 0;
+  text-align: left;
 }
 
 .milestone li {
-  margin-bottom: 0.3rem;
+  margin: 0 0 0.4rem 0;
   font-size: 0.9rem;
   color: var(--text-primary);
+  line-height: 1.4;
+  text-align: left;
 }
 
 /* 创业进展条 */
 .progress-section {
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
 }
 
 .progress-item {
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
 }
 
 .progress-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
 }
 
 .status {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
@@ -276,79 +238,36 @@ const navigateTo = (path) => {
 
 .progress-bar {
   width: 100%;
-  height: 8px;
+  height: 6px;
   background-color: var(--bg-secondary);
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   background-color: var(--primary-color);
-  border-radius: 4px;
+  border-radius: 3px;
   transition: width 0.3s ease;
 }
 
 .hint {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem;
+  gap: 0.4rem;
+  padding: 0.6rem 0.8rem;
   background-color: rgba(250, 173, 20, 0.1);
   border-radius: var(--radius-md);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--warning-color);
+  margin-top: 0.5rem;
 }
 
 .warning-icon {
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
-/* 快捷行动区 */
-.quick-actions {
-  margin-bottom: 1.5rem;
-}
 
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.action-card {
-  background-color: var(--bg-primary);
-  border-radius: var(--radius-lg);
-  padding: 1rem;
-  box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  transition: all 0.3s;
-  text-align: center;
-  border: 1px solid var(--border-color);
-}
-
-.action-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--primary-color);
-}
-
-.action-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.action-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-  color: var(--text-primary);
-}
-
-.action-desc {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
 
 /* 数据概览卡片 */
 .stats-section {
@@ -403,11 +322,6 @@ const navigateTo = (path) => {
 
 .ai-info {
   flex: 1;
-}
-
-.ai-info h3 {
-  margin: 0 0 0.3rem 0;
-  font-size: 1.1rem;
 }
 
 .ai-info p {
@@ -474,6 +388,56 @@ const navigateTo = (path) => {
   }
 }
 
+/* 快捷行动区 */
+.quick-actions {
+  margin: 1rem 0;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.action-card {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 0.5rem;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: auto;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-color);
+  background-color: rgba(24, 144, 255, 0.05);
+}
+
+.action-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.action-title {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.action-desc {
+  display: none;
+}
+
 /* 风险预警闪烁效果 */
 @keyframes pulse {
   0% {
@@ -498,7 +462,8 @@ const navigateTo = (path) => {
 /* 响应式设计 */
 @media (max-width: 480px) {
   .actions-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
   }
   
   .stats-grid {
@@ -513,7 +478,7 @@ const navigateTo = (path) => {
   }
   
   .milestone {
-    text-align: center;
+    text-align: left;
   }
   
   .achievement-animation {

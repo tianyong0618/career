@@ -59,6 +59,16 @@ const resetForm = () => {
   currentStep.value = 1
 }
 
+// 重新匹配政策（保持在第二步）
+const rematchPolicies = () => {
+  // 模拟重新匹配政策，生成新的匹配结果
+  // 这里可以添加一些随机因素，让每次匹配结果有所不同
+  const shuffledPolicies = [...policies].sort(() => Math.random() - 0.5)
+  matchedPolicies.value = shuffledPolicies.slice(0, Math.floor(Math.random() * policies.length) + 1)
+  // 保持在第二步
+  currentStep.value = 2
+}
+
 // 上一步
 const prevStep = () => {
   if (currentStep.value > 1) {
@@ -169,7 +179,7 @@ const prevStep = () => {
               <button type="button" class="secondary" @click="prevStep">
                 ← 重新输入
               </button>
-              <button type="button" class="secondary" @click="resetForm">
+              <button type="button" class="secondary" @click="rematchPolicies">
                 🔄 重新匹配
               </button>
             </div>

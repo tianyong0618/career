@@ -51,11 +51,11 @@ const dynamicRiskData = computed(() => generateDynamicRiskData())
 
 // 动态风险提示列表，根据风险数据变化
 const riskList = computed(() => {
-  // 筛选出风险等级为高或中等的维度
-  const highRiskDimensions = dynamicRiskData.value.filter(d => d.riskLevel === 'danger' || d.riskLevel === 'warning')
+  // 获取所有风险维度，包括高、中、低风险
+  const allRiskDimensions = dynamicRiskData.value
   
   // 生成对应的风险提示
-  return highRiskDimensions.map((dimension, index) => {
+  const risks = allRiskDimensions.map((dimension, index) => {
     let category = '其他风险'
     
     // 根据维度名称确定风险类别
@@ -69,11 +69,29 @@ const riskList = computed(() => {
     return {
       id: index + 1,
       title: `${dimension.name}风险`,
-      description: `${dimension.name}风险值达到${dimension.currentValue}，处于${dimension.riskLevel === 'danger' ? '高风险' : '中等风险'}状态`,
-      level: dimension.riskLevel === 'danger' ? '高' : '中等',
+      description: `${dimension.name}风险值达到${dimension.currentValue}，处于${dimension.riskLevel === 'danger' ? '高风险' : dimension.riskLevel === 'warning' ? '中等风险' : '低风险'}状态`,
+      level: dimension.riskLevel === 'danger' ? '高' : dimension.riskLevel === 'warning' ? '中等' : '低',
       category,
-      recommendation: dimension.recommendation
+      recommendation: dimension.recommendation,
+      riskLevel: dimension.riskLevel, // 保留原始风险等级用于排序
+      currentValue: dimension.currentValue // 保留原始值用于排序
     }
+  })
+  
+  // 按照风险等级排序：高风险 > 中等风险 > 低风险
+  // 同一风险等级内按风险值降序排列
+  return risks.sort((a, b) => {
+    // 风险等级权重：danger(高) > warning(中) > normal(低)
+    const riskLevelOrder = { danger: 3, warning: 2, normal: 1 }
+    
+    // 先按风险等级排序
+    const levelDiff = riskLevelOrder[b.riskLevel] - riskLevelOrder[a.riskLevel]
+    if (levelDiff !== 0) {
+      return levelDiff
+    }
+    
+    // 同一风险等级按风险值降序
+    return b.currentValue - a.currentValue
   })
 })
 

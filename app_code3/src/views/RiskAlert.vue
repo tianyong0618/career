@@ -241,16 +241,16 @@ const initRadarChart = () => {
               size: 10
             },
             // 步长（根据风险等级阈值设置）
-            stepSize: 33.33,
-            // 不显示刻度数字
-            display: false
+            stepSize: 20,
+            // 显示刻度数字
+            display: true
           },
           // 网格线样式
           grid: {
             // 网格线颜色
             color: '#e8e8e8',
-            // 是否圆形
-            circular: true
+            // 是否圆形（false为多边形）
+            circular: false
           },
           // 角度分割线（从中心向外辐射的线）样式
           angleLines: {
@@ -351,7 +351,7 @@ const closeRecommendation = () => {
   <div class="risk-alert">
     <!-- 页面标题 -->
     <header class="page-header">
-      <h1>风险预警雷达</h1>
+      <h1>VenturePilot</h1>
       <button class="secondary" @click="showMetricSettings = !showMetricSettings">
         ⚙️ {{ showMetricSettings ? '关闭设置' : '监控设置' }}
       </button>

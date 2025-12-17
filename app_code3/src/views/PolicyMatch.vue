@@ -81,7 +81,7 @@ const prevStep = () => {
   <div class="policy-match">
     <!-- 页面标题 -->
     <header class="page-header">
-      <h1>政策匹配引擎</h1>
+      <h1>VenturePilot</h1>
     </header>
     
     <!-- 步骤指示器 -->

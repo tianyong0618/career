@@ -164,7 +164,7 @@ onMounted(() => {
   <div class="ai-tutor">
     <!-- 页面标题 -->
     <header class="page-header">
-      <h1>AI创业导师</h1>
+      <h1>VenturePilot</h1>
     </header>
     
 

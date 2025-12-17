@@ -42,7 +42,7 @@ const contactResource = () => {
   <div class="resource-hub">
     <!-- 页面标题 -->
     <header class="page-header">
-      <h1>资源撮合Marketplace</h1>
+      <h1>VenturePilot</h1>
     </header>
     
     <!-- 需求类型选择 -->

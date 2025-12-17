@@ -822,7 +822,7 @@ const restart = () => {
   <div class="biz-plan-gen">
     <!-- 页面标题 -->
     <header class="page-header">
-      <h1>商业计划书生成器</h1>
+      <h1>VenturePilot</h1>
     </header>
     
     <!-- 步骤指示器 -->

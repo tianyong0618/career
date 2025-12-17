@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { risks, monitoringMetrics, riskRadarData } from '../data/mockData.js'
 
 // 监控指标设置
-const selectedMetrics = ref(monitoringMetrics.slice(0, 4))
+const selectedMetrics = ref(monitoringMetrics.slice(0, 5))
 const showMetricSettings = ref(false)
 
 // 选中的风险详情

@@ -10,7 +10,6 @@ const messages = ref([...chatHistory])
 
 // 输入消息
 const inputMessage = ref('')
-const showInputActions = ref(false)
 
 // 文件上传
 const fileInput = ref(null)
@@ -166,29 +165,9 @@ onMounted(() => {
     <!-- 页面标题 -->
     <header class="page-header">
       <h1>AI创业导师</h1>
-      <button class="secondary" @click="showInputActions = !showInputActions">
-        ⚙️ 功能
-      </button>
     </header>
     
-    <!-- 功能快捷入口 -->
-    <div v-if="showInputActions" class="card fade-in">
-      <h2>快捷功能</h2>
-      <div class="quick-actions">
-        <button class="action-btn" @click="router.push('/biz-plan-gen')">
-          📄 生成商业计划书
-        </button>
-        <button class="action-btn" @click="router.push('/policy-match')">
-          🏛️ 政策匹配查询
-        </button>
-        <button class="action-btn" @click="router.push('/risk-alert')">
-          ⚠️ 风险预警监控
-        </button>
-        <button class="action-btn" @click="router.push('/resource-hub')">
-          💼 资源撮合对接
-        </button>
-      </div>
-    </div>
+
     
     <!-- 聊天界面 -->
     <div class="chat-container" ref="chatContainer">
@@ -258,34 +237,36 @@ onMounted(() => {
         accept=".pdf,.doc,.docx,.txt"
       />
       
-      <!-- 输入工具栏 -->
-      <div class="input-toolbar">
-        <button class="toolbar-btn" @click="openFileUpload" :disabled="isUploading">
-          📎 上传文件
-        </button>
-      </div>
-      
-      <!-- 输入框 -->
-      <div class="input-wrapper">
-        <textarea 
-          v-model="inputMessage"
-          placeholder="请输入您的问题或需求..."
-          rows="1"
-          @keydown.enter="$event.shiftKey || sendMessage()"
-          @input="$event.target.style.height = 'auto'; $event.target.style.height = $event.target.scrollHeight + 'px'"
-        ></textarea>
-        <button 
-          class="send-btn" 
-          @click="sendMessage()"
-          :disabled="!inputMessage.trim() || isUploading"
-        >
-          发送
-        </button>
-      </div>
-      
-      <!-- 提示信息 -->
-      <div class="input-hint">
-        <p>💡 提示：您可以问我关于创业补贴、商业计划书、风险预警等问题</p>
+      <!-- 紧凑输入栏 -->
+      <div class="compact-input">
+        <!-- 左侧工具按钮 -->
+        <div class="input-tools-left">
+          <button class="icon-btn" @click="openFileUpload" :disabled="isUploading">
+            📎
+          </button>
+        </div>
+        
+        <!-- 输入框 -->
+        <div class="input-wrapper">
+          <textarea 
+            v-model="inputMessage"
+            placeholder="请输入您的问题或需求..."
+            rows="1"
+            @keydown.enter="$event.shiftKey || sendMessage()"
+            @input="$event.target.style.height = 'auto'; $event.target.style.height = $event.target.scrollHeight + 'px'"
+          ></textarea>
+        </div>
+        
+        <!-- 右侧工具按钮 -->
+        <div class="input-tools-right">
+          <button 
+            class="send-btn" 
+            @click="sendMessage()"
+            :disabled="!inputMessage.trim() || isUploading"
+          >
+            发送
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -504,45 +485,52 @@ onMounted(() => {
   margin-top: auto;
   padding: 1rem 0;
   background-color: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
 }
 
-.input-toolbar {
+/* 紧凑输入栏样式 */
+.compact-input {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.8rem;
-}
-
-.toolbar-btn {
-  padding: 0.6rem;
+  padding: 0.5rem;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.3s;
-  font-size: 1rem;
+  border-radius: var(--radius-lg);
+  width: 100%;
 }
 
-.toolbar-btn:hover {
-  border-color: var(--primary-color);
+/* 工具按钮 */
+.icon-btn {
+  padding: 0.6rem;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.icon-btn:hover:not(:disabled) {
+  background-color: var(--bg-secondary);
   color: var(--primary-color);
 }
 
-.toolbar-btn:disabled {
-  opacity: 0.6;
+.icon-btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
 }
 
+/* 输入框 */
 .input-wrapper {
+  flex: 1;
   display: flex;
-  gap: 0.8rem;
-  align-items: flex-end;
-  background-color: var(--bg-primary);
-  padding: 0.8rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  align-items: flex-end !important;
 }
 
 .input-wrapper textarea {
@@ -557,6 +545,7 @@ onMounted(() => {
   max-height: 120px;
   overflow-y: auto;
   background-color: transparent;
+  padding: 0 !important;
 }
 
 .send-btn {
@@ -567,33 +556,37 @@ onMounted(() => {
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.3s;
-  font-size: 1rem;
-  min-width: 80px;
+  font-size: 0.9rem;
+  min-width: auto;
+  width: auto;
+  height: auto;
 }
 
 .send-btn:hover:not(:disabled) {
   opacity: 0.9;
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
+  background-color: var(--primary-color);
 }
 
 .send-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-/* 提示信息 */
-.input-hint {
-  margin-top: 0.8rem;
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+/* 输入工具区 */
+.input-tools-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.input-hint p {
-  margin: 0;
+.input-tools-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* 响应式设计 */

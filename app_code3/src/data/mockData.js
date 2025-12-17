@@ -259,3 +259,60 @@ export const resourceTypes = [
   { value: 'investors', label: '投资人' },
   { value: 'government', label: '政府采购项目' }
 ];
+
+// 风险雷达图数据
+export const riskRadarData = {
+  // 综合风险指数 (0-100，越高风险越大)
+  overallRiskIndex: 65,
+  
+  // 风险等级定义
+  riskLevels: [
+    { level: 'normal', name: '正常', color: '#52c41a', maxValue: 33 },
+    { level: 'warning', name: '警告', color: '#faad14', maxValue: 66 },
+    { level: 'danger', name: '危险', color: '#f5222d', maxValue: 100 }
+  ],
+  
+  // 各维度风险数据
+  dimensions: [
+    {
+      id: 1,
+      name: '社交媒体情绪',
+      currentValue: 75,
+      thresholds: [33, 66], // 正常(0-33), 警告(34-66), 危险(67-100)
+      description: '社交媒体上的品牌情绪分析',
+      recommendation: '建议增加正面内容发布，回应负面评论',
+      riskLevel: 'danger',
+      valueLabel: '负面情绪占比'
+    },
+    {
+      id: 2,
+      name: '现金流状况',
+      currentValue: 60,
+      thresholds: [33, 66],
+      description: '企业现金流健康状况',
+      recommendation: '考虑优化成本结构，增加融资渠道',
+      riskLevel: 'warning',
+      valueLabel: '现金流压力指数'
+    },
+    {
+      id: 3,
+      name: '竞品动态',
+      currentValue: 55,
+      thresholds: [33, 66],
+      description: '竞争对手的市场活动',
+      recommendation: '建议调整定价策略，增加差异化服务',
+      riskLevel: 'warning',
+      valueLabel: '竞品威胁指数'
+    },
+    {
+      id: 4,
+      name: '行业趋势',
+      currentValue: 45,
+      thresholds: [33, 66],
+      description: '行业整体发展趋势',
+      recommendation: '关注行业政策变化，调整发展战略',
+      riskLevel: 'warning',
+      valueLabel: '行业风险指数'
+    }
+  ]
+};

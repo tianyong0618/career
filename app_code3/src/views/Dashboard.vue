@@ -68,6 +68,8 @@ const navigateTo = (path) => {
       </div>
     </div>
     
+
+    
     <!-- 创业进展条 -->
     <div class="card fade-in">
       <h3>{{ userProfile.mainGoal }}</h3>
@@ -437,6 +439,10 @@ const navigateTo = (path) => {
 .action-desc {
   display: none;
 }
+
+
+
+
 
 /* 风险预警闪烁效果 */
 @keyframes pulse {

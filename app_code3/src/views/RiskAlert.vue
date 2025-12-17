@@ -1,17 +1,81 @@
 <script setup>
-import { ref } from 'vue'
-import { risks, monitoringMetrics } from '../data/mockData.js'
+import { ref, computed, watch, onMounted } from 'vue'
+import { risks, monitoringMetrics, riskRadarData } from '../data/mockData.js'
 
 // 监控指标设置
 const selectedMetrics = ref(monitoringMetrics.slice(0, 4))
 const showMetricSettings = ref(false)
 
-// 风险提示列表
-const riskList = ref(risks)
-
 // 选中的风险详情
 const selectedRisk = ref(null)
 const showRiskDetail = ref(false)
+
+// 当前选中的风险维度
+const selectedDimension = ref(null)
+
+// 生成动态风险数据
+const generateDynamicRiskData = () => {
+  // 根据选中的指标生成动态风险维度数据
+  return selectedMetrics.value.map((metric, index) => {
+    // 查找对应的原始维度数据
+    const originalDimension = riskRadarData.dimensions.find(d => d.name === metric)
+    
+    // 如果找到原始数据则使用，否则生成随机数据
+    if (originalDimension) {
+      return { ...originalDimension, id: index + 1 }
+    } else {
+      // 生成随机风险值（0-100）
+      const currentValue = Math.floor(Math.random() * 100)
+      
+      // 确定风险等级
+      let riskLevel = 'normal'
+      if (currentValue > 66) riskLevel = 'danger'
+      else if (currentValue > 33) riskLevel = 'warning'
+      
+      return {
+        id: index + 1,
+        name: metric,
+        currentValue,
+        thresholds: [33, 66],
+        description: `${metric}的风险评估`,
+        recommendation: `针对${metric}的风险应对建议`,
+        riskLevel,
+        valueLabel: `${metric}风险值`
+      }
+    }
+  })
+}
+
+// 动态风险数据
+const dynamicRiskData = computed(() => generateDynamicRiskData())
+
+// 动态风险提示列表，根据风险数据变化
+const riskList = computed(() => {
+  // 筛选出风险等级为高或中等的维度
+  const highRiskDimensions = dynamicRiskData.value.filter(d => d.riskLevel === 'danger' || d.riskLevel === 'warning')
+  
+  // 生成对应的风险提示
+  return highRiskDimensions.map((dimension, index) => {
+    let category = '其他风险'
+    
+    // 根据维度名称确定风险类别
+    if (dimension.name.includes('社交') || dimension.name.includes('情绪')) category = '市场风险'
+    else if (dimension.name.includes('现金流') || dimension.name.includes('财务')) category = '财务风险'
+    else if (dimension.name.includes('竞品')) category = '市场风险'
+    else if (dimension.name.includes('行业')) category = '行业风险'
+    else if (dimension.name.includes('客户')) category = '运营风险'
+    else if (dimension.name.includes('供应链')) category = '运营风险'
+    
+    return {
+      id: index + 1,
+      title: `${dimension.name}风险`,
+      description: `${dimension.name}风险值达到${dimension.currentValue}，处于${dimension.riskLevel === 'danger' ? '高风险' : '中等风险'}状态`,
+      level: dimension.riskLevel === 'danger' ? '高' : '中等',
+      category,
+      recommendation: dimension.recommendation
+    }
+  })
+})
 
 // 切换监控指标
 const toggleMetric = (metric) => {
@@ -38,10 +102,7 @@ const closeRiskDetail = () => {
 // 标记风险为已处理
 const markAsHandled = () => {
   if (selectedRisk.value) {
-    const index = riskList.value.findIndex(r => r.id === selectedRisk.value.id)
-    if (index > -1) {
-      riskList.value.splice(index, 1)
-    }
+    // 这里可以添加实际的处理逻辑，比如更新后端数据
     closeRiskDetail()
   }
 }
@@ -72,6 +133,199 @@ const getRiskLevelColor = (level) => {
     default:
       return '#8C8C8C'
   }
+}
+
+// 导入Chart.js库
+import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+
+// 注册Chart.js组件
+Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+
+// 创建chart引用
+const chartRef = ref(null)
+let chart = null
+
+// 根据风险等级获取颜色
+const getRiskColor = (value) => {
+  const level = riskRadarData.riskLevels.find(l => value <= l.maxValue)
+  return level ? level.color : riskRadarData.riskLevels[riskRadarData.riskLevels.length - 1].color
+}
+
+// 计算综合风险等级
+const overallRiskLevel = computed(() => {
+  // 计算平均风险值
+  const avgValue = dynamicRiskData.value.reduce((sum, dim) => sum + dim.currentValue, 0) / dynamicRiskData.value.length
+  const level = riskRadarData.riskLevels.find(l => avgValue <= l.maxValue)
+  return level ? level.name : riskRadarData.riskLevels[riskRadarData.riskLevels.length - 1].name
+})
+
+// 初始化雷达图
+const initRadarChart = () => {
+  if (!chartRef.value) return
+  
+  // 销毁现有图表（如果存在）
+  if (chart) {
+    chart.destroy()
+  }
+  
+  const ctx = chartRef.value.getContext('2d')
+  
+  chart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: dynamicRiskData.value.map(dimension => dimension.name),
+      datasets: [{
+        label: '风险值',
+        data: dynamicRiskData.value.map(dimension => dimension.currentValue),
+        backgroundColor: 'transparent', // 隐藏填充
+        borderColor: 'transparent', // 隐藏连线
+        borderWidth: 0, // 移除连线宽度
+        pointBackgroundColor: dynamicRiskData.value.map(dimension => getRiskColor(dimension.currentValue)),
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 6,
+        pointHoverRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const dimension = dynamicRiskData.value[context.dataIndex]
+              return `${dimension.valueLabel}: ${context.parsed.r} - ${dimension.riskLevel === 'danger' ? '高风险' : dimension.riskLevel === 'warning' ? '中等风险' : '低风险'}`
+            }
+          }
+        }
+      },
+      scales: {
+        // 雷达图径向（r）坐标轴配置
+        r: {
+          // 从 0 开始绘制
+          beginAtZero: true,
+          // 最大刻度值
+          max: 100,
+          // 最小刻度值
+          min: 0,
+          // 刻度标签外观
+          ticks: {
+            // 刻度背景透明
+            backdropColor: 'transparent',
+            // 刻度文字颜色
+            color: '#8c8c8c',
+            // 刻度文字字号
+            font: {
+              size: 10
+            },
+            // 步长（根据风险等级阈值设置）
+            stepSize: 33.33,
+            // 不显示刻度数字
+            display: false
+          },
+          // 网格线样式
+          grid: {
+            // 网格线颜色
+            color: '#e8e8e8',
+            // 是否圆形
+            circular: true
+          },
+          // 角度分割线（从中心向外辐射的线）样式
+          angleLines: {
+            // 角度分割线颜色
+            color: '#e8e8e8',
+            // 显示角度分割线，数量会自动根据labels数组长度生成
+            display: true
+          },
+          // 维度标签（各顶点文字）样式
+          pointLabels: {
+            // 维度标签颜色
+            color: '#333',
+            // 维度标签字号
+            font: {
+              size: 12
+            }
+          }
+        }
+      },
+      elements: {
+        point: {
+          hoverBackgroundColor: '#fff'
+        }
+      },
+      onClick: (event, elements) => {
+        if (elements.length > 0) {
+          const index = elements[0].index
+          toggleRecommendation(dynamicRiskData.value[index])
+        }
+      }
+    }
+  })
+}
+
+// 获取维度的中间角度
+const getDimensionMiddleAngle = (dimensionIndex, totalDimensions) => {
+  // 计算每个维度的角度范围
+  const angleRange = 360 / totalDimensions
+  // 计算中间角度（加上180度是为了使第一个维度在右侧，符合雷达图的习惯）
+  return dimensionIndex * angleRange + angleRange / 2 + 180
+}
+
+// 在组件挂载时初始化图表和监听窗口大小变化
+onMounted(() => {
+  initRadarChart()
+  
+  const handleResize = () => {
+    if (chart) {
+      chart.resize()
+    }
+  }
+  
+  window.addEventListener('resize', handleResize)
+  
+  return () => {
+    window.removeEventListener('resize', handleResize)
+  }
+})
+
+// 监听数据变化，更新图表
+watch(dynamicRiskData, () => {
+  initRadarChart()
+}, { deep: true })
+
+// 删除重复的onMounted钩子
+// 计算风险点位置（在对应指标的扇形区域内）
+const getRiskPointPosition = (value, dimensionIndex, totalDimensions) => {
+  // 将0-100的value转换为0-1的比例
+  const ratio = value / 100
+  
+  // 使用区域的中间角度来计算位置，确保风险点位于扇形区域内
+  const angle = getDimensionMiddleAngle(dimensionIndex, totalDimensions)
+  
+  // 计算在雷达图上的位置（相对于中心点）
+  const radians = (angle * Math.PI) / 180
+  const top = (50 - 50 * ratio * Math.sin(radians)).toFixed(2)
+  const left = (50 + 50 * ratio * Math.cos(radians)).toFixed(2)
+  
+  return { top: `${top}%`, left: `${left}%` }
+}
+
+// 展开/折叠应对建议
+const toggleRecommendation = (dimension) => {
+  if (selectedDimension.value?.id === dimension.id) {
+    selectedDimension.value = null
+  } else {
+    selectedDimension.value = dimension
+  }
+}
+
+// 关闭应对建议
+const closeRecommendation = () => {
+  selectedDimension.value = null
 }
 </script>
 
@@ -112,48 +366,45 @@ const getRiskLevelColor = (level) => {
     <div class="card fade-in">
       <h2>风险雷达概览</h2>
       <div class="risk-radar">
-        <!-- 简化的风险雷达图 -->
+        <!-- 动态雷达图，使用Chart.js实现多边形雷达图 -->
         <div class="radar-container">
-          <div class="radar-bg">
-            <div class="radar-circle"></div>
-            <div class="radar-circle"></div>
-            <div class="radar-circle"></div>
-            <div class="radar-line"></div>
-            <div class="radar-line"></div>
-            <div class="radar-line"></div>
-            <div class="radar-line"></div>
-            <div class="radar-line"></div>
-          </div>
-          <!-- 风险点 -->
-          <div 
-            class="risk-point" 
-            v-for="(metric, index) in selectedMetrics" 
-            :key="metric"
-            :style="{
-              top: `${20 + Math.sin(index * 2 * Math.PI / selectedMetrics.length) * 30}%`,
-              left: `${50 + Math.cos(index * 2 * Math.PI / selectedMetrics.length) * 30}%`,
-              backgroundColor: riskList.length > 0 ? '#F5222D' : '#52C41A'
-            }"
-          >
-            <div class="risk-point-tooltip">{{ metric }}</div>
-          </div>
+          <canvas ref="chartRef"></canvas>
         </div>
+        
+        <!-- 雷达图摘要 -->
         <div class="radar-summary">
-          <h3>风险等级：{{ riskList.length > 0 ? '中等' : '低' }}</h3>
-          <p>当前监测到 {{ riskList.length }} 个潜在风险</p>
+          <h3>风险等级：{{ overallRiskLevel }}</h3>
+          <p>当前监测到 {{ dynamicRiskData.filter(d => d.riskLevel !== 'normal').length }} 个潜在风险</p>
           <div class="risk-stats">
             <div class="stat-item">
-              <span class="stat-number">{{ riskList.filter(r => r.level === '高').length }}</span>
+              <span class="stat-number">{{ dynamicRiskData.filter(d => d.riskLevel === 'danger').length }}</span>
               <span class="stat-label">高风险</span>
             </div>
             <div class="stat-item">
-              <span class="stat-number">{{ riskList.filter(r => r.level === '中等').length }}</span>
+              <span class="stat-number">{{ dynamicRiskData.filter(d => d.riskLevel === 'warning').length }}</span>
               <span class="stat-label">中等风险</span>
             </div>
             <div class="stat-item">
-              <span class="stat-number">{{ riskList.filter(r => r.level === '低').length }}</span>
+              <span class="stat-number">{{ dynamicRiskData.filter(d => d.riskLevel === 'normal').length }}</span>
               <span class="stat-label">低风险</span>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 风险应对建议面板 -->
+      <div v-if="selectedDimension" class="risk-recommendation-panel">
+        <div class="recommendation-header">
+          <h3>{{ selectedDimension.name }} - 应对建议</h3>
+          <button class="close-btn" @click="closeRecommendation">×</button>
+        </div>
+        <div class="recommendation-content">
+          <p><strong>当前状态：</strong><span :style="{ color: getRiskColor(selectedDimension.currentValue) }">{{ selectedDimension.riskLevel === 'normal' ? '正常' : selectedDimension.riskLevel === 'warning' ? '警告' : '危险' }}</span></p>
+          <p><strong>指标描述：</strong>{{ selectedDimension.description }}</p>
+          <p><strong>当前值：</strong>{{ selectedDimension.currentValue }} ({{ selectedDimension.valueLabel }})</p>
+          <div class="recommendation">
+            <h4>建议措施：</h4>
+            <p>{{ selectedDimension.recommendation }}</p>
           </div>
         </div>
       </div>
@@ -333,132 +584,97 @@ const getRiskLevelColor = (level) => {
 
 /* 风险雷达概览 */
 .risk-radar {
-  margin: 1.5rem 0;
+  position: relative;
+  margin: 1rem 0;
 }
 
+/* 雷达容器 */
 .radar-container {
   position: relative;
-  width: 100%;
-  height: 250px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.5rem;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  background: transparent;
 }
 
-.radar-bg {
-  position: relative;
-  width: 200px;
-  height: 200px;
+/* Chart.js 画布 */
+.radar-container canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
-.radar-circle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-}
-
-.radar-circle:nth-child(1) {
-  width: 180px;
-  height: 180px;
-}
-
-.radar-circle:nth-child(2) {
-  width: 120px;
-  height: 120px;
-}
-
-.radar-circle:nth-child(3) {
-  width: 60px;
-  height: 60px;
-}
-
-.radar-line {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 1px;
-  height: 100px;
-  background-color: var(--border-color);
-  transform-origin: bottom center;
-}
-
-.radar-line:nth-child(4) {
-  transform: translate(-50%, -100%);
-}
-
-.radar-line:nth-child(5) {
-  transform: translate(-50%, -100%) rotate(72deg);
-}
-
-.radar-line:nth-child(6) {
-  transform: translate(-50%, -100%) rotate(144deg);
-}
-
-.radar-line:nth-child(7) {
-  transform: translate(-50%, -100%) rotate(216deg);
-}
-
-.radar-line:nth-child(8) {
-  transform: translate(-50%, -100%) rotate(288deg);
-}
-
-.risk-point {
+/* 风险点提示框容器 */
+.risk-point-tooltip-container {
   position: absolute;
   width: 12px;
   height: 12px;
-  border-radius: 50%;
-  background-color: var(--error-color);
   transform: translate(-50%, -50%);
+  z-index: 3;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 2px 8px rgba(245, 34, 45, 0.3);
+  display: none; /* Chart.js 自带 tooltip，隐藏自定义的 */
 }
 
-.risk-point:hover {
-  transform: translate(-50%, -50%) scale(1.5);
+/* 雷达图摘要 */
+.radar-summary {
+  text-align: center;
+  margin: 2rem 0 1rem; /* 增加上边距，远离雷达图 */
+  position: relative;
+  z-index: 3;
+  background-color: var(--bg-primary);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
+
+
+/* 风险点提示框 */
 .risk-point-tooltip {
   position: absolute;
-  top: -30px;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--text-primary);
-  color: white;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   padding: 0.3rem 0.6rem;
   border-radius: var(--radius-sm);
   font-size: 0.7rem;
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
   z-index: 10;
+  margin-bottom: 0.5rem;
 }
 
-.risk-point:hover .risk-point-tooltip {
+.radar-data-point:hover .risk-point-tooltip {
   opacity: 1;
   visibility: visible;
+  transform: translateX(-50%) translateY(-5px);
 }
 
 .radar-summary {
   text-align: center;
+  margin: 1rem 0;
 }
 
 .radar-summary h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  color: var(--warning-color);
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.radar-summary p {
+  margin: 0.3rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
 .risk-stats {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin: 1.5rem 0;
+  gap: 1.5rem;
+  margin: 1rem 0;
 }
 
 .stat-item {
@@ -469,7 +685,7 @@ const getRiskLevelColor = (level) => {
 }
 
 .stat-number {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--primary-color);
 }
@@ -477,6 +693,73 @@ const getRiskLevelColor = (level) => {
 .stat-label {
   font-size: 0.8rem;
   color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+/* 风险应对建议面板 */
+.risk-recommendation-panel {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary-color);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recommendation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.recommendation-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.close-btn:hover {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.recommendation-content p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.recommendation h4 {
+  margin: 0.8rem 0 0.5rem 0;
+  font-size: 0.95rem;
+  color: var(--primary-color);
 }
 
 /* 风险提示列表 */
@@ -517,8 +800,8 @@ const getRiskLevelColor = (level) => {
   box-shadow: var(--shadow-sm);
   cursor: pointer;
   transition: all 0.3s;
-  border-left: 4px solid var(--warning-color);
   border: 1px solid var(--border-color);
+  border-left: 4px solid var(--warning-color); /* 将border-left放在border之后，确保不被覆盖 */
 }
 
 .risk-item:hover {

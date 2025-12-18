@@ -146,8 +146,31 @@ button.error {
 h1 {
   font-size: 1.8rem;
   font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
+  color: var(--primary-color); /* 蓝色文字 */
+  margin: 0;
+}
+
+/* 页面头部样式 */
+.page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff; /* 白色背景 */
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  z-index: 1000; /* 确保在其他内容之上 */
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  transform: none;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px; /* 固定高度，确保所有header尺寸一致 */
 }
 
 h2 {

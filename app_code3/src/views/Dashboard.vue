@@ -7,33 +7,14 @@ const router = useRouter()
 
 
 
-// 成就+1动画
-const showAchievement = ref(false)
-const achievementCount = ref(0)
-
 // 跳转到对应页面
 const navigateTo = (path) => {
   router.push(path)
-  
-  // 触发成就+1动画
-  showAchievement.value = true
-  achievementCount.value++
-  setTimeout(() => {
-    showAchievement.value = false
-  }, 1500)
 }
 </script>
 
 <template>
   <div class="dashboard">
-    <!-- 成就+1动画 -->
-    <div class="achievement-animation" v-if="showAchievement">
-      <div class="achievement-content">
-        <span class="achievement-icon">🏆</span>
-        <span class="achievement-text">成就+{{ achievementCount }}</span>
-      </div>
-    </div>
-    
     <!-- 页面标题 -->
     <header class="page-header">
       <h1>VenturePilot</h1>
@@ -141,13 +122,6 @@ const navigateTo = (path) => {
 }
 
 /* 页面标题 */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
 .page-header h1 {
   margin: 0;
   font-size: 1.5rem;
@@ -335,59 +309,6 @@ const navigateTo = (path) => {
 .arrow-icon {
   font-size: 1.5rem;
   color: var(--text-tertiary);
-}
-
-/* 成就+1动画 */
-.achievement-animation {
-  position: fixed;
-  top: 20%;
-  right: 1rem;
-  z-index: 1000;
-  animation: slideIn 0.3s ease-out;
-}
-
-.achievement-content {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, var(--primary-color), var(--success-color));
-  color: white;
-  padding: 1rem 1.5rem;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  animation: bounce 0.6s ease-in-out;
-}
-
-.achievement-icon {
-  font-size: 1.5rem;
-}
-
-.achievement-text {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
 }
 
 /* 快捷行动区 */

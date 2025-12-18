@@ -184,10 +184,6 @@ const contactResource = () => {
 }
 
 /* 页面标题 */
-.page-header {
-  margin-bottom: 1.5rem;
-}
-
 .page-header h1 {
   margin: 0;
   font-size: 1.5rem;

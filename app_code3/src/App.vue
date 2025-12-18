@@ -27,12 +27,15 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
+  padding: 0;
+  margin: 0;
 }
 
 .main-content {
   flex: 1;
-  padding: 1rem;
+  padding: var(--spacing-md);
+  padding-top: 100px; /* 为顶部固定header留出空间 */
   padding-bottom: 60px; /* 为底部导航留出空间 */
 }
 

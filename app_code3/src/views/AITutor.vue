@@ -283,14 +283,6 @@ onMounted(() => {
 }
 
 /* 页面标题 */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-top: 1rem;
-}
-
 .page-header h1 {
   margin: 0;
   font-size: 1.5rem;
@@ -591,16 +583,6 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 480px) {
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .page-header button {
-    width: 100%;
-  }
-  
   .quick-actions {
     grid-template-columns: 1fr;
   }

@@ -352,10 +352,14 @@ const closeRecommendation = () => {
     <!-- 页面标题 -->
     <header class="page-header">
       <h1>VenturePilot</h1>
+    </header>
+    
+    <!-- 监控设置按钮 -->
+    <div class="settings-button-container">
       <button class="secondary" @click="showMetricSettings = !showMetricSettings">
         ⚙️ {{ showMetricSettings ? '关闭设置' : '监控设置' }}
       </button>
-    </header>
+    </div>
     
     <!-- 监控指标设置 -->
     <div v-if="showMetricSettings" class="card fade-in">
@@ -518,14 +522,16 @@ const closeRecommendation = () => {
   padding: 0 1rem;
 }
 
-/* 页面标题 */
-.page-header {
+/* 监控设置按钮容器样式 */
+.settings-button-container {
+  margin: 1rem auto;
+  max-width: 640px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+  justify-content: flex-end;
+  padding: 0 1rem;
 }
 
+/* 页面标题 */
 .page-header h1 {
   margin: 0;
   font-size: 1.5rem;
@@ -1000,16 +1006,6 @@ const closeRecommendation = () => {
 
 /* 响应式设计 */
 @media (max-width: 480px) {
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .page-header button {
-    width: 100%;
-  }
-  
   .metrics-grid {
     grid-template-columns: 1fr;
   }

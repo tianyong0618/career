@@ -70,11 +70,11 @@ const navigateTo = (path) => {
 
 <style scoped>
 .dashboard {
-  max-width: 1400px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
   align-items: start;
 }
@@ -94,14 +94,17 @@ const navigateTo = (path) => {
 .page-header h1 {
   margin: 0;
   font-size: 2rem;
+  text-align: center;
 }
 
 /* 创业身份卡 */
 .profile-section {
   display: flex;
+  flex-direction: column;
   gap: 0.8rem;
-  align-items: flex-start;
+  align-items: center;
   padding: 0.5rem 0;
+  text-align: center;
 }
 
 .avatar {
@@ -132,13 +135,19 @@ const navigateTo = (path) => {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
+  justify-content: center;
+}
+
+.milestone {
+  text-align: center;
 }
 
 .milestone ul {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
   text-align: left;
+  max-width: 300px;
 }
 
 .milestone li {
@@ -306,13 +315,13 @@ const navigateTo = (path) => {
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .dashboard {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
 @media (min-width: 1025px) {
   .dashboard {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { risks, monitoringMetrics, riskRadarData } from '../data/mockData.js'
+import { monitoringMetrics, riskRadarData } from '../data/mockData.js'
 
 // 监控指标设置
 const selectedMetrics = ref(monitoringMetrics.slice(0, 5))
@@ -139,19 +139,7 @@ const getRiskLevelClass = (level) => {
   }
 }
 
-// 获取风险等级颜色
-const getRiskLevelColor = (level) => {
-  switch (level) {
-    case '高':
-      return '#F5222D'
-    case '中等':
-      return '#FAAD14'
-    case '低':
-      return '#52C41A'
-    default:
-      return '#8C8C8C'
-  }
-}
+
 
 // 导入Chart.js库
 import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
@@ -275,7 +263,7 @@ const initRadarChart = () => {
           hoverBackgroundColor: '#fff'
         }
       },
-      onClick: (event, elements) => {
+      onClick: (_, elements) => {
         if (elements.length > 0) {
           const index = elements[0].index
           toggleRecommendation(dynamicRiskData.value[index])
@@ -283,14 +271,6 @@ const initRadarChart = () => {
       }
     }
   })
-}
-
-// 获取维度的中间角度
-const getDimensionMiddleAngle = (dimensionIndex, totalDimensions) => {
-  // 计算每个维度的角度范围
-  const angleRange = 360 / totalDimensions
-  // 计算中间角度（加上180度是为了使第一个维度在右侧，符合雷达图的习惯）
-  return dimensionIndex * angleRange + angleRange / 2 + 180
 }
 
 // 在组件挂载时初始化图表和监听窗口大小变化
@@ -316,21 +296,7 @@ watch(dynamicRiskData, () => {
 }, { deep: true })
 
 // 删除重复的onMounted钩子
-// 计算风险点位置（在对应指标的扇形区域内）
-const getRiskPointPosition = (value, dimensionIndex, totalDimensions) => {
-  // 将0-100的value转换为0-1的比例
-  const ratio = value / 100
-  
-  // 使用区域的中间角度来计算位置，确保风险点位于扇形区域内
-  const angle = getDimensionMiddleAngle(dimensionIndex, totalDimensions)
-  
-  // 计算在雷达图上的位置（相对于中心点）
-  const radians = (angle * Math.PI) / 180
-  const top = (50 - 50 * ratio * Math.sin(radians)).toFixed(2)
-  const left = (50 + 50 * ratio * Math.cos(radians)).toFixed(2)
-  
-  return { top: `${top}%`, left: `${left}%` }
-}
+
 
 // 展开/折叠应对建议
 const toggleRecommendation = (dimension) => {
@@ -517,18 +483,25 @@ const closeRecommendation = () => {
 
 <style scoped>
 .risk-alert {
-  max-width: 640px;
+  max-width: 420px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 80px 1rem 1rem;
 }
 
 /* 监控设置按钮容器样式 */
 .settings-button-container {
-  margin: 1rem auto;
-  max-width: 640px;
+  margin: 0 auto 1rem;
+  max-width: 420px;
   display: flex;
   justify-content: flex-end;
   padding: 0 1rem;
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 /* 页面标题 */
@@ -681,11 +654,17 @@ const closeRecommendation = () => {
 .radar-summary {
   text-align: center;
   margin: 1rem 0;
+  background-color: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
 }
 
 .radar-summary h3 {
   margin: 0.5rem 0;
   font-size: 1.1rem;
+  color: var(--text-primary);
 }
 
 .radar-summary p {

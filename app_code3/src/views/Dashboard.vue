@@ -116,9 +116,9 @@ const navigateTo = (path) => {
 
 <style scoped>
 .dashboard {
-  max-width: 640px;
+  max-width: 420px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 80px 1rem 1rem;
 }
 
 /* 页面标题 */

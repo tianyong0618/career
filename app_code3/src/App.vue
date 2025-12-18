@@ -29,22 +29,27 @@
   min-height: 100vh;
   background-color: var(--bg-secondary);
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
+  max-width: 420px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .main-content {
   flex: 1;
-  padding: var(--spacing-md);
-  padding-top: 100px; /* 为顶部固定header留出空间 */
+  padding: 0;
   padding-bottom: 60px; /* 为底部导航留出空间 */
+  box-sizing: border-box;
 }
 
 /* 底部导航栏 */
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 420px;
+  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -52,6 +57,7 @@
   background-color: white;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 .nav-item {

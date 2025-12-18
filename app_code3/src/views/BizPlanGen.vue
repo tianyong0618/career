@@ -127,9 +127,9 @@ const industryOptions = ['餐饮', '电商', '科技', '教育', '医疗', '金�
 
 <style scoped>
 .biz-plan-gen {
-  max-width: 640px;
+  max-width: 420px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 80px 1rem 1rem;
 }
 
 .content-container {

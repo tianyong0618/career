@@ -154,18 +154,14 @@ h1 {
 .page-header {
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #ffffff; /* 白色背景 */
   padding: 1rem;
   box-shadow: var(--shadow-sm);
   z-index: 1000; /* 确保在其他内容之上 */
   width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
-  left: 0;
-  right: 0;
-  transform: none;
+  max-width: 420px;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;

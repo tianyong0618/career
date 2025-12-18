@@ -41,7 +41,7 @@ const props = defineProps({
 <style scoped>
 .startup-card {
   background-color: var(--bg-primary);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: 24px;
   margin-bottom: 24px;
@@ -69,7 +69,7 @@ const props = defineProps({
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--primary-blue);
+  border: 3px solid var(--primary-color);
   box-shadow: var(--shadow-sm);
 }
 
@@ -94,7 +94,7 @@ const props = defineProps({
   display: inline-block;
   padding: 6px 12px;
   background-color: rgba(24, 144, 255, 0.1);
-  color: var(--primary-blue);
+  color: var(--primary-color);
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;

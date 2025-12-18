@@ -3,10 +3,10 @@ import { ref, computed } from 'vue';
 import { resources, resourceTypes } from '../data/mockData';
 
 // 需求类型
-const需求Type = ref('mentors'); // 默认选择导师
+const resourceType = ref('mentors'); // 默认选择导师
 
 // 需求类型选项
-const需求TypeOptions = [
+const resourceTypeOptions = [
   { value: 'partners', label: '合伙人', icon: '🤝' },
   { value: 'mentors', label: '导师', icon: '👨‍🏫' },
   { value: 'suppliers', label: '供应商', icon: '🏭' },
@@ -16,7 +16,7 @@ const需求TypeOptions = [
 
 // 根据选择的需求类型过滤资源
 const filteredResources = computed(() => {
-  return resources[需求Type.value] || [];
+  return resources[resourceType.value] || [];
 });
 
 // 联系资源
@@ -29,33 +29,31 @@ const contactResource = (resourceId) => {
 </script>
 
 <template>
-  <div class="resource-hub-page">
+  <div class="resource-hub">
     <h1 class="page-title">资源撮合Marketplace</h1>
     
     <div class="content-container">
       <!-- 需求类型选择 -->
-      <div class="selection-section">
-        <div class="selection-card">
-          <h2 class="section-title">Step 1：选择需求类型</h2>
-          
-          <div class="需求-type-grid">
-            <button 
-              v-for="type in 需求TypeOptions" 
-              :key="type.value"
-              :class="['需求-type-btn', { active: 需求Type === type.value }]"
-              @click="需求Type = type.value"
-            >
-              <span class="type-icon">{{ type.icon }}</span>
-              <span class="type-label">{{ type.label }}</span>
-            </button>
-          </div>
+      <div class="card">
+        <h3 class="section-title">Step 1：选择需求类型</h3>
+        
+        <div class="resource-type-grid">
+          <button 
+            v-for="type in resourceTypeOptions" 
+            :key="type.value"
+            :class="['resource-type-btn', { active: resourceType === type.value }]"
+            @click="resourceType = type.value"
+          >
+            <span class="type-icon">{{ type.icon }}</span>
+            <span class="type-label">{{ type.label }}</span>
+          </button>
         </div>
       </div>
       
       <!-- 资源匹配结果 -->
-      <div class="results-section">
+      <div class="card">
         <div class="results-header">
-          <h2 class="section-title">Step 2：匹配资源列表</h2>
+          <h3 class="section-title">Step 2：匹配资源列表</h3>
           <div class="results-stats">
             <span class="stats-text">共 {{ filteredResources.length }} 个匹配资源</span>
           </div>
@@ -68,13 +66,24 @@ const contactResource = (resourceId) => {
             class="resource-card"
           >
             <div class="resource-header">
+              <!-- 新增头像 -->
+              <div class="resource-avatar">
+                <img :src="resource.avatar" :alt="resource.name" class="avatar-img" />
+              </div>
+              
               <div class="resource-info">
                 <h3 class="resource-name">{{ resource.name }}</h3>
-                <div class="resource-role">{{ resource.expertise || resource.focus }}</div>
+                <!-- 职位信息 -->
+                <div class="resource-role">{{ resource.title || resource.skill || resource.focus }}</div>
+                <!-- 所在地信息 -->
+                <div class="resource-location" v-if="resource.location">
+                  <span class="location-icon">📍</span>
+                  <span class="location-text">{{ resource.location }}</span>
+                </div>
               </div>
               <div class="resource-score">
                 <span class="score-label">匹配度</span>
-                <span class="score-value">{{ resource.matchScore }}%</span>
+                <span class="score-value">{{ resource.matchScore || '85' }}%</span>
               </div>
             </div>
             
@@ -84,6 +93,40 @@ const contactResource = (resourceId) => {
                   <span class="detail-label">经验：</span>
                   <span class="detail-value">{{ resource.experience || resource.investmentRange }}</span>
                 </div>
+                
+                <!-- 根据资源类型显示不同的额外信息 -->
+                <!-- 导师特有信息 -->
+                <div class="detail-item" v-if="resource.rating">
+                  <span class="detail-label">评分：</span>
+                  <span class="detail-value">{{ resource.rating }}⭐</span>
+                </div>
+                
+                <!-- 投资人特有信息 -->
+                <div class="detail-item" v-if="resource.focus">
+                  <span class="detail-label">专注领域：</span>
+                  <span class="detail-value">{{ resource.focus }}</span>
+                </div>
+                
+                <div class="detail-item" v-if="resource.investmentStage">
+                  <span class="detail-label">投资阶段：</span>
+                  <span class="detail-value">{{ resource.investmentStage }}</span>
+                </div>
+                
+                <div class="detail-item" v-if="resource.investmentAmount">
+                  <span class="detail-label">投资金额：</span>
+                  <span class="detail-value">{{ resource.investmentAmount }}</span>
+                </div>
+              </div>
+              
+              <!-- 标签区域 -->
+              <div class="resource-tags" v-if="resource.tags && resource.tags.length > 0">
+                <span 
+                  v-for="(tag, index) in resource.tags" 
+                  :key="index" 
+                  class="tag"
+                >
+                  {{ tag }}
+                </span>
               </div>
             </div>
             
@@ -111,176 +154,227 @@ const contactResource = (resourceId) => {
 </template>
 
 <style scoped>
-.resource-hub-page {
+.resource-hub {
   max-width: 1400px;
   margin: 0 auto;
+  padding: 2rem;
 }
 
 .page-title {
-  font-size: 28px;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 24px;
+  margin: 0 0 1.5rem;
 }
 
 .content-container {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 1.5rem;
 }
 
-.selection-card,
-.resource-card {
+/* 卡片样式 */
+.card {
   background-color: var(--bg-primary);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
   box-shadow: var(--shadow-sm);
-  padding: 24px;
   transition: var(--transition);
 }
 
-.selection-card:hover,
-.resource-card:hover {
+.card:hover {
   box-shadow: var(--shadow-md);
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 16px;
+  margin: 0 0 1rem;
 }
 
-.需求-type-grid {
+/* 需求类型选择 */
+.resource-type-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
+  gap: 1rem;
 }
 
-.需求-type-btn {
+.resource-type-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 20px;
+  gap: 0.5rem;
+  padding: 1.25rem;
   background-color: var(--bg-secondary);
   border: 2px solid var(--border-color);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-primary);
 }
 
-.需求-type-btn:hover {
+.resource-type-btn:hover {
   background-color: var(--bg-tertiary);
-  border-color: var(--primary-blue);
+  border-color: var(--primary-color);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
-.需求-type-btn.active {
+.resource-type-btn.active {
   background-color: rgba(24, 144, 255, 0.1);
-  border-color: var(--primary-blue);
-  color: var(--primary-blue);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .type-icon {
-  font-size: 24px;
+  font-size: 1.5rem;
 }
 
 .type-label {
-  margin-top: 4px;
+  margin-top: 0.25rem;
 }
 
+/* 结果头部 */
 .results-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .results-stats {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
 }
 
+/* 资源列表 */
 .resources-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+  gap: 1.25rem;
 }
 
 .resource-card {
   display: flex;
   flex-direction: column;
-  border-left: 4px solid var(--primary-blue);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--primary-color);
+  transition: var(--transition);
+}
+
+.resource-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .resource-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 16px;
-  gap: 16px;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+/* 头像样式 */
+.resource-avatar {
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .resource-info {
   flex: 1;
+  min-width: 0;
 }
 
 .resource-name {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 4px;
+  margin: 0 0 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .resource-role {
-  font-size: 14px;
-  color: var(--primary-blue);
+  font-size: 0.875rem;
+  color: var(--primary-color);
   font-weight: 500;
+  margin: 0 0 0.25rem;
+}
+
+/* 所在地样式 */
+.resource-location {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.location-icon {
+  font-size: 0.875rem;
+}
+
+.location-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .resource-score {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 0.25rem;
   background-color: rgba(82, 196, 26, 0.1);
-  padding: 12px;
-  border-radius: var(--border-radius);
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
   min-width: 80px;
 }
 
 .score-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-secondary);
 }
 
 .score-value {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
-  color: var(--success-green);
+  color: var(--success-color);
 }
 
 .resource-body {
   flex: 1;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .resource-details {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .detail-item {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 14px;
+  gap: 0.25rem;
+  font-size: 0.875rem;
 }
 
 .detail-label {
@@ -297,21 +391,41 @@ const contactResource = (resourceId) => {
   justify-content: flex-end;
 }
 
+/* 按钮样式 */
 .btn {
-  padding: 12px 20px;
+  padding: 0.75rem 1.25rem;
   border: none;
-  border-radius: var(--border-radius);
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
+}
+
+/* 标签样式 */
+.resource-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: rgba(24, 144, 255, 0.1);
+  color: var(--primary-color);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .btn-primary {
-  background-color: var(--primary-blue);
+  background-color: var(--primary-color);
   color: white;
 }
 
@@ -320,49 +434,53 @@ const contactResource = (resourceId) => {
   box-shadow: var(--shadow-sm);
 }
 
+/* 空状态 */
 .empty-state {
   grid-column: 1 / -1;
   text-align: center;
-  padding: 60px 20px;
+  padding: 3.75rem 1.25rem;
   background-color: var(--bg-secondary);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-md);
 }
 
 .empty-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
+  font-size: 3rem;
+  margin-bottom: 1rem;
   color: var(--text-tertiary);
 }
 
 .empty-title {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 8px;
+  margin: 0 0 0.5rem;
 }
 
 .empty-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-secondary);
   margin: 0;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .page-title {
-    font-size: 24px;
+  .resource-hub {
+    padding: 1rem;
   }
   
-  .selection-card,
-  .resource-card {
-    padding: 16px;
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .card {
+    padding: 1rem;
   }
   
   .section-title {
-    font-size: 16px;
+    font-size: 1rem;
   }
   
-  .需求类型-grid {
+  .resource-type-grid {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
   
@@ -377,6 +495,12 @@ const contactResource = (resourceId) => {
   
   .resource-score {
     align-self: flex-end;
+  }
+}
+
+@media (max-width: 1024px) {
+  .resources-list {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }
 </style>

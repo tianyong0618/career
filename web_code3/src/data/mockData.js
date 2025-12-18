@@ -99,7 +99,8 @@ export const resources = {
       avatar: 'https://picsum.photos/id/2/200/200',
       experience: '10年餐饮行业经验，曾创办3家成功餐厅',
       skill: '运营管理',
-      location: '北京市'
+      location: '北京市',
+      tags: ['餐饮运营', '团队管理', '成本控制']
     },
     {
       id: 2,
@@ -107,7 +108,8 @@ export const resources = {
       avatar: 'https://picsum.photos/id/3/200/200',
       experience: '5年餐饮供应链管理经验',
       skill: '供应链管理',
-      location: '上海市'
+      location: '上海市',
+      tags: ['食材采购', '供应链优化', '成本核算']
     }
   ],
   mentors: [
@@ -117,7 +119,9 @@ export const resources = {
       avatar: 'https://picsum.photos/id/4/200/200',
       title: '餐饮行业专家',
       experience: '20年餐饮行业经验，曾任知名连锁餐饮品牌CEO',
-      rating: 4.8
+      rating: 4.8,
+      location: '北京市',
+      tags: ['连锁经营', '品牌战略', '市场营销']
     },
     {
       id: 2,
@@ -125,7 +129,9 @@ export const resources = {
       avatar: 'https://picsum.photos/id/5/200/200',
       title: '创业导师',
       experience: '15年创业指导经验，辅导过50+成功项目',
-      rating: 4.9
+      rating: 4.9,
+      location: '广州市',
+      tags: ['创业规划', '融资指导', '团队建设']
     }
   ],
   investors: [
@@ -133,17 +139,23 @@ export const resources = {
       id: 1,
       name: '投资机构A',
       avatar: 'https://picsum.photos/id/6/200/200',
+      title: '风险投资机构',
       focus: '餐饮、零售',
       investmentStage: '种子轮、天使轮',
-      investmentAmount: '100万-500万'
+      investmentAmount: '100万-500万',
+      location: '北京市',
+      tags: ['餐饮投资', '消费升级', '种子轮']
     },
     {
       id: 2,
       name: '投资人B',
       avatar: 'https://picsum.photos/id/7/200/200',
+      title: '天使投资人',
       focus: '消费升级',
       investmentStage: '天使轮、A轮',
-      investmentAmount: '500万-2000万'
+      investmentAmount: '500万-2000万',
+      location: '上海市',
+      tags: ['消费赛道', 'A轮融资', '品牌孵化']
     }
   ]
 };

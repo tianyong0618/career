@@ -302,17 +302,471 @@ const cancelSectionEdit = () => {
 
 // 导出BP
 const exportBP = (format) => {
-  alert(`商业计划书已导出为${format}格式！（模拟功能）`)
+  if (!generatedBP.value) return
+  
+  const bp = generatedBP.value
+  const title = bp.title || '商业计划书'
+  
+  // 简单的Markdown转HTML
+  const markdownToHtml = (markdown) => {
+    if (!markdown) return ''
+    
+    let html = markdown
+    
+    // 处理标题
+    html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>')
+    html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>')
+    html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>')
+    
+    // 处理段落
+    html = html.replace(/^(?!<h|<ul|<ol|<li|<table|<pre|<p)(.*$)/gm, '<p>$1</p>')
+    
+    // 处理无序列表
+    html = html.replace(/^- (.*$)/gm, '<li>$1</li>')
+    html = html.replace(/(<li>.*<\/li>)+/gs, '<ul>$&</ul>')
+    
+    // 处理有序列表
+    html = html.replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+    html = html.replace(/(<li>.*<\/li>)+/gs, '<ol>$&</ol>')
+    
+    // 处理代码块（保留pre标签）
+    html = html.replace(/```([\s\S]*?)```/g, '<pre>$1</pre>')
+    
+    // 处理表格（简单实现）
+    const tableRegex = /\|(.*)\|\n\|(.*)\|\n((?:\|(.*)\|\n)+)/g
+    html = html.replace(tableRegex, (match, headers, separator, rows) => {
+      // 解析表头
+      const headerCells = headers.split('|').map(cell => cell.trim()).filter(Boolean)
+      // 解析行
+      const rowLines = rows.split('\n').filter(line => line.trim())
+      const tableRows = rowLines.map(row => {
+        const cells = row.split('|').map(cell => cell.trim()).filter(Boolean)
+        return `<tr>${cells.map(cell => `<td>${cell}</td>`).join('')}</tr>`
+      })
+      
+      return `
+        <table>
+          <thead>
+            <tr>${headerCells.map(cell => `<th>${cell}</th>`).join('')}</tr>
+          </thead>
+          <tbody>
+            ${tableRows.join('')}
+          </tbody>
+        </table>
+      `
+    })
+    
+    // 移除多余空行
+    html = html.replace(/\n+/g, '\n')
+    
+    return html
+  }
+  
+  // 生成HTML内容
+  const generateHTMLContent = () => {
+    // 创建一个简单的HTML结构，确保内容能正确显示
+    let htmlContent = `
+      <!DOCTYPE html>
+      <html lang="zh-CN">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${title}</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          
+          body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding: 20px;
+            background-color: white;
+          }
+          
+          h1 {
+            font-size: 24px;
+            color: #1890FF;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1890FF;
+          }
+          
+          h2 {
+            font-size: 20px;
+            color: #1890FF;
+            margin: 20px 0 10px 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+          }
+          
+          h3 {
+            font-size: 16px;
+            color: #333;
+            margin: 15px 0 8px 0;
+          }
+          
+          p {
+            margin-bottom: 10px;
+          }
+          
+          ul, ol {
+            margin-left: 20px;
+            margin-bottom: 10px;
+          }
+          
+          li {
+            margin-bottom: 5px;
+          }
+          
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+          }
+          
+          th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+          }
+          
+          th {
+            background-color: #f0f0f0;
+          }
+          
+          .meta-info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+          }
+          
+          .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fafafa;
+            border-radius: 5px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>${title}</h1>
+        <div class="meta-info">
+          行业：${bp.industry || '未指定'} | 创建日期：${bp.createdDate}
+        </div>
+    `
+    
+    // 添加各个章节内容
+    if (Array.isArray(bp.sections) && bp.sections.length > 0) {
+      bp.sections.forEach(section => {
+        // 简单处理换行，确保内容格式基本正确
+        const sectionContent = section.content || ''
+        const formattedContent = sectionContent
+          .replace(/\n\n/g, '</p><p>')  // 段落处理
+          .replace(/^# (.*)$/gm, '<h2>$1</h2>')  // 一级标题
+          .replace(/^## (.*)$/gm, '<h3>$1</h3>')  // 二级标题
+          .replace(/^- (.*)$/gm, '<li>$1</li>')  // 列表项
+          .replace(/(<li>.*<\/li>)+/gs, '<ul>$&</ul>')  // 无序列表
+          .replace(/^\d+\. (.*)$/gm, '<li>$1</li>')  // 有序列表项
+          .replace(/(<li>.*<\/li>)+/gs, '<ol>$&</ol>')  // 有序列表
+        
+        htmlContent += `
+          <div class="section">
+            <h2>${section.title || '未命名章节'}</h2>
+            <div class="content">
+              <p>${formattedContent}</p>
+            </div>
+          </div>
+        `
+      })
+    } else {
+      // 如果没有章节，添加默认内容
+      htmlContent += `
+        <div class="section">
+          <h2>商业计划书内容</h2>
+          <div class="content">
+            <p>商业计划书内容已生成，请查看详细信息。</p>
+          </div>
+        </div>
+      `
+    }
+    
+    htmlContent += `
+      </body>
+      </html>
+    `
+    
+    return htmlContent
+  }
+  
+  // 下载文件
+  const downloadFile = (content, filename, mimeType) => {
+    const blob = new Blob([content], { type: mimeType })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+  
+  // 根据格式导出
+  switch (format) {
+    case 'HTML':
+      {
+        const htmlContent = generateHTMLContent()
+        downloadFile(htmlContent, `${title}.html`, 'text/html')
+      }
+      break
+    
+    case 'Word':
+      {
+        const htmlContent = generateHTMLContent()
+        downloadFile(htmlContent, `${title}.doc`, 'application/msword')
+      }
+      break
+    
+    default:
+      console.error('不支持的导出格式:', format)
+  }
 }
 
 // 打印为PDF
 const printToPDF = () => {
-  alert('商业计划书已导出为PDF格式！（模拟功能）')
+  if (!generatedBP.value) return
+  
+  const bp = generatedBP.value
+  const title = bp.title || '商业计划书'
+  
+  // 直接在当前页面创建一个临时div来渲染内容
+  const printContainer = document.createElement('div')
+  printContainer.style.position = 'fixed'
+  printContainer.style.top = '0'
+  printContainer.style.left = '0'
+  printContainer.style.width = '100%'
+  printContainer.style.height = '100%'
+  printContainer.style.backgroundColor = 'white'
+  printContainer.style.padding = '20px'
+  printContainer.style.zIndex = '9999'
+  printContainer.style.overflow = 'auto'
+  
+  // 添加打印专用样式
+  const printStyle = document.createElement('style')
+  printStyle.textContent = `
+    @media print {
+      /* 打印样式 */
+      body * {
+        visibility: hidden;
+      }
+      
+      #print-container, #print-container * {
+        visibility: visible;
+      }
+      
+      #print-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+      }
+      
+      h1 {
+        font-size: 24px;
+        color: #1890FF;
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #1890FF;
+      }
+      
+      h2 {
+        font-size: 20px;
+        color: #1890FF;
+        margin: 20px 0 10px 0;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+      }
+      
+      h3 {
+        font-size: 16px;
+        color: #333;
+        margin: 15px 0 8px 0;
+      }
+      
+      p {
+        margin-bottom: 10px;
+      }
+      
+      ul, ol {
+        margin-left: 20px;
+        margin-bottom: 10px;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+      }
+      
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      
+      th {
+        background-color: #f0f0f0;
+      }
+      
+      .meta-info {
+        text-align: center;
+        color: #666;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+      
+      .section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #fafafa;
+        border-radius: 5px;
+      }
+    }
+    
+    /* 屏幕样式 */
+    @media screen {
+      .close-btn {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background-color: #1890FF;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        z-index: 10000;
+      }
+      
+      .print-btn {
+        position: fixed;
+        top: 10px;
+        right: 100px;
+        background-color: #52C41A;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        z-index: 10000;
+      }
+    }
+  `
+  document.head.appendChild(printStyle)
+  
+  // 创建关闭按钮
+  const closeBtn = document.createElement('button')
+  closeBtn.className = 'close-btn'
+  closeBtn.textContent = '关闭预览'
+  closeBtn.onclick = () => {
+    document.body.removeChild(printContainer)
+    document.head.removeChild(printStyle)
+  }
+  
+  // 创建打印按钮
+  const printBtn = document.createElement('button')
+  printBtn.className = 'print-btn'
+  printBtn.textContent = '打印为PDF'
+  printBtn.onclick = () => {
+    window.print()
+  }
+  
+  // 创建打印内容
+  let printContent = `
+    <div id="print-container">
+      <h1>${title}</h1>
+      <div class="meta-info">
+        行业：${bp.industry || '未指定'} | 创建日期：${bp.createdDate}
+      </div>
+  `
+  
+  // 添加章节内容
+  if (Array.isArray(bp.sections) && bp.sections.length > 0) {
+    bp.sections.forEach(section => {
+      printContent += `
+        <div class="section">
+          <h2>${section.title || '未命名章节'}</h2>
+          <div class="content">
+            ${section.content || '无内容'}
+          </div>
+        </div>
+      `
+    })
+  } else {
+    printContent += `
+      <div class="section">
+        <h2>商业计划书内容</h2>
+        <div class="content">
+          <p>商业计划书内容已生成，请查看详细信息。</p>
+        </div>
+      </div>
+    `
+  }
+  
+  printContent += '</div>'
+  
+  // 设置容器内容
+  printContainer.innerHTML = printContent
+  
+  // 添加按钮到容器
+  printContainer.appendChild(closeBtn)
+  printContainer.appendChild(printBtn)
+  
+  // 将容器添加到当前页面
+  document.body.appendChild(printContainer)
+  
+  // 自动调用打印功能
+  setTimeout(() => {
+    window.print()
+  }, 500)
 }
 
 // 分享BP
-const shareBP = (method) => {
-  alert(`商业计划书已通过${method}分享！（模拟功能）`)
+const shareBP = (type) => {
+  if (!generatedBP.value) return
+  
+  const bp = generatedBP.value
+  const title = bp.title || '商业计划书'
+  const industry = bp.industry || '未指定行业'
+  
+  switch (type) {
+    case 'email':
+      {
+        // 邮件分享，打开邮件客户端
+        const subject = encodeURIComponent(`商业计划书：${title}`)
+        const body = encodeURIComponent(`
+商业计划书详情：
+
+标题：${title}
+行业：${industry}
+创建日期：${bp.createdDate}
+
+请查看附件获取完整的商业计划书。
+        `)
+        window.location.href = `mailto:?subject=${subject}&body=${body}`
+      }
+      break
+    default:
+      console.error('不支持的分享类型:', type)
+  }
 }
 
 // 重新开始

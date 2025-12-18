@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { bpTemplates, industries } from '../data/mockData.js'
+
+const router = useRouter()
 
 // 步骤状态
 const currentStep = ref(1)
@@ -782,6 +785,11 @@ const restart = () => {
     targetMarket: ''
   }
 }
+
+// 跳转到首页
+const goToHome = () => {
+  router.push('/')
+}
 </script>
 
 <template>
@@ -1091,8 +1099,8 @@ const restart = () => {
           <button type="button" class="secondary" @click="prevStep">
             ← 返回编辑
           </button>
-          <button type="button" class="primary" @click="restart">
-            🔄 生成新的BP
+          <button type="button" class="primary" @click="goToHome">
+            完成
           </button>
         </div>
       </div>

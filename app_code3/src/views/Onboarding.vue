@@ -550,14 +550,12 @@ watch(companyInfo, (newInfo) => {
           
           <div class="auth-options">
             <div class="auth-card">
-              <div class="auth-icon">📱</div>
               <div class="auth-name">微信授权</div>
               <div class="auth-desc">使用微信账号授权</div>
               <button class="auth-btn wechat-btn">微信授权</button>
             </div>
             
             <div class="auth-card">
-              <div class="auth-icon">🐦</div>
               <div class="auth-name">微博授权</div>
               <div class="auth-desc">使用微博账号授权</div>
               <button class="auth-btn weibo-btn">微博授权</button>
@@ -580,7 +578,7 @@ watch(companyInfo, (newInfo) => {
 .onboarding {
   background-color: #f5f5f5;
   min-height: 100vh;
-  padding: 1rem;
+  padding: 80px 1rem 1rem;
 }
 
 .container {
@@ -1058,7 +1056,8 @@ textarea.form-control {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 2000;
+  padding-bottom: 70px;
 }
 
 .modal-content {
@@ -1201,24 +1200,21 @@ textarea.form-control {
 
 /* 社交媒体授权选项 */
 .auth-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
 }
 
 .auth-card {
   background-color: #fafafa;
   border: 1px solid #e8e8e8;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1rem;
   text-align: center;
-}
-
-.auth-icon {
-  font-size: 2.5rem;
   margin-bottom: 1rem;
 }
+
+
 
 .auth-name {
   font-size: 1.1rem;

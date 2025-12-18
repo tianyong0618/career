@@ -61,6 +61,9 @@
           </div>
         </div>
       </div>
+      
+
+      
       <div class="identity-stats">
         <div class="stat-item">
           <div class="stat-value">{{ careerTendency.data[0] }}%</div>
@@ -86,6 +89,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { userInfo, careerTendency, skillCloud, growthProgress } from '../assets/mock/data'
+import ProgressBar from './ProgressBar.vue'
 
 const user = userInfo
 const isEditing = ref(false)
@@ -341,6 +345,8 @@ const removeTag = (index) => {
   flex-wrap: wrap;
   gap: var(--spacing-xs);
 }
+
+
 
 .identity-stats {
   display: grid;

@@ -5,13 +5,11 @@
     </div>
     <div class="card-content">
       <div class="goal-section">
-        <h4 class="main-goal">{{ growthProgress.mainGoal }}</h4>
-        <div class="progress-bar-container">
-          <div class="progress-bar">
-            <div class="progress-fill" :style="{ width: growthProgress.progress + '%' }"></div>
-          </div>
-          <span class="progress-text">{{ growthProgress.progress }}%</span>
-        </div>
+        <ProgressBar 
+          :percentage="growthProgress.progress" 
+          :title="'目标进度'" 
+          :label="growthProgress.mainGoal" 
+        />
       </div>
       
       <div class="milestones-section">
@@ -58,6 +56,7 @@
 <script setup>
 import { growthProgress, quickActions } from '../assets/mock/data'
 import { useRouter } from 'vue-router'
+import ProgressBar from './ProgressBar.vue'
 
 const router = useRouter()
 // 处理快捷行动点击
@@ -65,12 +64,8 @@ const handleAction = (action) => {
   if (action.link.startsWith('/')) {
     router.push(action.link)
   } else if (action.text === '开始AI测评') {
-    // 开始AI测评，清除现有冷启动状态，重新开始冷启动流程
-    localStorage.removeItem('onboardingCompleted')
-    localStorage.removeItem('userProfile')
-    localStorage.removeItem('userIdentity')
-    // 传递来源参数，以便在onboarding页面显示返回按钮
-    router.push('/onboarding?from=profile')
+    // 直接进入AI测评页面
+    router.push('/ai-assessment')
   } else {
     // 处理其他类型的链接
     console.log('处理其他类型的链接:', action.link)
@@ -97,25 +92,23 @@ const handleAction = (action) => {
   margin-bottom: var(--spacing-lg);
 }
 
-.main-goal {
-  margin: 0 0 var(--spacing-md) 0;
-  font-size: var(--font-size-lg);
-  color: var(--text-primary);
-}
+
 
 .progress-bar-container {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
+  margin: var(--spacing-md) 0;
 }
 
 .progress-bar {
   flex: 1;
-  height: 12px;
-  background-color: var(--bg-secondary);
+  height: 16px;
+  background-color: #333333;
   border-radius: var(--radius-full, 9999px);
   overflow: hidden;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid #444444;
 }
 
 .progress-fill {
@@ -123,6 +116,7 @@ const handleAction = (action) => {
   background-color: var(--success-color);
   border-radius: var(--radius-full, 9999px);
   transition: width var(--transition-normal);
+  box-shadow: 0 0 8px rgba(82, 196, 26, 0.5);
 }
 
 .progress-text {

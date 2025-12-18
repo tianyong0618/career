@@ -1,7 +1,7 @@
 <template>
-  <div class="app-container" :data-theme="currentTheme">
+  <div class="app-container" data-theme="dark">
     <!-- 顶部导航栏 -->
-    <Header @theme-change="toggleTheme" :current-theme="currentTheme" v-if="showNavigation" />
+    <Header v-if="showNavigation" />
     
     <!-- 主要内容区域 -->
     <main class="main-content">
@@ -21,25 +21,8 @@ import BottomNav from './components/BottomNav.vue'
 
 const router = useRouter()
 
-// 主题状态管理
-const currentTheme = ref('light')
-
 // 控制导航显示
 const showNavigation = ref(true)
-
-// 主题列表
-const themes = [
-  { value: 'light', label: '浅色模式' },
-  { value: 'dark', label: '深色模式' }
-]
-
-// 切换主题
-const toggleTheme = () => {
-  const currentIndex = themes.findIndex(theme => theme.value === currentTheme.value)
-  const nextIndex = (currentIndex + 1) % themes.length
-  currentTheme.value = themes[nextIndex].value
-  localStorage.setItem('theme', currentTheme.value)
-}
 
 // 冷启动检查
 const checkOnboarding = () => {
@@ -58,7 +41,6 @@ const checkOnboarding = () => {
 // 从本地存储加载主题并检查冷启动
 onMounted(() => {
   // 始终使用深色主题，忽略localStorage中的设置
-  currentTheme.value = 'dark'
   localStorage.setItem('theme', 'dark')
   
   // 检查冷启动状态

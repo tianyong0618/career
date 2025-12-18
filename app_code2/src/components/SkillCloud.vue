@@ -88,14 +88,14 @@ const totalSkills = computed(() => {
 // 根据技能等级获取字体大小
 const getFontSize = (level) => {
   const sizeMap = {
-    '熟练': '1.5rem',
-    '掌握': '1.25rem',
-    '入门': '1rem',
-    '强': '1.5rem',
-    '中': '1.25rem',
-    '待验证': '1rem'
+    '熟练': '1.8rem',
+    '掌握': '1.5rem',
+    '入门': '1.2rem',
+    '强': '1.8rem',
+    '中': '1.5rem',
+    '待验证': '1.2rem'
   }
-  return sizeMap[level] || '1rem'
+  return sizeMap[level] || '1.2rem'
 }
 
 // 根据技能等级获取透明度
@@ -204,7 +204,7 @@ const closeDetail = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -213,6 +213,9 @@ const closeDetail = () => {
   box-shadow: var(--shadow-sm);
   animation: float 6s ease-in-out infinite, fadeInUp 1s ease-out;
   animation-delay: calc(var(--index) * 0.5s);
+  min-width: 80px;
+  text-align: center;
+  gap: var(--spacing-xs);
 }
 
 /* 入场动画 */
@@ -359,7 +362,7 @@ const closeDetail = () => {
   flex: 1;
 }
 
-/* 响应式设计 */
+/* 响应式设计 - 保持按钮大小协调 */
 @media (max-width: 768px) {
   .cloud-container {
     padding: var(--spacing-md);
@@ -367,36 +370,38 @@ const closeDetail = () => {
   }
   
   .skill-item {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
   }
   
+  /* 保持技能名称和等级的大小协调 */
   .skill-name {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
   
   .skill-level {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 }
 
-/* 小屏设备优化 */
+/* 小屏设备优化 - 确保按钮大小合适 */
 @media (max-width: 480px) {
   .cloud-container {
-    padding: var(--spacing-sm);
-    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
   }
   
   .skill-item {
-    padding: var(--spacing-xs);
-    border-radius: var(--radius-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-width: 70px;
   }
   
+  /* 保持技能名称和等级的大小协调 */
   .skill-name {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
   
   .skill-level {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
   }
   
   /* 调整卡片内边距 */

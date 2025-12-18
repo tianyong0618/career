@@ -7,17 +7,6 @@
         </div>
         
         <div class="header-actions">
-          <!-- 主题切换按钮 -->
-          <button 
-            class="action-btn" 
-            @click="handleThemeChange" 
-            :aria-label="getThemeLabel()"
-            title="切换主题"
-          >
-            <span v-if="currentTheme === 'light'">🌙</span>
-            <span v-else>☀️</span>
-          </button>
-          
           <!-- 通知按钮和面板 -->
           <div class="notification-container">
             <button 
@@ -107,21 +96,11 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router' 
 
 // 创建router实例
 const router = useRouter()
-
-// 定义props和emit
-const props = defineProps({
-  currentTheme: {
-    type: String,
-    default: 'light'
-  }
-})
-
-const emit = defineEmits(['theme-change'])
 
 // 通知和任务状态
 const showNotifications = ref(false)
@@ -140,23 +119,6 @@ const tasks = ref([
   { title: '学习Tableau可视化课程', due: '3天后截止', completed: false },
   { title: '更新职业倾向评估', due: '7天后截止', completed: true }
 ])
-
-// 处理主题切换
-const handleThemeChange = () => {
-  emit('theme-change')
-}
-
-// 获取主题标签
-const getThemeLabel = () => {
-  switch (props.currentTheme) {
-    case 'light':
-      return '浅色模式'
-    case 'dark':
-      return '深色模式'
-    default:
-      return '切换主题'
-  }
-}
 
 // 切换通知面板显示
 const toggleNotifications = () => {

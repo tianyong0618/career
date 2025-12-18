@@ -1,95 +1,151 @@
 <script setup>
-import { ref } from 'vue';
-import { mockData } from '../mock/data';
+import { ref } from 'vue'
+import { policies, industries, startupStages } from '../data/mockData.js'
 
-// 表单数据
-const formData = ref({
-  companyName: 'XX健康轻食',
-  region: 'XX区',
-  industry: '餐饮',
-  stage: '筹备阶段'
-});
+// 步骤状态
+const currentStep = ref(1)
+const maxSteps = 2
 
-// 匹配状态
-const isMatching = ref(false);
-const matchedPolicies = ref(mockData.policies); // 默认显示匹配的政策
+// 公司信息表单数据
+const companyInfo = ref({
+  name: '',
+  region: '',
+  industry: '',
+  stage: ''
+})
 
-// 匹配政策
+// 匹配的政策列表
+const matchedPolicies = ref([])
+
+// 选中的政策详情
+const selectedPolicy = ref(null)
+const showPolicyDetail = ref(false)
+
+// 模拟政策匹配
 const matchPolicies = () => {
-  isMatching.value = true;
-  // 模拟匹配过程
-  setTimeout(() => {
-    isMatching.value = false;
-    matchedPolicies.value = mockData.policies;
-  }, 1500);
-};
+  // 模拟API调用，根据公司信息匹配政策
+  matchedPolicies.value = policies
+  currentStep.value = 2
+}
 
-// 申请政策
-const applyPolicy = (policyId) => {
-  alert(`已为您准备好政策 "${mockData.policies.find(p => p.id === policyId)?.name}" 的申请材料！（模拟功能）`);
-};
+// 查看政策详情
+const viewPolicyDetail = (policy) => {
+  selectedPolicy.value = policy
+  showPolicyDetail.value = true
+}
 
-// 行业选项
-const industryOptions = ['餐饮', '电商', '科技', '教育', '医疗', '金融', '文旅'];
+// 关闭政策详情
+const closePolicyDetail = () => {
+  showPolicyDetail.value = false
+  selectedPolicy.value = null
+}
 
-// 阶段选项
-const stageOptions = ['筹备阶段', '初创阶段', '成长阶段', '扩张阶段'];
+// 模拟一键申请
+const applyPolicy = () => {
+  // 模拟申请功能
+  alert(`已提交${selectedPolicy.value.title}的申请！（模拟功能）`)
+  closePolicyDetail()
+}
+
+// 重置表单
+const resetForm = () => {
+  companyInfo.value = {
+    name: '',
+    region: '',
+    industry: '',
+    stage: ''
+  }
+  matchedPolicies.value = []
+  currentStep.value = 1
+}
+
+// 重新匹配政策（保持在第二步）
+const rematchPolicies = () => {
+  // 模拟重新匹配政策，生成新的匹配结果
+  // 这里可以添加一些随机因素，让每次匹配结果有所不同
+  const shuffledPolicies = [...policies].sort(() => Math.random() - 0.5)
+  matchedPolicies.value = shuffledPolicies.slice(0, Math.floor(Math.random() * policies.length) + 1)
+  // 保持在第二步
+  currentStep.value = 2
+}
+
+// 上一步
+const prevStep = () => {
+  if (currentStep.value > 1) {
+    currentStep.value--
+  }
+}
 </script>
 
 <template>
-  <div class="policy-match-page">
-    <h1 class="page-title">政策匹配引擎</h1>
+  <div class="policy-match">
+    <!-- 步骤指示器 -->
+    <div class="steps-indicator">
+      <div 
+        class="step-item" 
+        v-for="step in maxSteps" 
+        :key="step"
+        :class="{ 'active': step === currentStep, 'completed': step < currentStep }"
+      >
+        <div class="step-number">{{ step }}</div>
+        <div class="step-title">
+          {{ step === 1 ? '公司信息' : '政策匹配结果' }}
+        </div>
+      </div>
+    </div>
     
-    <div class="content-container">
-      <!-- 左侧：输入表单 -->
-      <div class="input-section">
-        <div class="form-card">
-          <h2 class="section-title">Step 1：输入公司信息</h2>
-          
-          <form class="policy-form">
+    <!-- 步骤内容 -->
+    <div class="step-content">
+      <!-- 步骤1：公司信息输入 -->
+      <div v-if="currentStep === 1" class="fade-in">
+        <div class="card">
+          <h2>第一步：输入公司信息</h2>
+          <form class="company-info-form">
             <div class="form-group">
-              <label for="companyName" class="form-label">公司名称</label>
+              <label for="companyName">公司名称</label>
               <input 
                 type="text" 
                 id="companyName" 
-                v-model="formData.companyName" 
-                class="form-input"
+                v-model="companyInfo.name"
+                class="form-control"
                 placeholder="请输入公司名称"
               />
             </div>
             
             <div class="form-group">
-              <label for="region" class="form-label">所在区域</label>
+              <label for="region">所在区域</label>
               <input 
                 type="text" 
                 id="region" 
-                v-model="formData.region" 
-                class="form-input"
-                placeholder="请输入所在区域"
+                v-model="companyInfo.region"
+                class="form-control"
+                placeholder="请输入所在区域，例如：北京市朝阳区"
               />
             </div>
             
             <div class="form-group">
-              <label for="industry" class="form-label">行业类型</label>
+              <label for="industry">行业类型</label>
               <select 
                 id="industry" 
-                v-model="formData.industry" 
-                class="form-select"
+                v-model="companyInfo.industry"
+                class="form-control"
               >
-                <option v-for="industry in industryOptions" :key="industry" :value="industry">
+                <option value="">请选择行业</option>
+                <option v-for="industry in industries" :key="industry" :value="industry">
                   {{ industry }}
                 </option>
               </select>
             </div>
             
             <div class="form-group">
-              <label for="stage" class="form-label">创业阶段</label>
+              <label for="stage">创业阶段</label>
               <select 
                 id="stage" 
-                v-model="formData.stage" 
-                class="form-select"
+                v-model="companyInfo.stage"
+                class="form-control"
               >
-                <option v-for="stage in stageOptions" :key="stage" :value="stage">
+                <option value="">请选择创业阶段</option>
+                <option v-for="stage in startupStages" :key="stage" :value="stage">
                   {{ stage }}
                 </option>
               </select>
@@ -98,87 +154,131 @@ const stageOptions = ['筹备阶段', '初创阶段', '成长阶段', '扩张阶
             <div class="form-actions">
               <button 
                 type="button" 
-                class="btn btn-primary" 
-                @click="matchPolicies" 
-                :disabled="isMatching"
+                class="primary" 
+                :disabled="!companyInfo.name || !companyInfo.region || !companyInfo.industry || !companyInfo.stage"
+                @click="matchPolicies"
               >
-                {{ isMatching ? '匹配中...' : '开始匹配政策' }}
+                开始匹配政策 →
               </button>
             </div>
           </form>
         </div>
       </div>
       
-      <!-- 右侧：政策匹配结果 -->
-      <div class="result-section">
-        <div class="result-header">
-          <h2 class="section-title">Step 2：政策匹配结果</h2>
-          <div class="result-stats">
-            <span class="stats-text">共找到 {{ matchedPolicies.length }} 项匹配政策</span>
-          </div>
-        </div>
-        
-        <!-- 匹配中状态 -->
-        <div v-if="isMatching" class="matching-state">
-          <div class="loading-spinner">
-            <span class="spinner-icon">🔄</span>
-            <h3>正在匹配政策...</h3>
-            <p>请稍候，AI正在为您匹配最适合的政策</p>
-          </div>
-        </div>
-        
-        <!-- 政策列表 -->
-        <div v-else class="policies-list">
-          <div 
-            v-for="policy in matchedPolicies" 
-            :key="policy.id" 
-            class="policy-card"
-          >
-            <div class="policy-header">
-              <h3 class="policy-name">{{ policy.name }}</h3>
-              <div class="policy-amount">{{ policy.amount }}</div>
-            </div>
-            
-            <div class="policy-body">
-              <div class="policy-description">{{ policy.description }}</div>
-              
-              <div class="policy-meta">
-                <div class="meta-item">
-                  <span class="meta-label">截止日期：</span>
-                  <span class="meta-value">{{ policy.deadline }}</span>
-                </div>
-              </div>
-              
-              <div class="policy-requirements">
-                <h4 class="sub-title">申请条件</h4>
-                <ul class="requirements-list">
-                  <li v-for="(req, index) in policy.requirements" :key="index" class="requirement-item">
-                    • {{ req }}
-                  </li>
-                </ul>
-              </div>
-              
-              <div class="policy-steps">
-                <h4 class="sub-title">申请步骤</h4>
-                <ol class="steps-list">
-                  <li v-for="(step, index) in policy.applicationSteps" :key="index" class="step-item">
-                    <span class="step-number">{{ index + 1 }}</span>
-                    <span class="step-text">{{ step }}</span>
-                  </li>
-                </ol>
-              </div>
-            </div>
-            
-            <div class="policy-footer">
-              <button 
-                type="button" 
-                class="btn btn-primary" 
-                @click="applyPolicy(policy.id)"
-              >
-                一键申请
+      <!-- 步骤2：政策匹配结果 -->
+      <div v-if="currentStep === 2" class="fade-in">
+        <div class="card">
+          <div class="step-header">
+            <h2>第二步：政策匹配结果</h2>
+            <div class="action-buttons">
+              <button type="button" class="secondary" @click="prevStep">
+                ← 重新输入
+              </button>
+              <button type="button" class="secondary" @click="rematchPolicies">
+                🔄 重新匹配
               </button>
             </div>
           </div>
+          
+          <div class="policies-result">
+            <div class="result-summary">
+              <h3>为您匹配到 {{ matchedPolicies.length }} 项政策</h3>
+              <p class="summary-desc">
+                根据您的公司信息，我们为您匹配了以下适合的政策补贴与优惠
+              </p>
+            </div>
+            
+            <div class="policies-list">
+              <div 
+                class="policy-card" 
+                v-for="policy in matchedPolicies" 
+                :key="policy.id"
+                @click="viewPolicyDetail(policy)"
+              >
+                <div class="policy-header">
+                  <div class="policy-type-badge" :class="policy.type.toLowerCase()">
+                    {{ policy.type }}
+                  </div>
+                  <div class="policy-deadline">
+                    截止日期：{{ policy.deadline }}
+                  </div>
+                </div>
+                
+                <h4 class="policy-title">{{ policy.title }}</h4>
+                <p class="policy-description">{{ policy.description }}</p>
+                
+                <div class="policy-amount">
+                  <span class="amount-label">补贴金额：</span>
+                  <span class="amount-value">{{ policy.amount }}</span>
+                </div>
+                
+                <div class="policy-action">
+                  <button type="button" class="primary" @click.stop="viewPolicyDetail(policy)">
+                    查看详情 →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 政策详情模态框 -->
+    <div v-if="showPolicyDetail && selectedPolicy" class="modal-overlay" @click="closePolicyDetail">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h2>{{ selectedPolicy.title }}</h2>
+          <button type="button" class="close-btn" @click="closePolicyDetail">
+            ✕
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="policy-detail-section">
+            <h3>政策类型</h3>
+            <div class="policy-type-badge" :class="selectedPolicy.type.toLowerCase()">
+              {{ selectedPolicy.type }}
+            </div>
+          </div>
+          
+          <div class="policy-detail-section">
+            <h3>补贴金额</h3>
+            <p class="policy-amount-detail">{{ selectedPolicy.amount }}</p>
+          </div>
+          
+          <div class="policy-detail-section">
+            <h3>申请截止日期</h3>
+            <p>{{ selectedPolicy.deadline }}</p>
+          </div>
+          
+          <div class="policy-detail-section">
+            <h3>政策描述</h3>
+            <p>{{ selectedPolicy.description }}</p>
+          </div>
+          
+          <div class="policy-detail-section">
+            <h3>申请条件</h3>
+            <p>{{ selectedPolicy.eligibility }}</p>
+          </div>
+          
+          <div class="policy-detail-section">
+            <h3>申请步骤</h3>
+            <ol class="application-steps">
+              <li v-for="(step, index) in selectedPolicy.applicationSteps" :key="index">
+                {{ step }}
+              </li>
+            </ol>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="secondary" @click="closePolicyDetail">
+            关闭
+          </button>
+          <button type="button" class="success" @click="applyPolicy">
+            📄 一键申请
+          </button>
         </div>
       </div>
     </div>
@@ -186,342 +286,425 @@ const stageOptions = ['筹备阶段', '初创阶段', '成长阶段', '扩张阶
 </template>
 
 <style scoped>
-.policy-match-page {
+.policy-match {
   max-width: 1400px;
   margin: 0 auto;
+  padding: 2rem;
 }
 
-.page-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 24px;
+/* 页面标题 */
+.page-header {
+  margin-bottom: 1rem;
+  position: static;
+  transform: none;
+  max-width: 100%;
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0;
 }
 
-.content-container {
-  display: grid;
-  grid-template-columns: 400px 1fr;
-  gap: 24px;
+.page-header h1 {
+  margin: 0;
+  font-size: 2rem;
 }
 
-.input-section {
+/* 步骤指示器 */
+.steps-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding: 0;
+}
+
+.step-item {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  align-items: center;
+  gap: 0.3rem;
+  position: relative;
+  flex: 1;
 }
 
-.form-card,
-.policy-card {
-  background-color: var(--bg-primary);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: 24px;
-  transition: var(--transition);
+.step-item::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: var(--border-color);
+  z-index: 1;
 }
 
-.form-card:hover,
-.policy-card:hover {
-  box-shadow: var(--shadow-md);
+.step-item:last-child::after {
+  display: none;
 }
 
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 16px;
+.step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 2;
+  transition: all 0.3s;
 }
 
-.policy-form {
+.step-item.active .step-number {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.step-item.completed .step-number {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.step-title {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  z-index: 2;
+}
+
+.step-item.active .step-title {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.step-item.completed .step-title {
+  color: var(--success-color);
+  font-weight: 500;
+}
+
+/* 步骤内容 */
+.step-content {
+  margin-bottom: 2rem;
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.step-header h2 {
+  margin: 0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 表单样式 */
+.company-info-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1.5rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
-.form-label {
-  font-size: 14px;
+.form-group label {
   font-weight: 500;
   color: var(--text-primary);
 }
 
-.form-input,
-.form-select {
-  padding: 12px;
+.form-control {
+  width: 100%;
+  padding: 0.7rem;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  font-size: 1em;
+  font-family: inherit;
   background-color: var(--bg-primary);
-  transition: var(--transition);
+  color: var(--text-primary);
+  transition: all 0.3s;
 }
 
-.form-input:focus,
-.form-select:focus {
+.form-control:focus {
   outline: none;
-  border-color: var(--primary-blue);
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
 }
 
 .form-actions {
-  margin-top: 8px;
-}
-
-.btn {
-  padding: 12px 20px;
-  border: none;
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-primary {
-  background-color: var(--primary-blue);
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #40a9ff;
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.result-section {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.result-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: -8px;
-}
-
-.result-stats {
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.matching-state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-  background-color: var(--bg-primary);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-}
-
-.loading-spinner {
+  margin-top: 1rem;
   text-align: center;
 }
 
-.spinner-icon {
-  font-size: 48px;
-  animation: spin 2s linear infinite;
-  display: block;
-  margin-bottom: 16px;
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* 政策匹配结果样式 */
+.policies-result {
+  margin-top: 1rem;
 }
 
-.loading-spinner h3 {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 8px;
+.result-summary {
+  margin-bottom: 1.5rem;
 }
 
-.loading-spinner p {
-  font-size: 14px;
+.summary-desc {
   color: var(--text-secondary);
-  margin: 0;
+  font-size: 0.9rem;
 }
 
 .policies-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
 }
 
 .policy-card {
-  border-left: 4px solid var(--primary-blue);
+  background-color: var(--bg-secondary);
+  padding: 1.2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid var(--border-color);
+}
+
+.policy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-color);
 }
 
 .policy-header {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 16px;
-  gap: 16px;
-}
-
-.policy-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
-  flex: 1;
-}
-
-.policy-amount {
-  background-color: rgba(82, 196, 26, 0.1);
-  color: var(--success-green);
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-.policy-body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.policy-description {
-  font-size: 14px;
-  color: var(--text-primary);
-  line-height: 1.6;
-}
-
-.policy-meta {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.meta-item {
-  display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 14px;
+  margin-bottom: 0.8rem;
 }
 
-.meta-label {
+.policy-type-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+}
+
+.policy-type-badge.政府补贴 {
+  background-color: var(--primary-color);
+}
+
+.policy-type-badge.税收优惠 {
+  background-color: var(--success-color);
+}
+
+.policy-type-badge.创业园区 {
+  background-color: var(--warning-color);
+}
+
+.policy-deadline {
+  font-size: 0.8rem;
   color: var(--text-secondary);
 }
 
-.meta-value {
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.sub-title {
-  font-size: 14px;
+.policy-title {
+  font-size: 1.1rem;
   font-weight: 600;
+  margin-bottom: 0.5rem;
   color: var(--text-primary);
-  margin: 0 0 8px;
 }
 
-.policy-requirements,
-.policy-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.requirements-list,
-.steps-list {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.requirement-item {
-  font-size: 14px;
-  color: var(--text-primary);
-  line-height: 1.4;
-  padding-left: 4px;
-}
-
-.step-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--text-primary);
+.policy-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.8rem;
   line-height: 1.4;
 }
 
-.step-number {
-  width: 24px;
-  height: 24px;
-  background-color: var(--primary-blue);
-  color: white;
-  border-radius: 50%;
+.policy-amount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.amount-label {
+  color: var(--text-secondary);
+}
+
+.amount-value {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.policy-action {
+  text-align: right;
+}
+
+/* 模态框样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s;
+}
+
+.close-btn:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.policy-detail-section {
+  margin-bottom: 1.5rem;
+}
+
+.policy-detail-section h3 {
+  font-size: 1rem;
   font-weight: 600;
-  flex-shrink: 0;
-  margin-top: 1px;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
 }
 
-.step-text {
-  flex: 1;
+.policy-amount-detail {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
 }
 
-.policy-footer {
+.application-steps {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.application-steps li {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.modal-footer {
   display: flex;
   justify-content: flex-end;
-  padding-top: 16px;
+  gap: 1rem;
+  padding: 1rem 1.5rem 1.5rem;
   border-top: 1px solid var(--border-color);
 }
 
 /* 响应式设计 */
-@media (max-width: 1200px) {
-  .content-container {
+@media (max-width: 768px) {
+  .policy-match {
+    padding: 1rem;
+  }
+  
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .policies-list {
     grid-template-columns: 1fr;
+  }
+  
+  .step-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .action-buttons {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .action-buttons button {
+    flex: 1;
   }
 }
 
-@media (max-width: 768px) {
-  .page-title {
-    font-size: 24px;
+@media (max-width: 480px) {
+  .modal-content {
+    margin: 0.5rem;
+    max-height: 90vh;
   }
   
-  .form-card,
-  .policy-card {
-    padding: 16px;
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 1rem;
   }
   
-  .section-title {
-    font-size: 16px;
-  }
-  
-  .policy-header {
+  .modal-footer {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
   }
   
-  .policy-amount {
-    align-self: flex-start;
+  .modal-footer button {
+    width: 100%;
   }
 }
 </style>

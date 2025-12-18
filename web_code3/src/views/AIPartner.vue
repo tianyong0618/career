@@ -1,441 +1,577 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { mockData } from '../mock/data';
+import { ref, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import { chatHistory } from '../data/mockData.js'
 
-const router = useRouter();
+const router = useRouter()
 
-// 聊天消息列表
-const messages = ref([
-  {
-    id: 1,
-    sender: 'ai',
-    content: '你好！我是你的AI创业导师，有什么可以帮助你的吗？',
-    actions: []
-  }
-]);
+// 聊天历史
+const messages = ref([...chatHistory])
 
 // 输入消息
-const inputMessage = ref('');
-// 发送状态
-const isSending = ref(false);
+const inputMessage = ref('')
+
+// 文件上传
+const fileInput = ref(null)
+const isUploading = ref(false)
+
+// 滚动到底部
+const chatContainer = ref(null)
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (chatContainer.value) {
+      chatContainer.value.scrollTop = chatContainer.value.scrollHeight
+    }
+  })
+}
 
 // 发送消息
 const sendMessage = () => {
-  if (!inputMessage.value.trim()) return;
+  if (!inputMessage.value.trim()) return
   
   // 添加用户消息
   const userMessage = {
-    id: messages.value.length + 1,
-    sender: 'user',
+    id: Date.now(),
+    role: 'user',
     content: inputMessage.value,
-    timestamp: new Date().toLocaleTimeString()
-  };
-  messages.value.push(userMessage);
-  
-  // 清空输入框
-  const message = inputMessage.value;
-  inputMessage.value = '';
-  
-  // 模拟AI回复
-  isSending.value = true;
-  setTimeout(() => {
-    // 查找匹配的回复
-    const matchedResponse = mockData.aiResponses.find(response => 
-      message.includes(response.question) || response.question.includes(message)
-    );
-    
-    // AI回复
-    const aiResponse = {
-      id: messages.value.length + 1,
-      sender: 'ai',
-      content: matchedResponse ? matchedResponse.answer : '感谢你的提问！我正在学习更多创业知识，稍后为你提供更详细的解答。',
-      actions: matchedResponse ? matchedResponse.actions : [],
-      timestamp: new Date().toLocaleTimeString()
-    };
-    
-    messages.value.push(aiResponse);
-    isSending.value = false;
-    
-    // 滚动到底部
-    scrollToBottom();
-  }, 1000);
-  
-  // 滚动到底部
-  scrollToBottom();
-};
-
-// 处理AI动作
-const handleAction = (action) => {
-  if (action.type === 'navigate') {
-    router.push(action.target);
+    timestamp: new Date().toLocaleString()
   }
-};
-
-// 滚动到底部
-const scrollToBottom = () => {
+  messages.value.push(userMessage)
+  
+  // 清空输入
+  inputMessage.value = ''
+  scrollToBottom()
+  
+  // 模拟AI响应
   setTimeout(() => {
-    const chatContainer = document.querySelector('.chat-messages');
-    if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+    generateAIResponse(userMessage)
+  }, 1000)
+}
+
+// 生成AI响应
+const generateAIResponse = (userMessage) => {
+  let aiResponse
+  
+  // 根据用户消息内容生成不同的响应
+  if (userMessage.content.includes('奶茶店') && userMessage.content.includes('补贴')) {
+    aiResponse = {
+      id: Date.now() + 1,
+      role: 'assistant',
+      content: '根据您的情况，您可以申请以下补贴：\n1. 北京市朝阳区餐饮企业开业补贴：最高5万元\n2. 大学生创业税收优惠政策：3年免征企业所得税\n\n建议您点击下方的政策匹配按钮，查看详细的申请条件和流程。',
+      timestamp: new Date().toLocaleString(),
+      actions: [
+        { type: 'button', text: '政策匹配', link: '/policy-match' }
+      ]
     }
-  }, 100);
-};
-
-// 监听回车键发送
-const handleKeyPress = (event) => {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    sendMessage();
+  } else if (userMessage.content.includes('合伙人') && userMessage.content.includes('餐饮经验')) {
+    aiResponse = {
+      id: Date.now() + 1,
+      role: 'assistant',
+      content: '为您推荐3位具有丰富餐饮行业经验的合伙人：',
+      timestamp: new Date().toLocaleString(),
+      actions: [
+        { type: 'button', text: '查看合伙人', link: '/resource-hub?type=partners' }
+      ]
+    }
+  } else if (userMessage.content.includes('市场调研报告')) {
+    aiResponse = {
+      id: Date.now() + 1,
+      role: 'assistant',
+      content: '正在为您生成详细的市场调研报告...\n\n报告将包含行业趋势、竞品分析、目标客户画像等内容。',
+      timestamp: new Date().toLocaleString(),
+      actions: [
+        { type: 'button', text: '生成BP', link: '/biz-plan-gen' }
+      ]
+    }
+  } else {
+    // 默认响应
+    aiResponse = {
+      id: Date.now() + 1,
+      role: 'assistant',
+      content: '感谢您的提问！我是您的AI创业导师，随时为您提供创业相关的帮助和建议。\n\n您可以问我关于：\n- 政策补贴和优惠\n- 商业计划书生成\n- 风险预警和应对\n- 资源撮合和对接\n- 市场调研和分析\n\n或者直接点击下方的快捷功能按钮。',
+      timestamp: new Date().toLocaleString(),
+      actions: [
+        { type: 'button', text: '生成BP', link: '/biz-plan-gen' },
+        { type: 'button', text: '政策匹配', link: '/policy-match' },
+        { type: 'button', text: '风险预警', link: '/risk-alert' },
+        { type: 'button', text: '资源撮合', link: '/resource-hub' }
+      ]
+    }
   }
-};
+  
+  messages.value.push(aiResponse)
+  scrollToBottom()
+}
 
-// 组件挂载后滚动到底部
+// 处理按钮点击
+const handleActionClick = (action) => {
+  if (action.link) {
+    router.push(action.link)
+  }
+}
+
+// 打开文件上传
+const openFileUpload = () => {
+  fileInput.value?.click()
+}
+
+// 处理文件上传
+const handleFileUpload = (event) => {
+  const file = event.target.files?.[0]
+  if (file) {
+    isUploading.value = true
+    
+    // 添加文件消息
+    const fileMessage = {
+      id: Date.now(),
+      role: 'user',
+      content: `上传了文件：${file.name}`,
+      file: file,
+      timestamp: new Date().toLocaleString()
+    }
+    messages.value.push(fileMessage)
+    scrollToBottom()
+    
+    // 模拟文件处理
+    setTimeout(() => {
+      // 模拟AI解析文件后的响应
+      const aiResponse = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: `已成功解析您上传的${file.name}文件。\n\n根据文件内容，我已经更新了您的创业概况。\n\n建议关注：\n1. 食品卫生许可证办理进度\n2. 税务登记证办理\n3. 消防验收申请\n\n您可以点击下方的风险预警按钮，查看相关风险提示。`,
+        timestamp: new Date().toLocaleString(),
+        actions: [
+          { type: 'button', text: '风险预警', link: '/risk-alert' }
+        ]
+      }
+      messages.value.push(aiResponse)
+      isUploading.value = false
+      scrollToBottom()
+      
+      // 清空文件输入
+      event.target.value = ''
+    }, 2000)
+  }
+}
+
+// 初始化时滚动到底部
 onMounted(() => {
-  scrollToBottom();
-});
+  scrollToBottom()
+})
 </script>
 
 <template>
-  <div class="ai-partner-page">
-    <h1 class="page-title">AI创业导师</h1>
-    
-    <div class="chat-container">
-      <!-- 聊天消息区域 -->
-      <div class="chat-messages">
-        <div 
-          v-for="message in messages" 
-          :key="message.id"
-          :class="['message-item', message.sender === 'user' ? 'user-message' : 'ai-message']"
-        >
-          <div class="message-content">
-            <div class="message-text">{{ message.content }}</div>
-            
-            <!-- AI回复中的动作按钮 -->
-            <div v-if="message.sender === 'ai' && message.actions && message.actions.length > 0" class="message-actions">
-              <button 
-                v-for="(action, index) in message.actions" 
-                :key="index"
-                class="action-btn"
-                @click="handleAction(action)"
-              >
-                {{ action.target === '/policy-match' ? '查看政策匹配' : 
-                   action.target === '/biz-plan-gen' ? '生成商业计划书' : 
-                   action.target === '/resource-hub' ? '寻找合伙人' : '查看详情' }}
-              </button>
-            </div>
-            
-            <div class="message-time">{{ message.timestamp }}</div>
-          </div>
+  <div class="ai-tutor">
+    <!-- 聊天界面 -->
+    <div class="chat-container" ref="chatContainer">
+      <div 
+        class="message" 
+        v-for="message in messages" 
+        :key="message.id"
+        :class="message.role"
+      >
+        <div class="message-header">
+          <span class="role">{{ message.role === 'user' ? '我' : 'AI导师' }}</span>
+          <span class="timestamp">{{ message.timestamp }}</span>
         </div>
-        
-        <!-- 发送中状态 -->
-        <div v-if="isSending" class="sending-message">
-          <div class="typing-indicator">
-            <span></span>
-            <span></span>
-            <span></span>
+        <div class="message-content">
+          <p>{{ message.content }}</p>
+          
+          <!-- 文件上传消息 -->
+          <div v-if="message.file" class="file-upload">
+            <div class="file-info">
+              <span class="file-icon">📄</span>
+              <span class="file-name">{{ message.file.name }}</span>
+              <span class="file-size">({{ (message.file.size / 1024).toFixed(2) }} KB)</span>
+            </div>
+          </div>
+          
+          <!-- AI响应的按钮 -->
+          <div v-if="message.actions" class="message-actions">
+            <button 
+              class="action-button" 
+              v-for="action in message.actions" 
+              :key="action.text"
+              @click="handleActionClick(action)"
+            >
+              {{ action.text }}
+            </button>
           </div>
         </div>
       </div>
       
-      <!-- 消息输入区域 -->
-      <div class="chat-input-area">
-        <textarea 
-          v-model="inputMessage"
-          class="chat-input"
-          placeholder="请输入你的问题，我会为你解答..."
-          rows="1"
-          @keypress="handleKeyPress"
-        ></textarea>
-        <button 
-          class="send-btn"
-          @click="sendMessage"
-          :disabled="isSending || !inputMessage.trim()"
-        >
-          发送
-        </button>
+      <!-- 上传中状态 -->
+      <div v-if="isUploading" class="message assistant">
+        <div class="message-header">
+          <span class="role">AI导师</span>
+          <span class="timestamp">{{ new Date().toLocaleString() }}</span>
+        </div>
+        <div class="message-content">
+          <div class="loading">
+            <div class="loading-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <p>正在处理您的请求...</p>
+          </div>
+        </div>
       </div>
     </div>
     
-    <!-- 快捷问题建议 -->
-    <div class="quick-questions">
-      <h3 class="section-title">快捷问题</h3>
-      <div class="quick-questions-list">
-        <button 
-          v-for="(question, index) in ['我想开一家奶茶店，能拿多少补贴？', '我需要一份详细的市场调研报告', '帮我找一位有餐饮经验的合伙人']"
-          :key="index"
-          class="quick-question-btn"
-          @click="inputMessage = question; sendMessage()"
-        >
-          {{ question }}
-        </button>
+    <!-- 输入区域 -->
+    <div class="input-area">
+      <!-- 隐藏的文件输入 -->
+      <input 
+        type="file" 
+        ref="fileInput" 
+        style="display: none" 
+        @change="handleFileUpload"
+        accept=".pdf,.doc,.docx,.txt"
+      />
+      
+      <!-- 紧凑输入栏 -->
+      <div class="compact-input">
+        <!-- 左侧工具按钮 -->
+        <div class="input-tools-left">
+          <button class="icon-btn" @click="openFileUpload" :disabled="isUploading">
+            📎
+          </button>
+        </div>
+        
+        <!-- 输入框 -->
+        <div class="input-wrapper">
+          <textarea 
+            v-model="inputMessage"
+            placeholder="请输入您的问题或需求..."
+            rows="1"
+            @keydown.enter="$event.shiftKey || sendMessage()"
+            @input="$event.target.style.height = 'auto'; $event.target.style.height = $event.target.scrollHeight + 'px'"
+          ></textarea>
+        </div>
+        
+        <!-- 右侧工具按钮 -->
+        <div class="input-tools-right">
+          <button 
+            class="send-btn" 
+            @click="sendMessage()"
+            :disabled="!inputMessage.trim() || isUploading"
+          >
+            发送
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.ai-partner-page {
-  max-width: 1200px;
+.ai-tutor {
+  max-width: 420px;
   margin: 0 auto;
+  padding: 80px 1rem 0;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 24px;
 }
 
-.page-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-primary);
+/* 页面标题 */
+.page-header h1 {
   margin: 0;
+  font-size: 1.5rem;
 }
 
+/* 聊天界面 */
 .chat-container {
-  background-color: var(--bg-primary);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  height: 600px;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-messages {
   flex: 1;
-  padding: 24px;
   overflow-y: auto;
+  padding: 1rem 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
 
-.message-item {
+.chat-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* 消息样式 */
+.message {
   display: flex;
-  margin-bottom: 12px;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 85%;
 }
 
-.message-item.user-message {
-  justify-content: flex-end;
+.message.user {
+  align-self: flex-end;
 }
 
-.message-item.ai-message {
-  justify-content: flex-start;
+.message.assistant {
+  align-self: flex-start;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.role {
+  font-weight: 500;
 }
 
 .message-content {
-  max-width: 70%;
-  padding: 16px;
-  border-radius: var(--border-radius-lg);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  position: relative;
+  line-height: 1.5;
 }
 
-.user-message .message-content {
-  background-color: var(--primary-blue);
+.message.user .message-content {
+  background-color: var(--primary-color);
   color: white;
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: var(--radius-sm);
 }
 
-.ai-message .message-content {
-  background-color: var(--bg-secondary);
+.message.assistant .message-content {
+  background-color: var(--bg-primary);
   color: var(--text-primary);
-  border-bottom-left-radius: 4px;
+  border: 1px solid var(--border-color);
+  border-bottom-left-radius: var(--radius-sm);
 }
 
-.message-text {
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 8px;
+/* 文件上传消息 */
+.file-upload {
+  margin-top: 0.5rem;
+  padding: 0.8rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
 }
 
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-icon {
+  font-size: 1.2rem;
+}
+
+/* 消息按钮 */
 .message-actions {
   display: flex;
-  gap: 8px;
+  gap: 0.8rem;
+  margin-top: 1rem;
   flex-wrap: wrap;
-  margin: 12px 0;
 }
 
-.action-btn {
-  padding: 8px 16px;
-  background-color: var(--primary-blue);
-  color: white;
-  border: none;
-  border-radius: 20px;
-  font-size: 12px;
+.action-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-primary);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.3s;
+  font-size: 0.9rem;
 }
 
-.action-btn:hover {
-  background-color: #40a9ff;
-  transform: translateY(-1px);
+.action-button:hover {
+  background-color: var(--primary-color);
+  color: white;
 }
 
-.message-time {
-  font-size: 12px;
-  opacity: 0.7;
-  text-align: right;
-  margin-top: 8px;
-}
-
-.sending-message {
+/* 加载状态 */
+.loading {
   display: flex;
-  justify-content: flex-start;
-  margin: 12px 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.typing-indicator {
+.loading-dots {
   display: flex;
-  gap: 4px;
-  padding: 16px;
-  background-color: var(--bg-secondary);
-  border-radius: var(--border-radius-lg);
-  border-bottom-left-radius: 4px;
+  gap: 0.3rem;
 }
 
-.typing-indicator span {
+.loading-dots span {
   width: 8px;
   height: 8px;
-  background-color: var(--text-secondary);
+  background-color: var(--primary-color);
   border-radius: 50%;
-  animation: typing 1.4s infinite ease-in-out;
+  animation: loading 1.4s ease-in-out infinite;
 }
 
-.typing-indicator span:nth-child(2) {
+.loading-dots span:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.typing-indicator span:nth-child(3) {
+.loading-dots span:nth-child(3) {
   animation-delay: 0.4s;
 }
 
-@keyframes typing {
-  0%, 60%, 100% {
-    transform: translateY(0);
-    opacity: 0.5;
+@keyframes loading {
+  0%, 80%, 100% {
+    transform: scale(0);
   }
-  30% {
-    transform: translateY(-10px);
-    opacity: 1;
+  40% {
+    transform: scale(1);
   }
 }
 
-.chat-input-area {
+/* 输入区域 */
+.input-area {
+  margin-top: auto;
+  padding: 1rem 0;
+  background-color: var(--bg-secondary);
+}
+
+/* 紧凑输入栏样式 */
+.compact-input {
   display: flex;
-  gap: 12px;
-  padding: 20px 24px;
-  border-top: 1px solid var(--border-color);
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
   background-color: var(--bg-primary);
-}
-
-.chat-input {
-  flex: 1;
-  padding: 12px 16px;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  resize: none;
-  min-height: 44px;
-  max-height: 120px;
-  transition: var(--transition);
+  border-radius: var(--radius-lg);
+  width: 100%;
 }
 
-.chat-input:focus {
-  outline: none;
-  border-color: var(--primary-blue);
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
-}
-
-.send-btn {
-  padding: 12px 24px;
-  background-color: var(--primary-blue);
-  color: white;
+/* 工具按钮 */
+.icon-btn {
+  padding: 0.6rem;
+  background-color: transparent;
   border: none;
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: var(--transition);
-  align-self: flex-end;
-  min-width: 80px;
+  font-size: 1rem;
+  transition: all 0.3s;
 }
 
-.send-btn:hover:not(:disabled) {
-  background-color: #40a9ff;
-  box-shadow: var(--shadow-sm);
+.icon-btn:hover:not(:disabled) {
+  background-color: var(--bg-secondary);
+  color: var(--primary-color);
 }
 
-.send-btn:disabled {
-  opacity: 0.6;
+.icon-btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.quick-questions {
-  background-color: var(--bg-primary);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: 24px;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 16px;
-}
-
-.quick-questions-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.quick-question-btn {
-  padding: 12px 20px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: var(--transition);
+/* 输入框 */
+.input-wrapper {
   flex: 1;
-  min-width: 200px;
-  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  align-items: flex-end !important;
 }
 
-.quick-question-btn:hover {
-  background-color: var(--bg-tertiary);
-  border-color: var(--primary-blue);
-  transform: translateY(-2px);
+.input-wrapper textarea {
+  flex: 1;
+  border: none;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  min-height: 24px;
+  max-height: 120px;
+  overflow-y: auto;
+  background-color: transparent;
+  padding: 0 !important;
+}
+
+.send-btn {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+  min-width: auto;
+  width: auto;
+  height: auto;
+}
+
+.send-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
+  background-color: var(--primary-color);
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 输入工具区 */
+.input-tools-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-tools-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
-  .page-title {
-    font-size: 24px;
+@media (max-width: 480px) {
+  .quick-actions {
+    grid-template-columns: 1fr;
   }
   
-  .chat-container {
-    height: 500px;
+  .message {
+    max-width: 95%;
   }
   
-  .message-content {
-    max-width: 85%;
+  .input-wrapper {
+    padding: 0.6rem;
   }
   
-  .chat-messages {
-    padding: 16px;
+  .send-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
   }
   
-  .chat-input-area {
-    padding: 16px;
+  .message-actions {
+    flex-direction: column;
   }
   
-  .quick-question-btn {
-    min-width: 100%;
+  .action-button {
+    width: 100%;
   }
 }
 </style>

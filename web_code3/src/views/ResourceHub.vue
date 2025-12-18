@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { mockData } from '../mock/data';
+import { resources, resourceTypes } from '../data/mockData';
 
 // 需求类型
 const需求Type = ref('mentors'); // 默认选择导师
@@ -16,7 +16,7 @@ const需求TypeOptions = [
 
 // 根据选择的需求类型过滤资源
 const filteredResources = computed(() => {
-  return mockData.resources[需求Type.value] || [];
+  return resources[需求Type.value] || [];
 });
 
 // 联系资源

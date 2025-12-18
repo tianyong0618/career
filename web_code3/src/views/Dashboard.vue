@@ -70,15 +70,30 @@ const navigateTo = (path) => {
 
 <style scoped>
 .dashboard {
-  max-width: 420px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 80px 1rem 1rem;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
 }
 
 /* 页面标题 */
+.page-header {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+  position: static;
+  transform: none;
+  max-width: 100%;
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0;
+}
+
 .page-header h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 /* 创业身份卡 */
@@ -197,10 +212,11 @@ const navigateTo = (path) => {
 
 /* 快捷行动区 */
 .quick-actions {
-  margin: 1rem 0;
+  grid-column: 1 / -1;
+  margin: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
 }
 
 .action-card {
@@ -217,6 +233,8 @@ const navigateTo = (path) => {
   align-items: center;
   justify-content: center;
   min-height: auto;
+  grid-column: span 1;
+  min-width: 200px;
 }
 
 .action-card:hover {
@@ -264,7 +282,12 @@ const navigateTo = (path) => {
 }
 
 /* 响应式设计 */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  
   .quick-actions {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
@@ -276,8 +299,20 @@ const navigateTo = (path) => {
     text-align: center;
   }
   
-  .milestone {
-    text-align: left;
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .dashboard {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 </style>

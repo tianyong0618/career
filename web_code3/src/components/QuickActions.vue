@@ -33,6 +33,13 @@ const quickActions = [
     title: '资源撮合',
     description: '寻找潜在合伙人、投资人或供应商',
     route: '/resource-hub'
+  },
+  {
+    id: 5,
+    icon: '💰',
+    title: '融资路径规划',
+    description: '获取融资建议和模拟股权变化',
+    route: '/financing-path'
   }
 ];
 

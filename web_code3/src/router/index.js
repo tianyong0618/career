@@ -8,6 +8,7 @@ const RiskAlert = () => import('../views/RiskAlert.vue');
 const ResourceHub = () => import('../views/ResourceHub.vue');
 const AITutor = () => import('../views/AITutor.vue');
 const Onboarding = () => import('../views/Onboarding.vue');
+const FinancingPath = () => import('../views/FinancingPath.vue');
 
 const routes = [
   {
@@ -44,6 +45,11 @@ const routes = [
     path: '/onboarding',
     name: 'Onboarding',
     component: Onboarding
+  },
+  {
+    path: '/financing-path',
+    name: 'FinancingPath',
+    component: FinancingPath
   }
 ];
 

@@ -328,3 +328,151 @@ export const riskRadarData = {
     }
   ]
 };
+
+// 融资相关数据
+
+// 投资机构数据
+export const investmentInstitutions = [
+  {
+    id: 1,
+    name: '红杉资本中国',
+    focus: '消费互联网、企业服务、硬科技',
+    investmentStage: '种子轮、天使轮、A轮',
+    investmentAmount: '100万-5000万',
+    location: '北京市',
+    successCases: ['字节跳动', '美团', '拼多多'],
+    description: '全球知名的风险投资机构，专注于早期和成长阶段的科技创新企业'
+  },
+  {
+    id: 2,
+    name: '经纬中国',
+    focus: '移动互联网、企业服务、医疗健康',
+    investmentStage: '天使轮、A轮、B轮',
+    investmentAmount: '500万-2亿',
+    location: '上海市',
+    successCases: ['滴滴出行', '饿了么', '瓜子二手车'],
+    description: '专注于中国市场的早期投资机构，注重团队和商业模式'
+  },
+  {
+    id: 3,
+    name: '真格基金',
+    focus: '消费升级、人工智能、教育科技',
+    investmentStage: '种子轮、天使轮',
+    investmentAmount: '100万-1000万',
+    location: '北京市',
+    successCases: ['小红书', '完美日记', '罗辑思维'],
+    description: '由徐小平和王强创立的天使投资基金，专注于早期创新创业项目'
+  },
+  {
+    id: 4,
+    name: 'IDG资本',
+    focus: '互联网、医疗健康、新能源',
+    investmentStage: '种子轮、A轮、B轮',
+    investmentAmount: '500万-3亿',
+    location: '北京市',
+    successCases: ['百度', '腾讯', '搜狐'],
+    description: '中国最早的外资风险投资机构之一，投资领域广泛'
+  },
+  {
+    id: 5,
+    name: '金沙江创投',
+    focus: '人工智能、企业服务、消费科技',
+    investmentStage: '天使轮、A轮',
+    investmentAmount: '300万-2亿',
+    location: '北京市',
+    successCases: ['滴滴出行', 'ofo', '饿了么'],
+    description: '专注于TMT领域的早期投资，以敏锐的行业洞察力著称'
+  }
+];
+
+// 引导基金数据
+export const guidingFunds = [
+  {
+    id: 1,
+    name: '国家中小企业发展基金',
+    type: '国家级引导基金',
+    supportedStage: '种子轮、天使轮、A轮',
+    amount: '最高1000万',
+    eligibility: '注册满1年以上，符合国家产业政策的中小企业',
+    applicationProcess: [
+      '在线填写申请表格',
+      '提交商业计划书和财务报表',
+      '专家评审',
+      '现场答辩',
+      '立项并签订协议'
+    ],
+    deadline: '2026-06-30',
+    description: '由中央财政出资设立，用于支持中小企业发展的国家级基金'
+  },
+  {
+    id: 2,
+    name: '科技创新引导基金',
+    type: '省部级引导基金',
+    supportedStage: '种子轮、天使轮',
+    amount: '最高500万',
+    eligibility: '从事科技创新活动，拥有核心自主知识产权的企业',
+    applicationProcess: [
+      '提交项目可行性报告',
+      '知识产权评估',
+      '专家评审',
+      '立项审批',
+      '资金拨付'
+    ],
+    deadline: '2026-03-31',
+    description: '支持科技创新型企业发展的省级引导基金'
+  },
+  {
+    id: 3,
+    name: '创业投资引导基金',
+    type: '地市级引导基金',
+    supportedStage: '种子轮',
+    amount: '最高200万',
+    eligibility: '注册在本地，成立时间不超过2年的初创企业',
+    applicationProcess: [
+      '向当地科技局提交申请',
+      '项目路演',
+      '评审委员会评审',
+      '公示',
+      '资金发放'
+    ],
+    deadline: '2026-09-30',
+    description: '由地方政府设立，支持本地初创企业发展的引导基金'
+  }
+];
+
+// 股权结构建议数据
+export const equityStructureSuggestions = {
+  '种子轮': {
+    founderTeam: '70-80%',
+    optionPool: '10-15%',
+    investors: '10-20%',
+    suggestions: [
+      '创始人团队保持绝对控股权',
+      '预留适当期权池用于后续团队扩张',
+      '选择战略投资人，不仅提供资金还能带来资源',
+      '建议采用动态股权分配机制'
+    ]
+  },
+  '天使轮': {
+    founderTeam: '60-70%',
+    optionPool: '10-15%',
+    investors: '15-25%',
+    suggestions: [
+      '创始人团队仍需保持相对控股权',
+      '根据团队贡献调整股权比例',
+      '引入专业投资人，提升公司治理水平',
+      '明确股权兑现机制，避免团队不稳定'
+    ]
+  },
+  'A轮': {
+    founderTeam: '50-60%',
+    optionPool: '10-15%',
+    investors: '20-30%',
+    suggestions: [
+      '注意控制权稀释，避免失去公司控制权',
+      '建立合理的董事会结构',
+      '完善公司治理机制',
+      '考虑股权激励计划，吸引优秀人才'
+    ]
+  }
+};

@@ -48,6 +48,12 @@ const route = useRoute();
               <span class="menu-text">AI创业导师</span>
             </router-link>
           </li>
+          <li class="menu-item">
+            <router-link to="/financing-path" class="menu-link" :class="{ active: route.path === '/financing-path' }">
+              <span class="menu-icon">💰</span>
+              <span class="menu-text">融资路径规划</span>
+            </router-link>
+          </li>
         </ul>
       </div>
       

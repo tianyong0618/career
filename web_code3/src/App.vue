@@ -54,6 +54,12 @@ const toggleNav = () => {
               <span class="nav-text">AI导师</span>
             </router-link>
           </li>
+          <li>
+            <router-link to="/financing-path" class="nav-item">
+              <span class="nav-icon">💰</span>
+              <span class="nav-text">融资路径</span>
+            </router-link>
+          </li>
         </ul>
         <button class="nav-toggle" @click="toggleNav">
           ☰

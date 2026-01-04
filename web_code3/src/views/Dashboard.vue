@@ -420,15 +420,15 @@ onMounted(() => {
 }
 
 .milestone {
-  text-align: center;
+  text-align: left;
 }
 
 .milestone ul {
   list-style: none;
   padding: 0;
-  margin: 0 auto;
+  margin: 0;
   text-align: left;
-  max-width: 300px;
+  max-width: none;
 }
 
 .milestone li {

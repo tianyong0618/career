@@ -60,6 +60,12 @@ const toggleNav = () => {
               <span class="nav-text">融资路径</span>
             </router-link>
           </li>
+          <li>
+            <router-link to="/health-dashboard" class="nav-item">
+              <span class="nav-icon">📊</span>
+              <span class="nav-text">健康看板</span>
+            </router-link>
+          </li>
         </ul>
         <button class="nav-toggle" @click="toggleNav">
           ☰

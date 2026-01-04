@@ -9,6 +9,7 @@ const ResourceHub = () => import('../views/ResourceHub.vue');
 const AITutor = () => import('../views/AITutor.vue');
 const Onboarding = () => import('../views/Onboarding.vue');
 const FinancingPath = () => import('../views/FinancingPath.vue');
+const HealthDashboard = () => import('../views/HealthDashboard.vue');
 
 const routes = [
   {
@@ -50,6 +51,11 @@ const routes = [
     path: '/financing-path',
     name: 'FinancingPath',
     component: FinancingPath
+  },
+  {
+    path: '/health-dashboard',
+    name: 'HealthDashboard',
+    component: HealthDashboard
   }
 ];
 

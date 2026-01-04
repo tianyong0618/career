@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Chart, registerables } from 'chart.js'
 import { jsPDF } from 'jspdf'
+import html2canvas from 'html2canvas'
 import 'chartjs-adapter-date-fns'
 import { userProfile } from '../data/mockData.js'
 
@@ -153,51 +154,50 @@ const initRiskHeatmapChart = () => {
 }
 
 // 导出PDF报告
-const exportPDF = () => {
-  const doc = new jsPDF()
-  
-  // 添加标题
-  doc.setFontSize(18)
-  doc.text('创业健康度报告', 14, 20)
-  
-  // 添加日期
-  doc.setFontSize(12)
-  doc.text(`生成日期: ${new Date().toLocaleDateString()}`, 14, 30)
-  
-  // 添加现金流安全线信息
-  doc.setFontSize(14)
-  doc.text('1. 现金流安全线', 14, 45)
-  doc.setFontSize(12)
-  doc.text(`近6个月现金流趋势良好，均高于安全线（${cashFlowData.safeLine}万元）`, 14, 55)
-  
-  // 添加政策红利利用率信息
-  doc.setFontSize(14)
-  doc.text('2. 政策红利利用率', 14, 70)
-  doc.setFontSize(12)
-  doc.text(`总可申请政策: ${policyUtilizationDetails.value.total}项`, 14, 80)
-  doc.text(`已申请政策: ${policyUtilizationDetails.value.applied}项`, 14, 90)
-  doc.text(`已获批政策: ${policyUtilizationDetails.value.approved}项`, 14, 100)
-  doc.text(`政策利用率: ${policyUtilizationDetails.value.utilizationRate}%`, 14, 110)
-  doc.text(`政策获批率: ${policyUtilizationDetails.value.approvalRate}%`, 14, 120)
-  
-  // 添加风险热力图信息
-  doc.setFontSize(14)
-  doc.text('3. 风险分析', 14, 135)
-  doc.setFontSize(12)
-  riskHeatmapData.forEach((risk, index) => {
-    const yPos = 145 + (index * 10)
-    doc.text(`${risk.name}: ${risk.value}/100`, 14, yPos)
-  })
-  
-  // 添加结论
-  doc.setFontSize(14)
-  doc.text('4. 结论', 14, 200)
-  doc.setFontSize(12)
-  doc.text('企业整体经营稳健，现金流状况良好，政策利用率有待提高，', 14, 210)
-  doc.text('主要风险集中在市场和财务方面，建议加强风险管控。', 14, 220)
-  
-  // 保存PDF
-  doc.save('创业健康度报告.pdf')
+const exportPDF = async () => {
+  try {
+    // 获取页面中需要导出的内容
+    const dashboardElement = document.querySelector('.dashboard')
+    
+    if (!dashboardElement) {
+      console.error('找不到需要导出的元素')
+      return
+    }
+    
+    // 使用html2canvas将页面内容转换为图片
+    const canvas = await html2canvas(dashboardElement, {
+      scale: 2, // 提高分辨率
+      useCORS: true, // 允许跨域图片
+      logging: false // 禁用日志
+    })
+    
+    // 创建PDF文档，设置方向为横向或纵向
+    const imgData = canvas.toDataURL('image/png')
+    const imgWidth = 210 // A4宽度，单位mm
+    const pageHeight = 297 // A4高度，单位mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width
+    let heightLeft = imgHeight
+    let position = 0
+    
+    const doc = new jsPDF('p', 'mm', 'a4')
+    
+    // 添加第一张图片
+    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+    heightLeft -= pageHeight
+    
+    // 如果内容超过一页，添加新页面
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight
+      doc.addPage()
+      doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+      heightLeft -= pageHeight
+    }
+    
+    // 保存PDF
+    doc.save('创业健康度报告.pdf')
+  } catch (error) {
+    console.error('导出PDF失败:', error)
+  }
 }
 
 // 生命周期钩子：组件挂载后初始化图表

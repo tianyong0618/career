@@ -5,9 +5,15 @@ import { bpTemplates, industries } from '../mock/data.js'
 
 const router = useRouter()
 
+// 模式状态：keyword - 关键词模式，custom - 自定义模式
+const currentMode = ref('keyword')
+
+// 关键词
+const keywordInput = ref('')
+
 // 步骤状态
 const currentStep = ref(1)
-const maxSteps = 4
+const maxSteps = 3
 
 // 表单数据
 const formData = ref({
@@ -29,9 +35,236 @@ const editModalVisible = ref(false)
 const currentEditingSection = ref(null)
 const editingContent = ref('')
 
-// 模拟生成BP草稿
-const generateBPDraft = () => {
-  // 模拟API调用，生成BP草稿
+// 模拟从关键词生成草稿
+const generateBPDraftFromKeyword = () => {
+  if (!keywordInput.value.trim()) {
+    alert('请输入关键词')
+    return
+  }
+  
+  // 模拟API调用，根据关键词生成草稿
+  generatedBP.value = {
+    id: Date.now(),
+    title: `${keywordInput.value}商业计划书`,
+    industry: '基于关键词生成',
+    idea: keywordInput.value,
+    sections: [
+      {
+        id: 1,
+        title: '项目概述',
+        content: `
+# 项目概述
+
+## 项目名称
+${keywordInput.value}
+
+## 项目描述
+基于关键词"${keywordInput.value}"生成的商业计划书。
+
+## 核心概念
+该项目专注于${keywordInput.value}领域，旨在为目标客户提供创新的解决方案。
+        `
+      },
+      {
+        id: 2,
+        title: '市场分析',
+        content: `
+# 市场分析
+
+## 行业现状
+${keywordInput.value}行业是一个快速发展的领域，具有广阔的市场前景。
+
+## 市场规模
+根据行业报告，${keywordInput.value}市场规模预计将在未来几年保持稳定增长。
+
+## 目标客户
+该项目的目标客户群体主要包括需要${keywordInput.value}服务的个人和企业。
+
+## 竞品分析
+
+| 竞品名称 | 优势 | 劣势 |
+|---------|------|------|
+| 竞品1 | 市场知名度高 | 价格较高 |
+| 竞品2 | 产品创新 | 市场份额小 |
+| 竞品3 | 服务优质 | 覆盖范围有限 |
+
+## 竞争优势
+我们的${keywordInput.value}项目具有独特的竞争优势，能够在市场中脱颖而出。
+        `
+      },
+      {
+        id: 3,
+        title: '产品/服务描述',
+        content: `
+# 产品/服务描述
+
+## 核心产品
+我们提供的${keywordInput.value}服务具有以下特点：
+
+1. **创新性**：采用先进的技术和理念
+2. **实用性**：能够解决客户的实际需求
+3. **可靠性**：经过严格的测试和验证
+4. **易用性**：简单易用，用户友好
+
+## 核心功能
+
+- 功能1：详细描述${keywordInput.value}的核心功能1
+- 功能2：详细描述${keywordInput.value}的核心功能2
+- 功能3：详细描述${keywordInput.value}的核心功能3
+- 功能4：详细描述${keywordInput.value}的核心功能4
+
+## 产品路线图
+
+| 阶段 | 时间 | 目标 |
+|------|------|------|
+| 阶段1 | 第1-3个月 | 完成${keywordInput.value}产品开发和测试 |
+| 阶段2 | 第4-6个月 | 市场推广和用户获取 |
+| 阶段3 | 第7-12个月 | 产品迭代和优化 |
+| 阶段4 | 第13-24个月 | 市场扩张和规模化 |
+        `
+      },
+      {
+        id: 4,
+        title: '商业模式画布',
+        content: `
+# 商业模式画布
+
+## 客户细分
+我们的客户群体包括：
+
+- 主要客户：需要${keywordInput.value}服务的核心用户
+- 次要客户：潜在的扩展用户群体
+- 潜在客户：未来可能转化的用户
+
+## 价值主张
+我们为客户提供的核心价值是：
+
+- 价值1：提供高质量的${keywordInput.value}服务
+- 价值2：解决客户在${keywordInput.value}领域的痛点
+- 价值3：提供创新的${keywordInput.value}解决方案
+
+## 渠道通路
+我们通过以下渠道触达客户：
+
+- 线上渠道：网站、社交媒体、电商平台等
+- 线下渠道：实体店、展会、合作伙伴等
+
+## 客户关系
+我们与客户建立的关系类型：
+
+- 个人助理：提供个性化服务
+- 自助服务：提供自助服务平台
+- 社区：建立用户社区
+- 自动化服务：通过自动化系统提供服务
+
+## 收入来源
+我们的收入来源包括：
+
+- 产品销售：直接销售${keywordInput.value}相关产品
+- 服务收费：提供${keywordInput.value}服务收取费用
+- 订阅模式：定期收取${keywordInput.value}服务订阅费用
+- 广告收入：通过广告获取收入
+
+## 核心资源
+我们的核心资源包括：
+
+- 人力资源：核心团队成员
+- 财务资源：资金支持
+- 物质资源：办公场地、设备等
+- 知识产权：专利、商标等
+
+## 关键业务
+我们的关键业务包括：
+
+- 产品开发：开发和优化${keywordInput.value}产品
+- 市场营销：推广和销售${keywordInput.value}服务
+- 客户服务：提供客户支持
+- 供应链管理：管理供应链
+
+## 重要合作
+我们的重要合作包括：
+
+- 供应商合作：与供应商建立合作关系
+- 渠道合作：与渠道伙伴合作
+- 技术合作：与技术伙伴合作
+- 战略联盟：与其他企业建立战略联盟
+
+## 成本结构
+我们的成本结构包括：
+
+- 固定成本：办公场地、设备等
+- 可变成本：原材料、人力成本等
+- 营销成本：市场推广费用
+- 研发成本：产品开发费用
+        `
+      },
+      {
+        id: 5,
+        title: '财务预测',
+        content: `
+# 财务预测
+
+## 营收预测
+
+| 年份 | 营收（万元） | 增长率 |
+|------|------------|--------|
+| 第1年 | 100 | - |
+| 第2年 | 300 | 200% |
+| 第3年 | 800 | 167% |
+| 第4年 | 1500 | 87.5% |
+| 第5年 | 2500 | 66.7% |
+
+## 成本预测
+
+| 年份 | 成本（万元） | 占营收比例 |
+|------|------------|----------|
+| 第1年 | 80 | 80% |
+| 第2年 | 200 | 66.7% |
+| 第3年 | 450 | 56.25% |
+| 第4年 | 800 | 53.3% |
+| 第5年 | 1300 | 52% |
+
+## 利润预测
+
+| 年份 | 利润（万元） | 利润率 |
+|------|------------|--------|
+| 第1年 | 20 | 20% |
+| 第2年 | 100 | 33.3% |
+| 第3年 | 350 | 43.75% |
+| 第4年 | 700 | 46.7% |
+| 第5年 | 1200 | 48% |
+
+## 现金流预测
+
+| 年份 | 现金流（万元） |
+|------|------------|
+| 第1年 | 15 |
+| 第2年 | 80 |
+| 第3年 | 280 |
+| 第4年 | 560 |
+| 第5年 | 960 |
+
+## 融资需求
+
+我们计划在未来3年内融资XX万元，主要用于：
+
+- 产品开发：XX万元
+- 市场推广：XX万元
+- 团队扩张：XX万元
+- 运营资金：XX万元
+        `
+      }
+    ],
+    createdDate: new Date().toLocaleDateString()
+  }  
+  
+  // 生成完成后进入下一步
+  currentStep.value = 2
+}
+
+// 模拟从自定义生成草稿
+const generateBPDraftFromCustom = () => {
+  // 模拟API调用，生成草稿
   generatedBP.value = {
     id: Date.now(),
     title: `${formData.value.companyName || '我的创业项目'}商业计划书`,
@@ -254,20 +487,36 @@ ${formData.value.targetMarket || '我们的客户群体'}包括：
       }
     ],
     createdDate: new Date().toLocaleDateString()
-  }
+  }  
   
   // 生成完成后进入下一步
-  currentStep.value = 3
+  currentStep.value = 2
+}
+
+// 切换模式
+const switchMode = (mode) => {
+  currentMode.value = mode
+}
+
+// 统一生成草稿入口
+const generateBPDraft = () => {
+  if (currentMode.value === 'keyword') {
+    generateBPDraftFromKeyword()
+  } else {
+    generateBPDraftFromCustom()
+  }
 }
 
 // 选择模板
 const selectTemplate = (template) => {
-  selectedTemplate.value = template
+  // 下拉框已经通过v-model绑定了selectedTemplate，所以这里可以为空或者做一些额外处理
+  // selectedTemplate.value = template
 }
 
 // 进入下一步
 const nextStep = () => {
   if (currentStep.value < maxSteps) {
+    // 如果是关键词模式，跳过模板选择步骤（现在不需要了，因为只有3个步骤）
     currentStep.value++
   }
 }
@@ -275,7 +524,12 @@ const nextStep = () => {
 // 返回上一步
 const prevStep = () => {
   if (currentStep.value > 1) {
-    currentStep.value--
+    // 如果是关键词模式，从草稿生成直接返回第一步
+    if (currentMode.value === 'keyword' && currentStep.value === 2) {
+      currentStep.value = 1
+    } else {
+      currentStep.value--
+    }
   }
 }
 
@@ -775,6 +1029,8 @@ const shareBP = (type) => {
 // 重新开始
 const restart = () => {
   currentStep.value = 1
+  currentMode.value = 'keyword' // 重置为关键词模式
+  keywordInput.value = '' // 清空关键词
   generatedBP.value = null
   selectedTemplate.value = bpTemplates[0]
   formData.value = {
@@ -794,11 +1050,13 @@ const goToHome = () => {
 
 <template>
   <div class="biz-plan-gen">
+
+    
     <!-- 步骤指示器 -->
     <div class="steps-indicator">
       <div 
         class="step-item" 
-        v-for="step in maxSteps" 
+        v-for="step in (currentMode === 'keyword' ? 3 : maxSteps)" 
         :key="step"
         :class="{
           'active': step === currentStep,
@@ -808,9 +1066,8 @@ const goToHome = () => {
         <div class="step-number">{{ step }}</div>
         <div class="step-title">
           {{ 
-            step === 1 ? '基本信息' : 
-            step === 2 ? '选择模板' : 
-            step === 3 ? '生成草稿' : 
+            step === 1 ? (currentMode === 'keyword' ? '填写信息' : '填写信息') : 
+            step === 2 ? '草稿生成' : 
             '导出分享' 
           }}
         </div>
@@ -818,142 +1075,165 @@ const goToHome = () => {
     </div>
     
     <div class="content-container">
-      <!-- 步骤1：基本信息填写 -->
+      <!-- 步骤1：根据模式显示不同内容 -->
       <div v-if="currentStep === 1" class="card fade-in">
-        <h2>第一步：填写基本信息</h2>
-        
-        <form class="basic-info-form">
-          <div class="form-group">
-            <label for="companyName">公司名称</label>
-            <input 
-              type="text" 
-              id="companyName" 
-              v-model="formData.companyName" 
-              class="form-control"
-              placeholder="请输入公司名称"
-            >
-          </div>
-          
-          <div class="form-group">
-            <label for="founderName">创始人姓名</label>
-            <input 
-              type="text" 
-              id="founderName" 
-              v-model="formData.founderName" 
-              class="form-control"
-              placeholder="请输入创始人姓名"
-            >
-          </div>
-          
-          <div class="form-group">
-            <label for="industry">所属行业</label>
-            <select 
-              id="industry" 
-              v-model="formData.industry" 
-              class="form-control"
-            >
-              <option value="">请选择行业</option>
-              <option 
-                v-for="industry in industries" 
-                :key="industry" 
-                :value="industry"
-              >
-                {{ industry }}
-              </option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="targetMarket">目标市场</label>
-            <input 
-              type="text" 
-              id="targetMarket" 
-              v-model="formData.targetMarket" 
-              class="form-control"
-              placeholder="请描述你的目标市场"
-            >
-          </div>
-          
-          <div class="form-group">
-            <label for="idea">项目想法</label>
-            <textarea 
-              id="idea" 
-              v-model="formData.idea" 
-              class="form-control"
-              rows="4"
-              placeholder="请简要描述你的创业想法..."
-            ></textarea>
-          </div>
-          
-          <div class="form-actions">
-            <button 
-              type="button" 
-              class="primary" 
-              @click="nextStep"
-            >
-              下一步：选择模板 →
-            </button>
-          </div>
-        </form>
-      </div>
-      
-      <!-- 步骤2：模板选择 -->
-      <div v-if="currentStep === 2" class="card fade-in">
-        <h2>第二步：选择BP模板</h2>
-        <p class="template-info">选择适合您项目的商业计划书模板，我们将根据模板结构生成个性化BP</p>
-        
-        <div class="templates-grid">
-          <div 
-            class="template-card" 
-            v-for="template in bpTemplates" 
-            :key="template.id"
-            :class="{ 'selected': selectedTemplate.id === template.id }"
-            @click="selectTemplate(template)"
-          >
-            <h3>{{ template.name }}</h3>
-            <div class="template-sections">
-              <div 
-                class="section-tag" 
-                v-for="(section, index) in template.sections" 
-                :key="index"
-              >
-                {{ section }}
-              </div>
-            </div>
-            <div class="template-select-btn">
+        <!-- 关键词模式 -->
+        <div v-if="currentMode === 'keyword'">
+          <div class="section-header">
+            <h2>第一步：填写信息</h2>
+            <div class="mode-switcher">
               <button 
                 type="button" 
-                class="primary" 
-                :class="{ 'selected-btn': selectedTemplate.id === template.id }"
-                @click.stop="selectTemplate(template)"
+                :class="['mode-btn', { active: currentMode === 'custom' }]" 
+                @click="switchMode('custom')"
               >
-                {{ selectedTemplate.id === template.id ? '已选择' : '选择' }}
+                自定义
               </button>
             </div>
           </div>
+          <p class="mode-info">输入关键词（如"社区老年助浴+上门服务+北京"），我们将根据关键词生成商业计划书</p>
+          
+          <form class="keyword-form">
+            <div class="form-group">
+              <label for="keyword">关键词</label>
+              <input 
+                type="text" 
+                id="keyword" 
+                v-model="keywordInput" 
+                class="form-control large-input"
+                placeholder="请输入关键词，多个关键词用+连接，如：社区老年助浴+上门服务+北京"
+              >
+            </div>
+            
+            <div class="form-actions">
+              <button 
+                type="button" 
+                class="primary" 
+                @click="generateBPDraft"
+              >
+                生成草稿 →
+              </button>
+            </div>
+          </form>
         </div>
         
-        <div class="form-actions">
-          <button type="button" class="secondary" @click="prevStep">
-            ← 上一步
-          </button>
-          <button 
-            type="button" 
-            class="primary" 
-            @click="generateBPDraft"
-          >
-            生成BP草稿 →
-          </button>
+        <!-- 自定义模式 -->
+        <div v-else>
+          <div class="section-header">
+            <h2>第一步：填写信息</h2>
+            <div class="mode-switcher">
+              <button 
+                type="button" 
+                :class="['mode-btn', { active: currentMode === 'keyword' }]" 
+                @click="switchMode('keyword')"
+              >
+                关键词
+              </button>
+            </div>
+          </div>
+          
+          <form class="basic-info-form">
+            <div class="form-group">
+              <label for="companyName">公司名称</label>
+              <input 
+                type="text" 
+                id="companyName" 
+                v-model="formData.companyName" 
+                class="form-control"
+                placeholder="请输入公司名称"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="founderName">创始人姓名</label>
+              <input 
+                type="text" 
+                id="founderName" 
+                v-model="formData.founderName" 
+                class="form-control"
+                placeholder="请输入创始人姓名"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="industry">所属行业</label>
+              <select 
+                id="industry" 
+                v-model="formData.industry" 
+                class="form-control"
+              >
+                <option value="">请选择行业</option>
+                <option 
+                  v-for="industry in industries" 
+                  :key="industry" 
+                  :value="industry"
+                >
+                  {{ industry }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="targetMarket">目标市场</label>
+              <input 
+                type="text" 
+                id="targetMarket" 
+                v-model="formData.targetMarket" 
+                class="form-control"
+                placeholder="请描述你的目标市场"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="idea">项目想法</label>
+              <textarea 
+                id="idea" 
+                v-model="formData.idea" 
+                class="form-control"
+                rows="4"
+                placeholder="请简要描述你的创业想法..."
+              ></textarea>
+            </div>
+            
+            <!-- 模板选择部分 -->
+            <div class="form-group">
+              <label for="templateSelect">选择模板</label>
+              <select 
+                id="templateSelect" 
+                v-model="selectedTemplate" 
+                class="form-control"
+                @change="selectTemplate(selectedTemplate)"
+              >
+                <option 
+                  v-for="template in bpTemplates" 
+                  :key="template.id"
+                  :value="template"
+                >
+                  {{ template.name }} - {{ template.sections.slice(0, 3).join(', ') }}{{ template.sections.length > 3 ? '...' : '' }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="form-actions">
+              <button 
+                type="button" 
+                class="primary" 
+                @click="generateBPDraft"
+              >
+                生成草稿 →
+              </button>
+            </div>
+          </form>
         </div>
       </div>
       
-      <!-- 步骤3：BP草稿生成 -->
-      <div v-if="currentStep === 3" class="card fade-in">
+      <!-- 步骤2：草稿生成 -->
+      <div v-if="currentStep === 2" class="card fade-in">
         <div class="step-header">
-          <h2>第三步：BP草稿生成</h2>
+          <h2>第二步：草稿生成</h2>
           <div class="action-buttons">
             <button type="button" class="secondary" @click="prevStep">
-              ← 重新选择模板
+              ← 上一步
             </button>
           </div>
         </div>
@@ -1014,9 +1294,6 @@ const goToHome = () => {
           </div>
           
           <div class="form-actions">
-            <button type="button" class="secondary" @click="restart">
-              🔄 重新开始
-            </button>
             <button type="button" class="primary" @click="nextStep">
               下一步：导出与分享 →
             </button>
@@ -1038,9 +1315,16 @@ const goToHome = () => {
         </div>
       </div>
       
-      <!-- 步骤4：导出与分享 -->
-      <div v-if="currentStep === 4" class="card fade-in">
-        <h2>第四步：导出与分享</h2>
+      <!-- 步骤3：导出与分享 -->
+      <div v-if="currentStep === 3" class="card fade-in">
+        <div class="section-header">
+          <h2>第三步：导出与分享</h2>
+          <div class="action-buttons">
+            <button type="button" class="secondary" @click="prevStep">
+              ← 返回编辑
+            </button>
+          </div>
+        </div>
         
         <!-- 导出与分享选项 -->
         <div class="export-share-options">
@@ -1091,9 +1375,6 @@ const goToHome = () => {
         </div>
         
         <div class="form-actions">
-          <button type="button" class="secondary" @click="prevStep">
-            ← 返回编辑
-          </button>
           <button type="button" class="primary" @click="goToHome">
             完成
           </button>
@@ -1110,6 +1391,37 @@ const goToHome = () => {
   padding: 80px 1rem 1rem;
 }
 
+/* 模式切换器 */
+.mode-switcher {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.mode-btn {
+  padding: 0.7rem 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.mode-btn:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(24, 144, 255, 0.05);
+}
+
+.mode-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
 /* 页面标题 */
 .page-header {
   margin-bottom: 1.5rem;
@@ -1118,6 +1430,26 @@ const goToHome = () => {
 .page-header h1 {
   margin: 0;
   font-size: 1.5rem;
+}
+
+/* 模式信息 */
+.mode-info {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* 关键词表单 */
+.keyword-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 大输入框 */
+.large-input {
+  font-size: 1.1rem;
+  padding: 1rem;
+  height: auto;
 }
 
 /* 步骤指示器 */
@@ -1199,18 +1531,26 @@ const goToHome = () => {
   margin-bottom: 2rem;
 }
 
-.step-header {
+.step-header,
+.section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 }
 
-.step-header h2 {
+.step-header h2,
+.section-header h2 {
   margin: 0;
 }
 
 .action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 模式切换器 */
+.mode-switcher {
   display: flex;
   gap: 0.5rem;
 }
@@ -1258,11 +1598,7 @@ const goToHome = () => {
   margin-top: 2rem;
 }
 
-/* 模板选择 */
-.template-info {
-  color: var(--text-secondary);
-  margin-bottom: 1.5rem;
-}
+/* 模板选择相关样式已移除，因为template-section div已被删除 */
 
 .templates-grid {
   display: flex;
@@ -1317,7 +1653,7 @@ const goToHome = () => {
   border-color: var(--success-color) !important;
 }
 
-/* BP草稿生成 */
+/* 草稿生成 */
 .bp-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;

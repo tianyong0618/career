@@ -4,7 +4,7 @@ import { monitoringMetrics, riskRadarData } from '../data/mockData.js'
 
 // 监控指标设置
 const selectedMetrics = ref(monitoringMetrics.slice(0, 5))
-const showMetricSettings = ref(false)
+const showMetricSettings = ref(true) // 默认显示健康指标
 
 // 选中的风险详情
 const selectedRisk = ref(null)
@@ -310,16 +310,9 @@ const closeRecommendation = () => {
 
 <template>
   <div class="risk-alert">
-    <!-- 监控设置按钮 -->
-    <div class="settings-button-container">
-      <button class="secondary" @click="showMetricSettings = !showMetricSettings">
-        ⚙️ {{ showMetricSettings ? '关闭设置' : '监控设置' }}
-      </button>
-    </div>
-    
-    <!-- 监控指标设置 -->
-    <div v-if="showMetricSettings" class="card fade-in">
-      <h2>监控指标设置</h2>
+    <!-- 监控指标设置（默认显示） -->
+    <div class="card fade-in">
+      <h2>健康指标监控</h2>
       <div class="metrics-grid">
         <div 
           class="metric-item" 

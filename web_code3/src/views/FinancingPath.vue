@@ -103,8 +103,6 @@ watch([valuation, dilutionRatio], () => {
 
 <template>
   <div class="financing-path">
-    <h1>融资路径规划</h1>
-    
     <!-- 企业阶段选择 -->
     <div class="card">
       <h2>企业阶段选择</h2>

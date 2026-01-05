@@ -30,8 +30,6 @@ const contactResource = (resourceId) => {
 
 <template>
   <div class="resource-hub">
-    <h1 class="page-title">资源撮合Marketplace</h1>
-    
     <div class="content-container">
       <!-- 需求类型选择 -->
       <div class="card">

@@ -2,17 +2,16 @@
 import { ref } from 'vue'
 import { policies, industries, startupStages } from '../data/mockData.js'
 
-// 步骤状态
-const currentStep = ref(1)
-const maxSteps = 2
-
-// 公司信息表单数据
+// 公司信息表单数据（带默认值）
 const companyInfo = ref({
-  name: '',
-  region: '',
-  industry: '',
-  stage: ''
+  name: '示例科技有限公司',
+  region: '北京市海淀区',
+  industry: '科技', // 改为industries数组中存在的值
+  stage: '成长期' // startupStages数组中存在的值
 })
+
+// 是否显示匹配结果
+const showResults = ref(true) // 初始化为true，直接显示匹配结果
 
 // 匹配的政策列表
 const matchedPolicies = ref([])
@@ -24,9 +23,15 @@ const showPolicyDetail = ref(false)
 // 模拟政策匹配
 const matchPolicies = () => {
   // 模拟API调用，根据公司信息匹配政策
-  matchedPolicies.value = policies
-  currentStep.value = 2
+  // 每次匹配时随机生成结果
+  const shuffledPolicies = [...policies].sort(() => Math.random() - 0.5)
+  matchedPolicies.value = shuffledPolicies.slice(0, Math.floor(Math.random() * policies.length) + 1)
+  // 显示匹配结果
+  showResults.value = true
 }
+
+// 初始化时直接调用匹配函数
+matchPolicies()
 
 // 查看政策详情
 const viewPolicyDetail = (policy) => {
@@ -46,178 +51,115 @@ const applyPolicy = () => {
   alert(`已提交${selectedPolicy.value.title}的申请！（模拟功能）`)
   closePolicyDetail()
 }
-
-// 重置表单
-const resetForm = () => {
-  companyInfo.value = {
-    name: '',
-    region: '',
-    industry: '',
-    stage: ''
-  }
-  matchedPolicies.value = []
-  currentStep.value = 1
-}
-
-// 重新匹配政策（保持在第二步）
-const rematchPolicies = () => {
-  // 模拟重新匹配政策，生成新的匹配结果
-  // 这里可以添加一些随机因素，让每次匹配结果有所不同
-  const shuffledPolicies = [...policies].sort(() => Math.random() - 0.5)
-  matchedPolicies.value = shuffledPolicies.slice(0, Math.floor(Math.random() * policies.length) + 1)
-  // 保持在第二步
-  currentStep.value = 2
-}
-
-// 上一步
-const prevStep = () => {
-  if (currentStep.value > 1) {
-    currentStep.value--
-  }
-}
 </script>
 
 <template>
   <div class="policy-match">
-    <!-- 步骤指示器 -->
-    <div class="steps-indicator">
-      <div 
-        class="step-item" 
-        v-for="step in maxSteps" 
-        :key="step"
-        :class="{ 'active': step === currentStep, 'completed': step < currentStep }"
-      >
-        <div class="step-number">{{ step }}</div>
-        <div class="step-title">
-          {{ step === 1 ? '公司信息' : '政策匹配结果' }}
+    <!-- 公司信息输入表单 -->
+    <div class="card">
+      <h2>公司信息</h2>
+      <form class="company-info-form">
+        <div class="form-group">
+          <label for="companyName">公司名称</label>
+          <input 
+            type="text" 
+            id="companyName" 
+            v-model="companyInfo.name"
+            class="form-control"
+            placeholder="请输入公司名称"
+          />
         </div>
-      </div>
+        
+        <div class="form-group">
+          <label for="region">所在区域</label>
+          <input 
+            type="text" 
+            id="region" 
+            v-model="companyInfo.region"
+            class="form-control"
+            placeholder="请输入所在区域，例如：北京市朝阳区"
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="industry">行业类型</label>
+          <select 
+            id="industry" 
+            v-model="companyInfo.industry"
+            class="form-control"
+          >
+            <option value="">请选择行业</option>
+            <option v-for="industry in industries" :key="industry" :value="industry">
+              {{ industry }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="stage">创业阶段</label>
+          <select 
+            id="stage" 
+            v-model="companyInfo.stage"
+            class="form-control"
+          >
+            <option value="">请选择创业阶段</option>
+            <option v-for="stage in startupStages" :key="stage" :value="stage">
+              {{ stage }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="primary" 
+            :disabled="!companyInfo.name || !companyInfo.region || !companyInfo.industry || !companyInfo.stage"
+            @click="matchPolicies"
+          >
+            开始匹配
+          </button>
+        </div>
+      </form>
     </div>
     
-    <!-- 步骤内容 -->
-    <div class="step-content">
-      <!-- 步骤1：公司信息输入 -->
-      <div v-if="currentStep === 1" class="fade-in">
-        <div class="card">
-          <h2>第一步：输入公司信息</h2>
-          <form class="company-info-form">
-            <div class="form-group">
-              <label for="companyName">公司名称</label>
-              <input 
-                type="text" 
-                id="companyName" 
-                v-model="companyInfo.name"
-                class="form-control"
-                placeholder="请输入公司名称"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label for="region">所在区域</label>
-              <input 
-                type="text" 
-                id="region" 
-                v-model="companyInfo.region"
-                class="form-control"
-                placeholder="请输入所在区域，例如：北京市朝阳区"
-              />
-            </div>
-            
-            <div class="form-group">
-              <label for="industry">行业类型</label>
-              <select 
-                id="industry" 
-                v-model="companyInfo.industry"
-                class="form-control"
-              >
-                <option value="">请选择行业</option>
-                <option v-for="industry in industries" :key="industry" :value="industry">
-                  {{ industry }}
-                </option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="stage">创业阶段</label>
-              <select 
-                id="stage" 
-                v-model="companyInfo.stage"
-                class="form-control"
-              >
-                <option value="">请选择创业阶段</option>
-                <option v-for="stage in startupStages" :key="stage" :value="stage">
-                  {{ stage }}
-                </option>
-              </select>
-            </div>
-            
-            <div class="form-actions">
-              <button 
-                type="button" 
-                class="primary" 
-                :disabled="!companyInfo.name || !companyInfo.region || !companyInfo.industry || !companyInfo.stage"
-                @click="matchPolicies"
-              >
-                开始匹配政策 →
-              </button>
-            </div>
-          </form>
+    <!-- 政策匹配结果 -->
+    <div v-if="showResults" class="card fade-in">
+      <div class="policies-result">
+        <div class="result-summary">
+          <h3>为您匹配到 {{ matchedPolicies.length }} 项政策</h3>
+          <p class="summary-desc">
+            根据您的公司信息，我们为您匹配了以下适合的政策补贴与优惠
+          </p>
         </div>
-      </div>
-      
-      <!-- 步骤2：政策匹配结果 -->
-      <div v-if="currentStep === 2" class="fade-in">
-        <div class="card">
-          <div class="step-header">
-            <h2>第二步：政策匹配结果</h2>
-            <div class="action-buttons">
-              <button type="button" class="secondary" @click="prevStep">
-                ← 重新输入
-              </button>
-              <button type="button" class="secondary" @click="rematchPolicies">
-                🔄 重新匹配
-              </button>
-            </div>
-          </div>
-          
-          <div class="policies-result">
-            <div class="result-summary">
-              <h3>为您匹配到 {{ matchedPolicies.length }} 项政策</h3>
-              <p class="summary-desc">
-                根据您的公司信息，我们为您匹配了以下适合的政策补贴与优惠
-              </p>
+        
+        <div class="policies-list">
+          <div 
+            class="policy-card" 
+            v-for="policy in matchedPolicies" 
+            :key="policy.id"
+            @click="viewPolicyDetail(policy)"
+          >
+            <div class="policy-header">
+              <div class="policy-type-badge" :class="policy.type.toLowerCase()">
+                {{ policy.type }}
+              </div>
+              <div class="policy-deadline">
+                截止日期：{{ policy.deadline }}
+              </div>
             </div>
             
-            <div class="policies-list">
-              <div 
-                class="policy-card" 
-                v-for="policy in matchedPolicies" 
-                :key="policy.id"
-                @click="viewPolicyDetail(policy)"
-              >
-                <div class="policy-header">
-                  <div class="policy-type-badge" :class="policy.type.toLowerCase()">
-                    {{ policy.type }}
-                  </div>
-                  <div class="policy-deadline">
-                    截止日期：{{ policy.deadline }}
-                  </div>
-                </div>
-                
-                <h4 class="policy-title">{{ policy.title }}</h4>
-                <p class="policy-description">{{ policy.description }}</p>
-                
-                <div class="policy-amount">
-                  <span class="amount-label">补贴金额：</span>
-                  <span class="amount-value">{{ policy.amount }}</span>
-                </div>
-                
-                <div class="policy-action">
-                  <button type="button" class="primary" @click.stop="viewPolicyDetail(policy)">
-                    查看详情 →
-                  </button>
-                </div>
-              </div>
+            <h4 class="policy-title">{{ policy.title }}</h4>
+            <p class="policy-description">{{ policy.description }}</p>
+            
+            <div class="policy-amount">
+              <span class="amount-label">补贴金额：</span>
+              <span class="amount-value">{{ policy.amount }}</span>
+            </div>
+            
+            <div class="policy-action">
+              <button type="button" class="primary" @click.stop="viewPolicyDetail(policy)">
+                查看详情 →
+              </button>
             </div>
           </div>
         </div>
@@ -289,23 +231,43 @@ const prevStep = () => {
 .policy-match {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 /* 页面标题 */
-.page-header {
-  margin-bottom: 1rem;
-  position: static;
-  transform: none;
-  max-width: 100%;
-  box-shadow: none;
-  background-color: transparent;
-  padding: 0;
+.page-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  text-align: center;
 }
 
-.page-header h1 {
-  margin: 0;
-  font-size: 2rem;
+/* 卡片样式 */
+.policy-match .card {
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+/* 卡片标题 */
+.policy-match .card h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+/* 表单间距 */
+.company-info-form {
+  gap: 1rem;
+}
+
+/* 结果标题 */
+.result-summary h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+/* 政策卡片间距 */
+.policies-list {
+  gap: 1rem;
 }
 
 /* 步骤指示器 */
@@ -407,13 +369,27 @@ const prevStep = () => {
 .company-info-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+/* 2列布局 */
+@media (min-width: 768px) {
+  .company-info-form {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  
+  .form-group {
+    flex: 1;
+    min-width: calc(50% - 0.75rem);
+  }
 }
 
 .form-group label {

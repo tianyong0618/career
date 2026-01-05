@@ -35,6 +35,16 @@ const routes = [
     path: '/onboarding',
     name: 'Onboarding',
     component: () => import('../views/Onboarding.vue')
+  },
+  {
+    path: '/financing-path',
+    name: 'FinancingPath',
+    component: () => import('../views/FinancingPath.vue')
+  },
+  {
+    path: '/health-dashboard',
+    name: 'HealthDashboard',
+    component: () => import('../views/HealthDashboard.vue')
   }
 ]
 

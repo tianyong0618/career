@@ -109,6 +109,22 @@ const navigateTo = (path) => {
           <h4 class="action-title">资源撮合</h4>
           <p class="action-desc">寻找潜在合伙人、投资人或供应商</p>
         </div>
+        <div 
+          class="action-card" 
+          @click="navigateTo('/financing-path')"
+        >
+          <div class="action-icon">💰</div>
+          <h4 class="action-title">融资路径</h4>
+          <p class="action-desc">规划融资路径和股权结构</p>
+        </div>
+        <div 
+          class="action-card" 
+          @click="navigateTo('/health-dashboard')"
+        >
+          <div class="action-icon">📊</div>
+          <h4 class="action-title">健康度看板</h4>
+          <p class="action-desc">查看创业健康度指标</p>
+        </div>
       </div>
     </div>
   </div>
@@ -318,14 +334,14 @@ const navigateTo = (path) => {
 
 .actions-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
 }
 
 .action-card {
   background-color: var(--bg-primary);
-  border-radius: var(--radius-md);
-  padding: 0.8rem 0.5rem;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1rem;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
   transition: all 0.3s;
@@ -335,7 +351,8 @@ const navigateTo = (path) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: auto;
+  min-height: 120px;
+  gap: 0.5rem;
 }
 
 .action-card:hover {
@@ -346,19 +363,23 @@ const navigateTo = (path) => {
 }
 
 .action-icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.3rem;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .action-title {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-primary);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .action-desc {
-  display: none;
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.3;
 }
 
 

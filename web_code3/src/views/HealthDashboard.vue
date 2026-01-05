@@ -147,19 +147,25 @@ const policyUtilizationDetails = computed(() => {
 // 导出PDF报告
 const exportPDF = async () => {
   try {
-    // 获取页面中需要导出的内容
-    const dashboardElement = document.querySelector('.health-dashboard')
+    // 获取创业健康度看板容器
+    const healthDashboard = document.querySelector('.health-dashboard')
     
-    if (!dashboardElement) {
-      console.error('找不到需要导出的元素')
+    if (!healthDashboard) {
+      console.error('找不到创业健康度看板')
       return
     }
     
-    // 使用html2canvas将页面内容转换为图片
-    const canvas = await html2canvas(dashboardElement, {
+    // 使用html2canvas直接捕获整个健康度看板
+    // 确保图表已经渲染完成
+    const canvas = await html2canvas(healthDashboard, {
       scale: 2, // 提高分辨率
       useCORS: true, // 允许跨域图片
-      logging: false // 禁用日志
+      logging: false, // 禁用日志
+      background: '#ffffff', // 设置白色背景
+      ignoreElements: (element) => {
+        // 只忽略导出按钮，保留其他所有内容
+        return element.classList.contains('export-btn')
+      }
     })
     
     // 创建PDF文档，设置方向为横向或纵向

@@ -64,8 +64,8 @@ pinme upload dist
 ```
 
 ### 访问链接
-- **预览URL**：https://pinme.eth.limo/#/preview/U2FsdGVkX18YhE2Vs9FiNBrppbz-GGlfvC-l8SEbgrVpp65wCXzzEDvduCdoQnvArNBYc0nXvOQv3r0Dwm8sLXMMdWvxNOQtTHuZRBG6xltRq-UtBWYMi6n3ViN26BV7LyJ--ZIp7lNK4vzQr1vL3Q
-- **站点URL**：https://314686fa.pinit.eth.limo/
+- **预览URL**：https://pinme.eth.limo/#/preview/U2FsdGVkX1_cKeUvaIfM8sSkYc0EpzWZ26PW0yJZR4Nl0RmUwdglpKevzJ7vbZK4IZTcVvSEN_33bRLCrsFSxm4xNiAJN622Eqe-1fkYfbO8-8ulPba8JyXBo7rnnK0tcVw6z-BIJVWzgPn3xyxpIw
+- **站点URL**：https://9e575eec.pinit.eth.limo
 
 IPFS部署后可能需要约2分钟时间同步到网关，之后即可通过上述链接访问。
 

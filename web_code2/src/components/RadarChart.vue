@@ -1,20 +1,12 @@
 <template>
-  <div class="radar-chart card">
-    <div class="card-header">
-      <h3>职业倾向雷达图</h3>
-    </div>
-    <div class="card-content">
-      <div class="chart-container">
-        <canvas ref="chartRef"></canvas>
-      </div>
-    </div>
+  <div class="chart-container">
+    <canvas ref="chartRef"></canvas>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
-import { careerTendency } from '../assets/mock/data'
 
 // 注册Chart.js组件
 Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend)
@@ -34,27 +26,28 @@ const createChart = () => {
     chart = new Chart(ctx, {
       type: 'radar',
       data: {
-        labels: careerTendency.labels,
+        labels: ['技术硬实力', '产品思维', '行业人脉', '软技能', '执行力', '学习速度'],
         datasets: [{
-          label: '我的职业倾向',
-          data: careerTendency.data,
-          backgroundColor: 'rgba(24, 144, 255, 0.2)',
-          borderColor: 'rgba(24, 144, 255, 1)',
+          label: '当前能力',
+          data: [88, 72, 65, 80, 95, 90],
+          fill: true,
+          backgroundColor: 'rgba(56, 189, 248, 0.2)',
+          borderColor: '#38bdf8',
+          pointBackgroundColor: '#38bdf8',
           borderWidth: 2,
-          pointBackgroundColor: 'rgba(24, 144, 255, 1)',
-          pointBorderColor: '#fff',
+          pointBorderColor: '#0f172a',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(24, 144, 255, 1)',
-          pointRadius: 5,
-          pointHoverRadius: 7
+          pointHoverBorderColor: '#38bdf8',
+          pointRadius: 4,
+          pointHoverRadius: 6
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            display: false
+          legend: { 
+            display: false 
           },
           tooltip: {
             mode: 'index',
@@ -63,24 +56,13 @@ const createChart = () => {
         },
         scales: {
           r: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              stepSize: 20,
-              color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+            angleLines: { color: 'rgba(255,255,255,0.1)' },
+            grid: { color: 'rgba(255,255,255,0.1)' },
+            pointLabels: { 
+              color: '#94a3b8', 
+              font: { size: 10 }
             },
-            grid: {
-              color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
-            },
-            pointLabels: {
-              color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
-              font: {
-                size: 12
-              }
-            },
-            angleLines: {
-              color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
-            }
+            ticks: { display: false }
           }
         }
       }
@@ -109,22 +91,9 @@ watch(() => window.innerWidth, () => {
 </script>
 
 <style scoped>
-.radar-chart {
-  margin-bottom: var(--spacing-lg);
-}
-
-.card-header {
-  margin-bottom: var(--spacing-lg);
-}
-
-.card-header h3 {
-  margin: 0;
-  font-size: var(--font-size-xl);
-  color: var(--text-primary);
-}
-
 .chart-container {
   width: 100%;
-  height: 300px;
+  height: 100%;
+  min-height: 300px;
 }
 </style>

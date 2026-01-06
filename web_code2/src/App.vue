@@ -1,45 +1,25 @@
 <template>
   <div class="app-container" :data-theme="currentTheme">
-    <!-- 顶部导航栏 -->
-    <Header @theme-change="toggleTheme" :current-theme="currentTheme" v-if="showNavigation" />
+    <!-- 新布局组件 -->
+    <Layout v-if="showNavigation" />
     
-    <!-- 主要内容区域 -->
-    <main class="main-content">
-      <router-view />
-    </main>
-    
-    <!-- 底部导航栏 -->
-    <BottomNav v-if="showNavigation" />
+    <!-- 引导页不需要布局 -->
+    <router-view v-else />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import Header from './components/Header.vue'
-import BottomNav from './components/BottomNav.vue'
+import Layout from './components/Layout.vue'
 
 const router = useRouter()
 
 // 主题状态管理
-const currentTheme = ref('light')
+const currentTheme = ref('dark')
 
 // 控制导航显示
 const showNavigation = ref(true)
-
-// 主题列表
-const themes = [
-  { value: 'light', label: '浅色模式' },
-  { value: 'dark', label: '深色模式' }
-]
-
-// 切换主题
-const toggleTheme = () => {
-  const currentIndex = themes.findIndex(theme => theme.value === currentTheme.value)
-  const nextIndex = (currentIndex + 1) % themes.length
-  currentTheme.value = themes[nextIndex].value
-  localStorage.setItem('theme', currentTheme.value)
-}
 
 // 冷启动检查
 const checkOnboarding = () => {
@@ -57,7 +37,7 @@ const checkOnboarding = () => {
 
 // 从本地存储加载主题并检查冷启动
 onMounted(() => {
-  // 始终使用深色主题，忽略localStorage中的设置
+  // 始终使用深色主题
   currentTheme.value = 'dark'
   localStorage.setItem('theme', 'dark')
   
@@ -78,21 +58,9 @@ onMounted(() => {
 
 <style scoped>
 .app-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--bg-secondary);
-}
-
-.main-content {
-  flex: 1;
-  padding: var(--spacing-lg) 0;
-}
-
-/* 底部导航栏固定在底部 */
-@media (max-width: 768px) {
-  .main-content {
-    padding-bottom: 70px; /* 为底部导航栏预留空间 */
-  }
+  width: 100%;
 }
 </style>

@@ -155,7 +155,7 @@ const contactResource = (resourceId) => {
 .resource-hub {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .page-title {

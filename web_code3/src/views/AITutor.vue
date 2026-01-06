@@ -154,7 +154,7 @@ watch(messages, () => {
 .ai-tutor {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 80px 1rem 1rem;
+  padding: 1rem;
   height: 100vh;
   box-sizing: border-box;
   display: flex;

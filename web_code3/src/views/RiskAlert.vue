@@ -468,7 +468,7 @@ const closeRecommendation = () => {
 .risk-alert {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 /* 监控设置按钮容器样式 */

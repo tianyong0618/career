@@ -269,7 +269,7 @@ onMounted(() => {
 .ai-tutor {
   max-width: 420px;
   margin: 0 auto;
-  padding: 80px 1rem 0;
+  padding: 1rem;
   height: 100vh;
   display: flex;
   flex-direction: column;

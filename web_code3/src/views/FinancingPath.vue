@@ -246,7 +246,7 @@ watch([valuation, dilutionRatio], () => {
 .financing-path {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;

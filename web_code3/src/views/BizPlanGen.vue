@@ -1295,7 +1295,7 @@ const goToHome = () => {
           
           <div class="form-actions">
             <button type="button" class="primary" @click="nextStep">
-              下一步：导出与分享 →
+              导出与分享 →
             </button>
           </div>
         </div>
@@ -1321,7 +1321,7 @@ const goToHome = () => {
           <h2>第三步：导出与分享</h2>
           <div class="action-buttons">
             <button type="button" class="secondary" @click="prevStep">
-              ← 返回编辑
+              ← 上一步
             </button>
           </div>
         </div>

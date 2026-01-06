@@ -4,7 +4,7 @@
     <SideNav />
     
     <!-- 主内容区 -->
-    <main class="flex-1 overflow-y-auto p-8">
+    <main class="main-content">
       <!-- 动态渲染路由组件 -->
       <router-view />
     </main>
@@ -29,28 +29,41 @@ import AIAgentPanel from './AIAgentPanel.vue'
 }
 
 /* 主内容区 */
-main {
+.main-content {
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
   background-color: #0f172a;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+/* 鼠标悬停时显示滚动条 */
+.main-content:hover {
+  scrollbar-color: #475569 #1e293b;
 }
 
 /* 自定义滚动条样式 */
-main::-webkit-scrollbar {
+.main-content::-webkit-scrollbar {
   width: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-main::-webkit-scrollbar-track {
+.main-content:hover::-webkit-scrollbar {
+  opacity: 1;
+}
+
+.main-content::-webkit-scrollbar-track {
   background: #1e293b;
 }
 
-main::-webkit-scrollbar-thumb {
+.main-content::-webkit-scrollbar-thumb {
   background: #475569;
   border-radius: 4px;
 }
 
-main::-webkit-scrollbar-thumb:hover {
+.main-content::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
 </style>

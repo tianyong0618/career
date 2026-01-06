@@ -5,23 +5,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
-
-// 注册Chart.js组件
-Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+import { ref, onMounted } from 'vue'
+import Chart from 'chart.js/auto'
 
 const chartRef = ref(null)
 let chart = null
 
-const createChart = () => {
+onMounted(() => {
   if (chartRef.value) {
     const ctx = chartRef.value.getContext('2d')
-    
-    // 销毁现有图表（如果存在）
-    if (chart) {
-      chart.destroy()
-    }
     
     chart = new Chart(ctx, {
       type: 'radar',
@@ -31,69 +23,49 @@ const createChart = () => {
           label: '当前能力',
           data: [88, 72, 65, 80, 95, 90],
           fill: true,
-          backgroundColor: 'rgba(56, 189, 248, 0.2)',
-          borderColor: '#38bdf8',
-          pointBackgroundColor: '#38bdf8',
+          backgroundColor: 'rgba(101, 184, 255, 0.3)',
+          borderColor: '#3b82f6',
+          pointBackgroundColor: '#3b82f6',
           borderWidth: 2,
-          pointBorderColor: '#0f172a',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#38bdf8',
-          pointRadius: 4,
-          pointHoverRadius: 6
+          pointRadius: 4
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { 
-            display: false 
-          },
-          tooltip: {
-            mode: 'index',
-            intersect: false
+          legend: {
+            display: false
           }
         },
         scales: {
           r: {
-            angleLines: { color: 'rgba(255,255,255,0.1)' },
-            grid: { color: 'rgba(255,255,255,0.1)' },
-            pointLabels: { 
-              color: '#94a3b8', 
-              font: { size: 10 }
+            angleLines: {
+              color: 'rgba(255, 255, 255, 0.1)'
             },
-            ticks: { display: false }
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            pointLabels: {
+              color: '#94a3b8',
+              font: {
+                size: 10
+              }
+            },
+            ticks: {
+              display: false
+            }
           }
         }
       }
     })
   }
-}
-
-onMounted(() => {
-  createChart()
-  
-  // 监听主题变化
-  const observer = new MutationObserver(() => {
-    createChart()
-  })
-  
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme']
-  })
-})
-
-// 监听窗口大小变化
-watch(() => window.innerWidth, () => {
-  createChart()
 })
 </script>
 
 <style scoped>
 .chart-container {
   width: 100%;
-  height: 100%;
-  min-height: 300px;
+  height: 300px;
 }
 </style>

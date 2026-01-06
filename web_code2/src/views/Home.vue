@@ -1,16 +1,5 @@
 <template>
   <div class="home-view">
-    <!-- 顶部信息 -->
-    <header class="header-section">
-      <div class="header-left">
-        <h1 class="header-title">欢迎回来，这是你的 <span class="blue-text">数字职业孪生</span></h1>
-        <p class="header-subtitle">AI 已为你同步了昨日的 GitHub 贡献与领英互动数据。</p>
-      </div>
-      <button class="sync-btn">
-        <i class="fas fa-sync-alt mr-2"></i> 同步最新数据
-      </button>
-    </header>
-
     <!-- 主内容网格 -->
     <div class="main-grid">
       <!-- 职业能力雷达图 -->
@@ -127,50 +116,6 @@ onMounted(() => {
   padding: 0;
 }
 
-/* 顶部信息 */
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.header-left {
-  display: flex;
-  flex-direction: column;
-}
-
-.header-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.blue-text {
-  color: #38bdf8;
-}
-
-.header-subtitle {
-  color: var(--text-secondary);
-}
-
-.sync-btn {
-  background-color: var(--blue-600);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
-}
-
-.sync-btn:hover {
-  background-color: var(--blue-500);
-  transform: translateY(-1px);
-}
-
 /* 主内容网格 */
 .main-grid {
   display: grid;
@@ -210,7 +155,7 @@ onMounted(() => {
 /* 任务部分 */
 .tasks-section {
   grid-column: span 12;
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 1.5rem;
 }
 
@@ -219,7 +164,7 @@ onMounted(() => {
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--text-primary);
+  color: #f8fafc;
 }
 
 /* 图表容器 */
@@ -249,11 +194,12 @@ onMounted(() => {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 0.25rem;
+  color: #f8fafc;
 }
 
 .score-label {
   font-size: 0.75rem;
-  color: var(--text-tertiary);
+  color: #94a3b8;
 }
 
 /* 路径头部 */
@@ -266,8 +212,8 @@ onMounted(() => {
 
 .match-rate {
   font-size: 0.875rem;
-  background-color: rgba(82, 196, 26, 0.2);
-  color: var(--green-400);
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
 }
@@ -302,20 +248,20 @@ onMounted(() => {
 
 .blue-icon {
   background-color: rgba(59, 130, 246, 0.2);
-  border-color: var(--blue-500);
-  color: var(--blue-500);
+  border-color: #3b82f6;
+  color: #3b82f6;
 }
 
 .yellow-icon {
-  background-color: rgba(245, 158, 11, 0.2);
-  border-color: var(--yellow-500);
-  color: var(--yellow-500);
+  background-color: rgba(234, 179, 8, 0.2);
+  border-color: #eab308;
+  color: #eab308;
 }
 
 .gray-icon {
   background-color: rgba(107, 114, 128, 0.2);
-  border-color: var(--border-color);
-  color: var(--text-tertiary);
+  border-color: #475569;
+  color: #94a3b8;
 }
 
 .timeline-content {
@@ -325,22 +271,23 @@ onMounted(() => {
 .timeline-title {
   font-weight: 500;
   margin-bottom: 0.25rem;
+  color: #f8fafc;
 }
 
 .yellow-text {
-  color: var(--yellow-500);
+  color: #eab308;
 }
 
 .timeline-subtitle {
   font-size: 0.75rem;
-  color: var(--text-tertiary);
+  color: #94a3b8;
   margin-bottom: 0.5rem;
 }
 
 .progress-bar {
   width: 100%;
   height: 0.5rem;
-  background-color: var(--bg-tertiary);
+  background-color: #334155;
   border-radius: 9999px;
   overflow: hidden;
 }
@@ -351,12 +298,12 @@ onMounted(() => {
 }
 
 .blue-fill {
-  background-color: var(--blue-500);
+  background-color: #3b82f6;
   width: 100%;
 }
 
 .yellow-fill {
-  background-color: var(--yellow-500);
+  background-color: #eab308;
   width: 45%;
 }
 
@@ -364,7 +311,7 @@ onMounted(() => {
 .tasks-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 @media (min-width: 768px) {
@@ -375,8 +322,8 @@ onMounted(() => {
 
 .task-card {
   background-color: rgba(30, 41, 59, 0.5);
-  padding: 1rem;
-  border-radius: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -393,21 +340,27 @@ onMounted(() => {
   margin-bottom: 0.25rem;
 }
 
+.blue-text {
+  color: #60a5fa;
+}
+
 .purple-text {
-  color: var(--purple-400);
+  color: #a78bfa;
 }
 
 .green-text {
-  color: var(--green-400);
+  color: #4ade80;
 }
 
 .task-title {
   font-weight: 500;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: #f8fafc;
+  font-size: 0.875rem;
 }
 
 .task-reward {
   font-size: 0.75rem;
-  color: var(--text-tertiary);
+  color: #94a3b8;
 }
 </style>

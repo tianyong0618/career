@@ -47,13 +47,13 @@
 
 <style scoped>
 .side-nav {
-  width: 5rem;
+  width: 3.5rem;
   height: 100%;
   border-right: 1px solid #1e293b;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 1rem;
+  padding: 2rem 0.5rem;
   background-color: #0f172a;
   transition: width 0.3s ease;
 }
@@ -61,8 +61,8 @@
 /* 大屏样式 */
 @media (min-width: 1024px) {
   .side-nav {
-    width: 16rem;
-    padding: 2rem;
+    width: 12rem;
+    padding: 2rem 1.25rem;
   }
 }
 
@@ -74,7 +74,7 @@
 }
 
 .nav-logo {
-  font-size: 2rem;
+  font-size: 1.25rem;
   font-weight: bold;
 }
 
@@ -113,9 +113,9 @@
 }
 
 .nav-item.active {
-  background-color: var(--blue-600);
+  background-color: #2563eb;
   color: white;
-  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
 }
 
 .nav-item:hover:not(.active) {
@@ -141,20 +141,21 @@
   border-top: 1px solid #1e293b;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  padding: 0 0.5rem;
 }
 
 .user-avatar {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  background: linear-gradient(to top right, var(--blue-400), var(--purple-500));
+  background: linear-gradient(to top right, #60a5fa, #8b5cf6);
 }
 
 .user-details {
@@ -171,6 +172,7 @@
 .user-name {
   font-size: 0.875rem;
   font-weight: 600;
+  color: #f8fafc;
 }
 
 .user-level {

@@ -78,7 +78,7 @@
 .header-icon {
   position: relative;
   font-size: 2rem;
-  color: #38bdf8;
+  color: #60a5fa;
 }
 
 .status-indicator {
@@ -113,20 +113,20 @@
 }
 
 .blue-card {
-  border-color: var(--blue-500);
+  border-color: #3b82f6;
 }
 
 .green-card {
-  border-color: var(--green-500);
+  border-color: #22c55e;
 }
 
 .purple-card {
-  border-color: var(--purple-500);
+  border-color: #8b5cf6;
 }
 
 .info-label {
   font-size: 0.75rem;
-  color: var(--text-tertiary);
+  color: #94a3b8;
   margin-bottom: 0.25rem;
 }
 
@@ -134,6 +134,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: #f8fafc;
 }
 
 .info-footer {
@@ -146,13 +147,13 @@
 .info-price {
   font-size: 0.75rem;
   font-family: monospace;
-  color: var(--blue-400);
+  color: #60a5fa;
 }
 
 .info-status {
   font-size: 0.625rem;
   background-color: rgba(59, 130, 246, 0.2);
-  color: var(--blue-300);
+  color: #93c5fd;
   padding: 0.125rem 0.5rem;
   border-radius: 9999px;
 }
@@ -161,9 +162,9 @@
   width: 100%;
   padding: 0.375rem;
   background-color: #374151;
-  color: var(--text-primary);
+  color: #f8fafc;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   font-size: 0.75rem;
   cursor: pointer;
   margin-top: 0.75rem;
@@ -186,11 +187,12 @@
   font-size: 2rem;
   font-weight: bold;
   font-style: italic;
+  color: #f8fafc;
 }
 
 .score-change {
   font-size: 0.75rem;
-  color: var(--green-400);
+  color: #4ade80;
   margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
@@ -198,7 +200,7 @@
 
 .score-rank {
   font-size: 0.625rem;
-  color: var(--text-tertiary);
+  color: #94a3b8;
   margin-top: 0.25rem;
 }
 
@@ -214,7 +216,7 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.75rem;
-  color: var(--text-tertiary);
+  color: #94a3b8;
 }
 
 .footer-value {
@@ -222,10 +224,20 @@
 }
 
 .success {
-  color: var(--green-500);
+  color: #22c55e;
 }
 
 .info {
-  color: var(--blue-400);
+  color: #60a5fa;
+}
+
+/* 动画效果 */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 </style>

@@ -47,7 +47,8 @@
 
 <style scoped>
 .side-nav {
-  width: 3.5rem;
+  width: 15%;
+  max-width: 3.5rem;
   height: 100%;
   border-right: 1px solid #1e293b;
   display: flex;
@@ -61,8 +62,10 @@
 /* 大屏样式 */
 @media (min-width: 1024px) {
   .side-nav {
-    width: 12rem;
+    width: 15%;
+    max-width: none;
     padding: 2rem 1.25rem;
+    flex: none;
   }
 }
 

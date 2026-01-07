@@ -56,11 +56,33 @@ onMounted(() => {
 })
 </script>
 
+<style>
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0f172a;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
 <style scoped>
 .app-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
 }
 </style>

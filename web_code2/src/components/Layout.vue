@@ -22,6 +22,7 @@ import AIAgentPanel from './AIAgentPanel.vue'
 <style scoped>
 /* 布局容器 */
 .layout-container {
+  width: 100vw;
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -36,6 +37,14 @@ import AIAgentPanel from './AIAgentPanel.vue'
   background-color: #0f172a;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
+}
+
+/* 大屏样式 - 右侧面板显示时 */
+@media (min-width: 1280px) {
+  .main-content {
+    width: 60%;
+    flex: none;
+  }
 }
 
 /* 鼠标悬停时显示滚动条 */

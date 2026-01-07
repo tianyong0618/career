@@ -52,7 +52,7 @@
 
 <style scoped>
 .ai-panel {
-  width: 20rem;
+  width: 25%;
   height: 100%;
   border-left: 1px solid #1e293b;
   padding: 1.5rem;
@@ -65,6 +65,7 @@
 @media (min-width: 1280px) {
   .ai-panel {
     display: flex;
+    flex: none;
   }
 }
 

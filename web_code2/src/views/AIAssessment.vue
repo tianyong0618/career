@@ -1,6 +1,6 @@
 <template>
   <div class="ai-assessment-view">
-    <div class="container">
+    <div class="full-width-container">
       <div class="page-header">
         <h2>AI职业测评</h2>
         <p>通过科学的测评，帮助您更了解自己的职业倾向</p>
@@ -263,9 +263,10 @@ updateProgress()
   padding: var(--spacing-lg) var(--spacing-md);
 }
 
-.container {
+.full-width-container {
   max-width: 800px;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .page-header {

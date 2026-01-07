@@ -1,7 +1,7 @@
 <template>
   <div class="ai-chat card">
     <div class="card-header">
-      <h3>AI职业合伙人</h3>
+      <h3>AI经纪人</h3>
       <span class="chat-status">在线</span>
     </div>
     <div class="card-content">

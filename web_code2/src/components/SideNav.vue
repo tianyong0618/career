@@ -32,13 +32,7 @@
       >
         <i class="fas fa-brain"></i> <span class="nav-text">AI测评</span>
       </router-link>
-      <router-link 
-        to="/ai-partner" 
-        class="nav-item"
-        :class="{ active: $route.path === '/ai-partner' }"
-      >
-        <i class="fas fa-user-tie"></i> <span class="nav-text">数字经纪人</span>
-      </router-link>
+
     </nav>
     <div class="nav-footer">
       <div class="user-info">

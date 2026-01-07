@@ -6,15 +6,15 @@
         <i class="fas fa-robot"></i>
       </div>
       <h3 class="panel-title">AI 经纪人 (Active)</h3>
+      <button class="new-chat-btn" @click="goToAIPartner">新对话</button>
     </div>
-
     <div class="panel-content">
       <!-- 正在自动沟通 -->
       <div class="info-card blue-card">
         <p class="info-label">正在自动沟通 (Negotiating)</p>
         <p class="info-title">"跨链协议前端开发" 兼职任务</p>
         <div class="info-footer">
-          <span class="info-price">报价: $1,200</span>
+          <span class="info-price">报价: ¥1,200</span>
           <span class="info-status">AI 报价中...</span>
         </div>
       </div>
@@ -50,6 +50,16 @@
   </aside>
 </template>
 
+<script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goToAIPartner = () => {
+  router.push('/ai-partner')
+}
+</script>
+
 <style scoped>
 .ai-panel {
   width: 25%;
@@ -72,8 +82,25 @@
 .panel-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 2rem;
+}
+
+.new-chat-btn {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.new-chat-btn:hover {
+  background-color: #2563eb;
 }
 
 .header-icon {

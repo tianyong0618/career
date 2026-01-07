@@ -91,7 +91,7 @@
             <div class="fusion-progress-container">
               <div 
                 class="fusion-item" 
-                v-for="source in dataSources" 
+                v-for="source in dataSources.slice(0, 3)" 
                 :key="source.id"
               >
                 <div class="fusion-header">
@@ -111,6 +111,9 @@
                   ></div>
                 </div>
               </div>
+            </div>
+            <div class="fusion-more" v-if="dataSources.length > 3">
+              还有 {{ dataSources.length - 3 }} 个数据源正在处理...
             </div>
           </div>
         </div>
@@ -481,7 +484,7 @@ watch(profileMethod, (newMethod) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-md);
 }
 
 .container {
@@ -562,15 +565,15 @@ watch(profileMethod, (newMethod) => {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
   text-align: center;
 }
 
 /* 紧凑步骤样式 */
 .compact-step {
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
 }
 
 .step-content h2 {
@@ -744,21 +747,21 @@ watch(profileMethod, (newMethod) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 .loading-animation {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .loading-spinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid var(--bg-secondary);
-  border-top: 6px solid var(--primary-color);
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--bg-secondary);
+  border-top: 4px solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -854,29 +857,29 @@ watch(profileMethod, (newMethod) => {
 
 /* 数据融合部分样式 */
 .data-fusion-section {
-  margin-top: var(--spacing-lg);
+  margin-top: var(--spacing-md);
   background-color: var(--bg-secondary);
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
 
 .data-fusion-section h3 {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
   text-align: center;
 }
 
 .fusion-progress-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .fusion-item {
   background-color: var(--bg-primary);
-  padding: var(--spacing-sm);
+  padding: var(--spacing-xs);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
 }
@@ -884,13 +887,13 @@ watch(profileMethod, (newMethod) => {
 .fusion-header {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   margin-bottom: var(--spacing-xs);
 }
 
 .fusion-icon {
-  font-size: var(--font-size-lg);
-  min-width: 24px;
+  font-size: var(--font-size-sm);
+  min-width: 20px;
 }
 
 .fusion-info {
@@ -901,7 +904,7 @@ watch(profileMethod, (newMethod) => {
 }
 
 .fusion-name {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--text-primary);
   font-weight: 500;
 }
@@ -909,7 +912,7 @@ watch(profileMethod, (newMethod) => {
 .fusion-status {
   font-size: var(--font-size-xs);
   font-weight: 500;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 2px 6px;
   border-radius: var(--radius-full, 9999px);
   display: inline-block;
 }
@@ -955,23 +958,34 @@ watch(profileMethod, (newMethod) => {
   background-color: var(--success-color);
 }
 
+/* 融合更多信息 */
+.fusion-more {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: var(--spacing-xs);
+  padding: var(--spacing-xs);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
 /* 加载容器优化 */
 .loading-container {
   gap: var(--spacing-md);
 }
 
 .loading-animation {
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
 }
 
 .loading-spinner {
-  width: 50px;
-  height: 50px;
-  border-width: 5px;
+  width: 40px;
+  height: 40px;
+  border-width: 4px;
 }
 
 .loading-text {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
 }
 
 /* AI测评样式 */

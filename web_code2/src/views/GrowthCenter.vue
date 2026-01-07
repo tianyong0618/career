@@ -1,9 +1,9 @@
 <template>
   <div class="growth-center-view">
-    <div class="container">
+    <div class="full-width-container">
       <div class="page-header">
-        <h2>成长中心</h2>
-        <p>将“推演”转化为“真实行动”，形成正循环</p>
+        <h1 class="page-title">成长中心 <span class="title-highlight green">Growth Hub</span></h1>
+        <p class="page-subtitle">将目标转化为即时可执行的任务流</p>
       </div>
       
       <!-- 当前激活路径展示 -->
@@ -120,29 +120,57 @@ onMounted(() => {
 
 <style scoped>
 .growth-center-view {
-  padding: 0 var(--spacing-md);
+  padding: var(--spacing-lg);
 }
 
-.container {
+.full-width-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
+/* 页面标题 */
 .page-header {
-  margin-bottom: var(--spacing-xl);
-  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #1e293b;
+  text-align: left;
 }
 
-.page-header h2 {
-  font-size: var(--font-size-2xl);
-  color: var(--primary-color);
-  margin-bottom: var(--spacing-xs);
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
-.page-header p {
-  font-size: var(--font-size-md);
-  color: var(--text-secondary);
+.title-highlight {
+  font-weight: bold;
 }
+
+.title-highlight.green {
+  color: #4ade80;
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* 响应式标题 */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+  }
+}
+
+
 
 /* 当前激活路径样式 */
 .current-path-section {

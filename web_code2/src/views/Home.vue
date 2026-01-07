@@ -1,8 +1,14 @@
 <template>
   <div class="home-view">
+    <!-- 页面标题 -->
+    <div class="page-header">
+      <h1 class="page-title">数字职业孪生 <span class="title-highlight blue">Career Twin</span></h1>
+      <p class="page-subtitle">基于全网数据实时生成的你的数字镜像</p>
+    </div>
+    
     <!-- 主内容网格 -->
     <div class="main-grid">
-      <!-- 职业能力雷达图 -->
+      <!-- 第一行：能力图谱和路径模拟 -->
       <div class="radar-section glass-card">
         <h3 class="section-title">能力图谱 (Career Radar)</h3>
         <div class="chart-container">
@@ -24,7 +30,6 @@
         </div>
       </div>
 
-      <!-- 职业路径沙盒 -->
       <div class="path-section glass-card">
         <div class="path-header">
           <h3 class="section-title">路径模拟：向 [架构师] 进发</h3>
@@ -63,6 +68,11 @@
         </div>
       </div>
 
+      <!-- 第二行：能力云图 -->
+      <div class="skill-cloud-section glass-card">
+        <SkillCloud />
+      </div>
+
       <!-- 成长中心任务 -->
       <div class="tasks-section glass-card">
         <h3 class="section-title">
@@ -92,6 +102,7 @@
 
 <script setup>
 import RadarChart from '../components/RadarChart.vue'
+import SkillCloud from '../components/SkillCloud.vue'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 
@@ -113,7 +124,56 @@ onMounted(() => {
 <style scoped>
 /* 主容器 */
 .home-view {
-  padding: 0;
+  padding: var(--spacing-lg);
+}
+
+/* 页面标题 */
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #1e293b;
+  text-align: left;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.title-highlight {
+  font-weight: bold;
+}
+
+.title-highlight.blue {
+  color: #38bdf8;
+}
+
+.title-highlight.purple {
+  color: #a78bfa;
+}
+
+.title-highlight.green {
+  color: #4ade80;
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* 响应式标题 */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+  }
 }
 
 /* 主内容网格 */
@@ -133,7 +193,7 @@ onMounted(() => {
 
 @media (min-width: 1024px) {
   .radar-section {
-    grid-column: span 5;
+    grid-column: span 6;
   }
 }
 
@@ -148,8 +208,17 @@ onMounted(() => {
 
 @media (min-width: 1024px) {
   .path-section {
-    grid-column: span 7;
+    grid-column: span 6;
   }
+}
+
+/* 能力云图部分（单独设置为12列） */
+.skill-cloud-section {
+  grid-column: span 12;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  position: relative;
+  overflow: hidden;
 }
 
 /* 任务部分 */

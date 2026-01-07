@@ -2,8 +2,8 @@
   <div class="ai-assessment-view">
     <div class="full-width-container">
       <div class="page-header">
-        <h2>AI职业测评</h2>
-        <p>通过科学的测评，帮助您更了解自己的职业倾向</p>
+        <h1 class="page-title">AI职业测评 <span class="title-highlight orange">AI Assessment</span></h1>
+        <p class="page-subtitle">通过科学的测评，帮助您更了解自己的职业倾向</p>
       </div>
       
       <!-- 测评进度 -->
@@ -260,7 +260,7 @@ updateProgress()
 
 <style scoped>
 .ai-assessment-view {
-  padding: var(--spacing-lg) var(--spacing-md);
+  padding: var(--spacing-lg);
 }
 
 .full-width-container {
@@ -269,20 +269,45 @@ updateProgress()
   padding: 0 1rem;
 }
 
+/* 页面标题 */
 .page-header {
-  text-align: center;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #1e293b;
+  text-align: left;
 }
 
-.page-header h2 {
-  font-size: var(--font-size-2xl);
-  color: var(--primary-color);
-  margin-bottom: var(--spacing-xs);
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
-.page-header p {
-  font-size: var(--font-size-md);
-  color: var(--text-secondary);
+.title-highlight {
+  font-weight: bold;
+}
+
+.title-highlight.orange {
+  color: #f97316;
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* 响应式标题 */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+  }
 }
 
 /* 测评进度 */

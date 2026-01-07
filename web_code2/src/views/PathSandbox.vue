@@ -1,9 +1,9 @@
 <template>
   <div class="path-sandbox-view">
-    <div class="container">
+    <div class="full-width-container">
       <div class="page-header">
-        <h2>路径沙盒</h2>
-        <p>安全试错人生，降低重大决策焦虑</p>
+        <h1 class="page-title">职业路径沙盒 <span class="title-highlight purple">Path Sandbox</span></h1>
+        <p class="page-subtitle">模拟未来的1000种可能性</p>
       </div>
       
       <!-- 路径生成器（目标设定） -->
@@ -40,6 +40,47 @@ setInterval(() => {
 </script>
 
 <style scoped>
+/* 页面标题 */
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #1e293b;
+  text-align: left;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.title-highlight {
+  font-weight: bold;
+}
+
+.title-highlight.purple {
+  color: #a78bfa;
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* 响应式标题 */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+  }
+}
+
 /* 添加布局样式 */
 .main-content {
   display: grid;
@@ -60,28 +101,13 @@ setInterval(() => {
 }
 
 .path-sandbox-view {
-  padding: 0 var(--spacing-md);
+  padding: var(--spacing-lg);
 }
 
-.container {
+.full-width-container {
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.page-header {
-  margin-bottom: var(--spacing-xl);
-  text-align: center;
-}
-
-.page-header h2 {
-  font-size: var(--font-size-2xl);
-  color: var(--primary-color);
-  margin-bottom: var(--spacing-xs);
-}
-
-.page-header p {
-  font-size: var(--font-size-md);
-  color: var(--text-secondary);
+  padding: 0 1rem;
 }
 
 .comparison-tip {

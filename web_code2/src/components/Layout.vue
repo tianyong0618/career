@@ -33,7 +33,7 @@ import AIAgentPanel from './AIAgentPanel.vue'
 .main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 2rem;
+  padding: 0;
   background-color: #0f172a;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
@@ -46,6 +46,8 @@ import AIAgentPanel from './AIAgentPanel.vue'
     flex: none;
   }
 }
+
+
 
 /* 鼠标悬停时显示滚动条 */
 .main-content:hover {

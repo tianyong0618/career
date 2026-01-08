@@ -122,8 +122,8 @@ npm run preview
 ## 部署信息
 
 项目已部署到IPFS网络，可通过以下链接访问：
-- **预览链接**: https://pinme.eth.limo/#/preview/U2FsdGVkX1-tAjwp7CuWcyAMYZJ50fNCQUHjK4W4oGTkXtsNODzzo4AI09-unCB0ykxEkTdOI41PdM1_aTppY9FE4a--H3wTWp8bxZn6WmNk-KUe4z9z55raRpC3tbti7CfaGM_ORiB-q49shigDqQ
-- **站点链接**: https://126e4466.pinit.eth.limo
+- **预览链接**: https://pinme.eth.limo/#/preview/U2FsdGVkX18N-U3zHGK9lh47xjwmz-ZMnwMzVj2ATF5_YPwlHJXobnWjoRoSDGgMcUjPlKbpC5X9WzQPZ_o-jiSaz8exdCfl8Z0xbSrzOntcc5pRKeZ2sdnbsq39vZfX4nND4OszvdX4WAHOcdo1KQ
+- **站点链接**: https://346939d8.pinit.eth.limo
 
 ## 技术支持
 

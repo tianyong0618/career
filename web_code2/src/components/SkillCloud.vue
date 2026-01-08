@@ -1,8 +1,8 @@
 <template>
   <div class="skill-cloud card">
     <div class="card-header">
-      <h3>能力云图</h3>
-      <span class="skill-count">{{ totalSkills }} 项技能</span>
+      <h3>能力云图：{{ totalSkills }} 项技能</h3>
+      <button class="ai-assessment-btn" @click="goToAIAssessment">AI测评</button>
     </div>
     <div class="card-content">
       <!-- 技能类型切换 -->
@@ -69,8 +69,10 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { skillCloud } from '../assets/mock/data'
 
+const router = useRouter()
 const activeTab = ref('hard')
 const showDetail = ref(false)
 const selectedSkill = ref(null)
@@ -84,6 +86,11 @@ const currentSkills = computed(() => {
 const totalSkills = computed(() => {
   return skillCloud.hardSkills.length + skillCloud.softSkills.length
 })
+
+// 跳转到AI测评页面
+const goToAIAssessment = () => {
+  router.push('/ai-assessment')
+}
 
 // 根据技能等级获取字体大小
 const getFontSize = (level) => {
@@ -142,9 +149,24 @@ const closeDetail = () => {
   color: var(--text-primary);
 }
 
-.skill-count {
+/* AI测评按钮样式 */
+.ai-assessment-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
-  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ai-assessment-btn:hover {
+  background-color: var(--primary-color);
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .skill-tabs {

@@ -25,13 +25,6 @@
       >
         <i class="fas fa-seedling"></i> <span class="nav-text">成长中心</span>
       </router-link>
-      <router-link 
-        to="/ai-assessment" 
-        class="nav-item"
-        :class="{ active: $route.path === '/ai-assessment' }"
-      >
-        <i class="fas fa-brain"></i> <span class="nav-text">AI测评</span>
-      </router-link>
 
     </nav>
     <div class="nav-footer">

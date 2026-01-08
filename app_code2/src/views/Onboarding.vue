@@ -1,5 +1,5 @@
 <template>
-  <div class="onboarding-view">
+  <div class="onboarding-view" data-theme="dark">
     <div class="container">
       <!-- 进度指示器 -->
       <div class="progress-container">
@@ -35,8 +35,10 @@
               :class="{ selected: selectedIdentity === identity.value }"
             >
               <div class="identity-icon">{{ identity.icon }}</div>
-              <div class="identity-name">{{ identity.name }}</div>
-              <div class="identity-desc">{{ identity.description }}</div>
+              <div class="identity-info">
+                <div class="identity-name">{{ identity.name }}</div>
+                <div class="identity-desc">{{ identity.description }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -49,23 +51,29 @@
           <div class="profile-options">
             <div class="profile-card" @click="selectProfileMethod('upload')" :class="{ selected: profileMethod === 'upload' }">
               <div class="profile-icon">📁</div>
-              <div class="profile-name">上传简历</div>
-              <div class="profile-desc">上传PDF/Word格式简历，AI自动解析</div>
-              <div class="profile-duration">约1分钟</div>
+              <div class="profile-info">
+                <div class="profile-name">上传简历</div>
+                <div class="profile-desc">上传PDF/Word格式简历，AI自动解析</div>
+                <div class="profile-duration">约1分钟</div>
+              </div>
             </div>
             
             <div class="profile-card" @click="selectProfileMethod('assessment')" :class="{ selected: profileMethod === 'assessment' }">
               <div class="profile-icon">📝</div>
-              <div class="profile-name">AI测评</div>
-              <div class="profile-desc">10分钟情景题+语音面试，深度了解您</div>
-              <div class="profile-duration">约10分钟</div>
+              <div class="profile-info">
+                <div class="profile-name">AI测评</div>
+                <div class="profile-desc">10分钟情景题+语音面试，深度了解您</div>
+                <div class="profile-duration">约10分钟</div>
+              </div>
             </div>
             
             <div class="profile-card" @click="selectProfileMethod('authorize')" :class="{ selected: profileMethod === 'authorize' }">
               <div class="profile-icon">🔗</div>
-              <div class="profile-name">授权平台</div>
-              <div class="profile-desc">授权飞书/钉钉，仅读取日历与文档标题</div>
-              <div class="profile-duration">约30秒</div>
+              <div class="profile-info">
+                <div class="profile-name">授权平台</div>
+                <div class="profile-desc">授权飞书/钉钉，仅读取日历与文档标题</div>
+                <div class="profile-duration">约30秒</div>
+              </div>
             </div>
           </div>
         </div>
@@ -475,20 +483,22 @@ watch(profileMethod, (newMethod) => {
 .onboarding-view {
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-md) 0;
+  background-color: #0f172a;
+  color: #f8fafc;
 }
 
 .container {
-  max-width: 800px;
+  max-width: 600px;
   width: 100%;
-  padding: 0 var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
 }
 
 /* 进度指示器 */
 .progress-container {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
 }
 
 .progress-steps {
@@ -504,8 +514,8 @@ watch(profileMethod, (newMethod) => {
   top: 16px;
   left: 50px;
   right: 50px;
-  height: 2px;
-  background-color: var(--border-color);
+  height: 3px;
+  background-color: #334155;
   z-index: 1;
 }
 
@@ -521,20 +531,20 @@ watch(profileMethod, (newMethod) => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: var(--bg-secondary);
-  border: 2px solid var(--border-color);
+  background-color: #1e293b;
+  border: 2px solid #334155;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: #94a3b8;
   margin-bottom: var(--spacing-xs);
   transition: all var(--transition-fast);
 }
 
 .step-text {
   font-size: var(--font-size-xs);
-  color: var(--text-secondary);
+  color: #94a3b8;
 }
 
 .progress-step.active .step-number {
@@ -555,11 +565,11 @@ watch(profileMethod, (newMethod) => {
 
 /* 步骤内容 */
 .step-content {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  background-color: #1e293b;
+  border: 1px solid #334155;
   border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
   text-align: center;
 }
 
@@ -570,115 +580,158 @@ watch(profileMethod, (newMethod) => {
 }
 
 .step-content h2 {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   color: var(--primary-color);
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
 }
 
 .step-content p {
-  font-size: var(--font-size-md);
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-xl);
+  font-size: var(--font-size-sm);
+  color: #94a3b8;
+  margin-bottom: var(--spacing-md);
 }
 
 /* 身份选项 */
 .identity-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid #334155;
 }
 
 .identity-card {
-  background-color: var(--bg-secondary);
+  background-color: #1e293b;
   border: 2px solid transparent;
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
+  border-radius: 0;
+  padding: var(--spacing-md);
   cursor: pointer;
   transition: all var(--transition-fast);
   text-align: center;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  position: relative;
+}
+
+.identity-card:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: var(--spacing-md);
+  right: var(--spacing-md);
+  height: 1px;
+  background-color: #334155;
 }
 
 .identity-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .identity-card.selected {
   border-color: var(--primary-color);
-  background-color: rgba(24, 144, 255, 0.05);
+  background-color: rgba(24, 144, 255, 0.1);
 }
 
 .identity-icon {
-  font-size: var(--font-size-3xl);
-  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-2xl);
+  min-width: 40px;
+}
+
+.identity-info {
+  flex: 1;
+  text-align: left;
 }
 
 .identity-name {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
+  color: #f8fafc;
+  margin-bottom: 2px;
 }
 
 .identity-desc {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  color: #94a3b8;
 }
 
 /* 画像选项 */
 .profile-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid #334155;
 }
 
 .profile-card {
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
+  background-color: #1e293b;
+  border: 1px solid transparent;
+  border-radius: 0;
+  padding: var(--spacing-md);
   cursor: pointer;
   transition: all var(--transition-fast);
-  text-align: center;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  position: relative;
+}
+
+.profile-card:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: var(--spacing-md);
+  right: var(--spacing-md);
+  height: 1px;
+  background-color: #334155;
 }
 
 .profile-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   border-color: var(--primary-color);
 }
 
 .profile-card.selected {
   border-color: var(--primary-color);
-  background-color: rgba(24, 144, 255, 0.05);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background-color: rgba(24, 144, 255, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .profile-icon {
-  font-size: var(--font-size-3xl);
-  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-2xl);
+  min-width: 40px;
+}
+
+.profile-info {
+  flex: 1;
 }
 
 .profile-name {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
+  color: #f8fafc;
+  margin-bottom: 2px;
 }
 
 .profile-desc {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-md);
-  line-height: 1.5;
+  font-size: var(--font-size-xs);
+  color: #94a3b8;
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.4;
 }
 
 .profile-duration {
   font-size: var(--font-size-xs);
   color: var(--primary-color);
   background-color: rgba(24, 144, 255, 0.1);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 2px 8px;
   border-radius: var(--radius-full, 9999px);
   display: inline-block;
 }
@@ -687,23 +740,38 @@ watch(profileMethod, (newMethod) => {
 .nav-buttons {
   display: flex;
   justify-content: space-between;
-  gap: var(--spacing-md);
+  gap: 0;
+  margin-top: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid #334155;
 }
 
 .nav-btn {
-  padding: var(--spacing-sm) var(--spacing-xl);
+  padding: var(--spacing-xs) var(--spacing-lg);
   border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
+  border-radius: 0;
+  font-size: var(--font-size-sm);
   cursor: pointer;
   transition: all var(--transition-fast);
   flex: 1;
+  position: relative;
+}
+
+.nav-btn:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 1px;
+  background-color: #334155;
 }
 
 .back-btn {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background-color: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #334155;
 }
 
 .next-btn {
@@ -712,22 +780,22 @@ watch(profileMethod, (newMethod) => {
 }
 
 .return-btn {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background-color: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #334155;
   /* 返回按钮保持次要视觉层级 */
   opacity: 0.8;
 }
 
 .nav-btn:hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   opacity: 1;
 }
 
 .nav-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .nav-btn:disabled {
@@ -753,7 +821,7 @@ watch(profileMethod, (newMethod) => {
 .loading-spinner {
   width: 60px;
   height: 60px;
-  border: 6px solid var(--bg-secondary);
+  border: 6px solid #1e293b;
   border-top: 6px solid var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -766,14 +834,14 @@ watch(profileMethod, (newMethod) => {
 
 .loading-text {
   font-size: var(--font-size-md);
-  color: var(--text-secondary);
+  color: #94a3b8;
 }
 
 /* 进度条 */
 .progress-bar {
   width: 100%;
   height: 8px;
-  background-color: var(--bg-secondary);
+  background-color: #1e293b;
   border-radius: var(--radius-full, 9999px);
   overflow: hidden;
 }
@@ -787,48 +855,48 @@ watch(profileMethod, (newMethod) => {
 
 .progress-text {
   font-size: var(--font-size-sm);
-  color: var(--text-secondary);
+  color: #94a3b8;
 }
 
 /* 数据融合部分样式 */
 .data-fusion-section {
-  margin-top: var(--spacing-lg);
-  background-color: var(--bg-secondary);
-  padding: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  background-color: #1e293b;
+  padding: var(--spacing-sm);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
+  border: 1px solid #334155;
 }
 
 .data-fusion-section h3 {
-  font-size: var(--font-size-md);
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: #f8fafc;
+  margin-bottom: var(--spacing-sm);
   text-align: center;
 }
 
 .fusion-progress-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .fusion-item {
-  background-color: var(--bg-primary);
-  padding: var(--spacing-sm);
+  background-color: #1e293b;
+  padding: var(--spacing-xs);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
+  border: 1px solid #334155;
 }
 
 .fusion-header {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xs);
+  gap: var(--spacing-xs);
+  margin-bottom: 4px;
 }
 
 .fusion-icon {
-  font-size: var(--font-size-lg);
-  min-width: 24px;
+  font-size: var(--font-size-sm);
+  min-width: 20px;
 }
 
 .fusion-info {
@@ -839,15 +907,15 @@ watch(profileMethod, (newMethod) => {
 }
 
 .fusion-name {
-  font-size: var(--font-size-sm);
-  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  color: #f8fafc;
   font-weight: 500;
 }
 
 .fusion-status {
-  font-size: var(--font-size-xs);
+  font-size: 10px;
   font-weight: 500;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 2px 6px;
   border-radius: var(--radius-full, 9999px);
   display: inline-block;
 }
@@ -869,8 +937,8 @@ watch(profileMethod, (newMethod) => {
 
 .fusion-progress-bar {
   width: 100%;
-  height: 6px;
-  background-color: var(--bg-secondary);
+  height: 4px;
+  background-color: #1e293b;
   border-radius: var(--radius-full, 9999px);
   overflow: hidden;
 }
@@ -900,7 +968,7 @@ watch(profileMethod, (newMethod) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -908,16 +976,17 @@ watch(profileMethod, (newMethod) => {
 }
 
 .modal-content {
-  background-color: var(--bg-primary);
+  background-color: #1e293b;
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   width: 90%;
   max-width: 500px;
   text-align: center;
+  border: 1px solid #334155;
 }
 
 .file-drop-area {
-  border: 2px dashed var(--border-color);
+  border: 2px dashed #334155;
   border-radius: var(--radius-md);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
@@ -927,7 +996,7 @@ watch(profileMethod, (newMethod) => {
 
 .file-drop-area:hover {
   border-color: var(--primary-color);
-  background-color: rgba(24, 144, 255, 0.05);
+  background-color: rgba(24, 144, 255, 0.1);
 }
 
 .drop-icon {
@@ -937,7 +1006,7 @@ watch(profileMethod, (newMethod) => {
 
 .drop-text {
   font-size: var(--font-size-md);
-  color: var(--text-secondary);
+  color: #94a3b8;
   margin-bottom: var(--spacing-sm);
 }
 
@@ -958,17 +1027,18 @@ watch(profileMethod, (newMethod) => {
 
 .file-requirements {
   font-size: var(--font-size-xs);
-  color: var(--text-tertiary);
+  color: #64748b;
 }
 
 .uploaded-file {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--bg-secondary);
+  background-color: #1e293b;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-md);
   margin-bottom: var(--spacing-lg);
+  border: 1px solid #334155;
 }
 
 .file-info {
@@ -978,13 +1048,13 @@ watch(profileMethod, (newMethod) => {
 
 .file-name {
   font-size: var(--font-size-sm);
-  color: var(--text-primary);
+  color: #f8fafc;
   margin-bottom: var(--spacing-xs);
 }
 
 .file-size {
   font-size: var(--font-size-xs);
-  color: var(--text-tertiary);
+  color: #64748b;
 }
 
 .remove-file-btn {
@@ -1013,9 +1083,9 @@ watch(profileMethod, (newMethod) => {
 }
 
 .cancel-btn {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background-color: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #334155;
 }
 
 .upload-btn {

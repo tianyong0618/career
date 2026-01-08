@@ -140,28 +140,30 @@
             tabindex="0"
             aria-label="任务：{{ task.title }}，难度{{ task.difficulty }}，奖励{{ task.reward }}"
           >
-            <img :src="task.image" :alt="`${task.title} 任务图标`" class="task-image" />
-            <div class="task-content">
+            <div class="task-header">
+              <img :src="task.image" :alt="`${task.title} 任务图标`" class="task-image" />
               <div class="task-info">
                 <h6 class="task-title">{{ task.title }}</h6>
                 <div class="task-type">{{ task.type }}</div>
               </div>
-              <div class="task-meta">
-                <div class="meta-item">
-                  <span class="meta-label">难度</span>
-                  <span class="meta-value difficulty-{{ task.difficulty }}">{{ task.difficulty }}</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-label">奖励</span>
-                  <span class="meta-value reward">{{ task.reward }}</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-label">截止</span>
-                  <span class="meta-value">{{ task.deadline }}</span>
-                </div>
+            </div>
+            <div class="task-meta">
+              <div class="meta-item">
+                <span class="meta-label">难度</span>
+                <span class="meta-value difficulty-{{ task.difficulty }}">{{ task.difficulty }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">奖励</span>
+                <span class="meta-value reward">{{ task.reward }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">截止</span>
+                <span class="meta-value">{{ task.deadline }}</span>
               </div>
             </div>
-            <button class="accept-btn" @click="acceptTask(task.id)" aria-label="接受任务：{{ task.title }}">接受任务</button>
+            <div class="task-footer">
+              <button class="accept-btn" @click="acceptTask(task.id)" aria-label="接受任务：{{ task.title }}">接受任务</button>
+            </div>
           </div>
         </div>
       </div>
@@ -559,13 +561,13 @@ const archiveAchievement = () => {
 
 .task-card {
   display: flex;
-  gap: var(--spacing-md);
+  flex-direction: column;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md);
   transition: all var(--transition-fast);
-  align-items: center;
+  gap: var(--spacing-md);
 }
 
 .task-card:hover {
@@ -573,50 +575,67 @@ const archiveAchievement = () => {
   box-shadow: var(--shadow-md);
 }
 
-.task-image {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: var(--radius-md);
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
 }
 
-.task-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+.task-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
 }
 
 .task-info {
+  flex: 1;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 }
 
 .task-title {
   margin: 0;
   font-size: var(--font-size-md);
   color: var(--text-primary);
-  flex: 1;
-  margin-right: var(--spacing-md);
+  font-weight: 600;
 }
 
 .task-type {
   font-size: var(--font-size-xs);
-  color: var(--text-secondary);
-  background-color: var(--bg-secondary);
+  color: var(--primary-color);
+  background-color: rgba(24, 144, 255, 0.1);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-full, 9999px);
   white-space: nowrap;
+  align-self: flex-start;
 }
 
 .task-meta {
-  display: flex;
-  gap: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  border-top: 1px solid var(--border-color);
 }
 
-.meta-value.difficulty {
-  color: var(--warning-color);
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.meta-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.meta-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .meta-value.difficulty-初级 {
@@ -636,21 +655,30 @@ const archiveAchievement = () => {
   font-weight: 600;
 }
 
+.task-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .accept-btn {
-  padding: var(--spacing-xs) var(--spacing-md);
+  width: 100%;
+  max-width: 200px;
+  padding: var(--spacing-sm) var(--spacing-md);
   background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
+  font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
-  white-space: nowrap;
+  text-align: center;
 }
 
 .accept-btn:hover {
   background-color: #40a9ff;
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
 }
 
 /* 成就样式 */
@@ -719,13 +747,46 @@ const archiveAchievement = () => {
     height: auto;
   }
   
-  .task-card {
+  .task-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
+    gap: var(--spacing-sm);
   }
   
   .task-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .task-info {
+    align-items: center;
+    width: 100%;
+  }
+  
+  .task-type {
     align-self: center;
+  }
+  
+  .task-meta {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xs);
+  }
+  
+  .meta-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .meta-item:last-child {
+    border-bottom: none;
+  }
+  
+  .accept-btn {
+    max-width: none;
   }
   
   .achievements-grid {

@@ -1,53 +1,197 @@
 <template>
   <div class="growth-tasks card">
     <div class="card-header">
-      <h3>今日推荐行动 (Growth Tasks)</h3>
+      <h3>成长中心</h3>
     </div>
     <div class="card-content">
-      <div class="tasks-container">
-        <!-- 技能强化 -->
-        <div class="task-card skill-enhancement" @click="handleTaskClick('skill')">
-          <div class="task-header">
-            <div class="task-icon">⚡</div>
-            <h4>技能强化</h4>
-            <div class="task-arrow">→</div>
+      <!-- 标签页切换 -->
+      <div class="tabs" role="tablist" aria-label="成长中心标签页">
+        <button 
+          class="tab-btn" 
+          :class="{ active: activeTab === 'courses' }" 
+          @click="activeTab = 'courses'"
+          @keydown.right="activeTab = 'tasks'"
+          @keydown.left="activeTab = 'achievements'"
+          role="tab"
+          :aria-selected="activeTab === 'courses'"
+          :aria-controls="'courses-content'"
+          :id="'courses-tab'"
+          tabindex="0"
+        >
+          学习课程
+        </button>
+        <button 
+          class="tab-btn" 
+          :class="{ active: activeTab === 'tasks' }" 
+          @click="activeTab = 'tasks'"
+          @keydown.right="activeTab = 'achievements'"
+          @keydown.left="activeTab = 'courses'"
+          role="tab"
+          :aria-selected="activeTab === 'tasks'"
+          :aria-controls="'tasks-content'"
+          :id="'tasks-tab'"
+          tabindex="0"
+        >
+          微任务
+        </button>
+        <button 
+          class="tab-btn" 
+          :class="{ active: activeTab === 'achievements' }" 
+          @click="activeTab = 'achievements'"
+          @keydown.right="activeTab = 'courses'"
+          @keydown.left="activeTab = 'tasks'"
+          role="tab"
+          :aria-selected="activeTab === 'achievements'"
+          :aria-controls="'achievements-content'"
+          :id="'achievements-tab'"
+          tabindex="0"
+        >
+          成就
+        </button>
+      </div>
+      
+      <!-- 能力提升动画 -->
+      <AbilityBoost :show="showAbilityBoost" @hide="showAbilityBoost = false" />
+      
+      <!-- 自动归档提示 -->
+      <div class="auto-archive-section" v-if="showArchivePrompt">
+        <div class="archive-prompt">
+          <div class="prompt-icon">📅</div>
+          <div class="prompt-content">
+            <h5 class="prompt-title">检测到项目结束会议</h5>
+            <p class="prompt-text">是否归档本次项目成果？</p>
           </div>
-          <div class="task-body">
-            <p class="task-description">在 GitHub 上提交 1 个 PR 修复开源项目漏洞</p>
-            <div class="task-rewards">
-              <span class="reward">+50 经验</span>
-              <span class="reward">+12 技术分</span>
+          <div class="prompt-actions">
+            <button class="btn btn-secondary" @click="showArchivePrompt = false">稍后处理</button>
+            <button class="btn btn-primary" @click="archiveAchievement">立即归档</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 学习课程 -->
+      <div 
+        class="courses-section" 
+        v-if="activeTab === 'courses'"
+        role="tabpanel"
+        :aria-labelledby="'courses-tab'"
+        id="courses-content"
+        tabindex="0"
+      >
+        <div class="section-header">
+          <h5 class="section-title">我的学习课程</h5>
+          <div class="section-actions">
+            <button class="view-all-btn" aria-label="查看全部课程">查看全部</button>
+            <button class="calendar-btn" @click="connectCalendar" aria-label="接入日历">📅 接入日历</button>
+          </div>
+        </div>
+        <div class="courses-list">
+          <div 
+            class="course-card" 
+            v-for="course in coursesData" 
+            :key="course.id"
+            tabindex="0"
+            aria-label="课程：{{ course.title }}，进度{{ course.progress }}%"
+          >
+            <img :src="course.image" :alt="`${course.title} 课程封面`" class="course-image" />
+            <div class="course-content">
+              <div class="course-info">
+                <h6 class="course-title">{{ course.title }}</h6>
+                <div class="course-category">{{ course.category }}</div>
+              </div>
+              <div class="course-meta">
+                <div class="meta-item">
+                  <span class="meta-label">时长</span>
+                  <span class="meta-value">{{ course.duration }}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">课时</span>
+                  <span class="meta-value">{{ course.lectures }}节</span>
+                </div>
+              </div>
+              <div class="course-progress" role="progressbar" aria-valuenow="{{ course.progress }}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar">
+                  <div class="progress-fill" :style="{ width: course.progress + '%' }"></div>
+                </div>
+                <div class="progress-text">{{ course.progress }}%</div>
+              </div>
             </div>
           </div>
         </div>
-        
-        <!-- 人脉连接 -->
-        <div class="task-card network-connection" @click="handleTaskClick('network')">
-          <div class="task-header">
-            <div class="task-icon">🤝</div>
-            <h4>人脉连接</h4>
-            <div class="task-arrow">→</div>
-          </div>
-          <div class="task-body">
-            <p class="task-description">与 3 位 Web3 领域的开发者建立深度联系</p>
-            <div class="task-rewards">
-              <span class="reward">+30 经验</span>
-              <span class="reward">+20 社交智能</span>
+      </div>
+      
+      <!-- 微任务 -->
+      <div 
+        class="tasks-section" 
+        v-if="activeTab === 'tasks'"
+        role="tabpanel"
+        :aria-labelledby="'tasks-tab'"
+        id="tasks-content"
+        tabindex="0"
+      >
+        <div class="section-header">
+          <h5 class="section-title">推荐任务</h5>
+          <button class="view-all-btn" aria-label="查看全部任务">查看全部</button>
+        </div>
+        <div class="tasks-list">
+          <div 
+            class="task-card" 
+            v-for="task in tasksData" 
+            :key="task.id"
+            tabindex="0"
+            aria-label="任务：{{ task.title }}，难度{{ task.difficulty }}，奖励{{ task.reward }}"
+          >
+            <img :src="task.image" :alt="`${task.title} 任务图标`" class="task-image" />
+            <div class="task-content">
+              <div class="task-info">
+                <h6 class="task-title">{{ task.title }}</h6>
+                <div class="task-type">{{ task.type }}</div>
+              </div>
+              <div class="task-meta">
+                <div class="meta-item">
+                  <span class="meta-label">难度</span>
+                  <span class="meta-value difficulty-{{ task.difficulty }}">{{ task.difficulty }}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">奖励</span>
+                  <span class="meta-value reward">{{ task.reward }}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">截止</span>
+                  <span class="meta-value">{{ task.deadline }}</span>
+                </div>
+              </div>
             </div>
+            <button class="accept-btn" @click="acceptTask(task.id)" aria-label="接受任务：{{ task.title }}">接受任务</button>
           </div>
         </div>
-        
-        <!-- 价值变现 -->
-        <div class="task-card value-realization" @click="handleTaskClick('value')">
-          <div class="task-header">
-            <div class="task-icon">💰</div>
-            <h4>价值变现</h4>
-            <div class="task-arrow">→</div>
-          </div>
-          <div class="task-body">
-            <p class="task-description">更新你的数字作品集，AI将自动推送给3个匹配岗位</p>
-            <div class="task-rewards">
-              <span class="reward">潜在收益提升: 15%</span>
+      </div>
+      
+      <!-- 成就 -->
+      <div 
+        class="achievements-section" 
+        v-if="activeTab === 'achievements'"
+        role="tabpanel"
+        :aria-labelledby="'achievements-tab'"
+        id="achievements-content"
+        tabindex="0"
+      >
+        <div class="section-header">
+          <h5 class="section-title">我的成就</h5>
+          <button class="view-all-btn" aria-label="查看全部成就">查看全部</button>
+        </div>
+        <div class="achievements-grid">
+          <div 
+            class="achievement-card" 
+            v-for="achievement in growthCenterData.achievements" 
+            :key="achievement.id"
+            tabindex="0"
+            aria-label="成就：{{ achievement.title }}，类型{{ achievement.type }}"
+          >
+            <img :src="achievement.image" :alt="`${achievement.title} 成就图标`" class="achievement-image" />
+            <div class="achievement-content">
+              <h6 class="achievement-title">{{ achievement.title }}</h6>
+              <div class="achievement-type">{{ achievement.type }}</div>
+              <div class="achievement-date">{{ achievement.date }}</div>
             </div>
           </div>
         </div>
@@ -57,270 +201,535 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { growthCenterData } from '../assets/mock/data'
+import AbilityBoost from './AbilityBoost.vue'
 
-// 处理任务点击
-const handleTaskClick = (taskType) => {
-  // 这里可以添加任务点击的处理逻辑
-  console.log('点击了任务:', taskType)
-  // 例如导航到任务详情页或触发任务开始
+const activeTab = ref('courses')
+const showAbilityBoost = ref(false)
+// 自动归档相关状态
+const showArchivePrompt = ref(false)
+const showCalendarConnected = ref(false)
+const showAchievementArchived = ref(false)
+
+// 从localStorage读取生成的数据，如果没有则使用默认数据
+const storedCourses = JSON.parse(localStorage.getItem('generatedCourses') || '[]')
+const storedTasks = JSON.parse(localStorage.getItem('generatedTasks') || '[]')
+const currentPath = JSON.parse(localStorage.getItem('currentPath') || 'null')
+
+// 使用生成的数据或默认数据
+const coursesData = ref(storedCourses.length > 0 ? storedCourses : JSON.parse(JSON.stringify(growthCenterData.courses)))
+const tasksData = ref(storedTasks.length > 0 ? storedTasks : JSON.parse(JSON.stringify(growthCenterData.tasks)))
+
+// 组件挂载时检查是否有生成的数据
+onMounted(() => {
+  if (currentPath) {
+    console.log('当前激活的路径:', currentPath.title)
+    // 可以在这里添加路径激活提示
+  }
+})
+
+// 处理接受任务
+const acceptTask = (taskId) => {
+  console.log('接受任务:', taskId)
+  // 模拟任务完成
+  setTimeout(() => {
+    showAbilityBoost.value = true
+    // 这里可以添加更新技能标签的逻辑
+    console.log('任务完成，能力提升！')
+  }, 1000)
+}
+
+// 连接日历
+const connectCalendar = () => {
+  console.log('连接日历')
+  // 模拟日历连接成功
+  showCalendarConnected.value = true
+  // 3秒后模拟检测到项目结束会议
+  setTimeout(() => {
+    showArchivePrompt.value = true
+  }, 3000)
+}
+
+// 归档成果
+const archiveAchievement = () => {
+  console.log('归档成果')
+  showArchivePrompt.value = false
+  // 模拟归档成功，显示成就
+  setTimeout(() => {
+    showAchievementArchived.value = true
+    showAbilityBoost.value = true
+    // 这里可以添加更新技能标签的逻辑
+    console.log('成果归档成功，更新能力标签！')
+    // 3秒后隐藏提示
+    setTimeout(() => {
+      showAchievementArchived.value = false
+    }, 3000)
+  }, 1000)
 }
 </script>
 
 <style scoped>
 .growth-tasks {
   margin-bottom: var(--spacing-lg);
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
-  border: 1px solid var(--border-color);
 }
 
 .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-xl);
-  padding-bottom: var(--spacing-lg);
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-lg);
 }
 
 .card-header h3 {
   margin: 0;
   font-size: var(--font-size-xl);
   color: var(--text-primary);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
 }
 
-.card-header h3::before {
-  content: "⚡";
-  font-size: var(--font-size-lg);
+/* 标签页样式 */
+.tabs {
   display: flex;
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: none;
+  border: none;
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  color: var(--primary-color);
+}
+
+.tab-btn.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+/* 通用章节样式 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
+  margin-bottom: var(--spacing-md);
+}
+
+.section-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.calendar-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
   background-color: var(--primary-color);
   color: white;
+  border: none;
   border-radius: var(--radius-md);
-}
-
-.tasks-container {
-  display: flex;
-  gap: var(--spacing-lg);
-  flex-wrap: wrap;
-}
-
-.task-card {
-  flex: 1;
-  min-width: 280px;
-  background-color: var(--bg-primary);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  position: relative;
-  user-select: none;
-  touch-action: manipulation;
-  padding: var(--spacing-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-}
-
-.task-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-}
-
-/* 点击反馈效果 */
-.task-card:active {
-  transform: scale(0.98);
-  opacity: 0.9;
-}
-
-.task-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: transparent;
-}
-
-/* 不同类型任务卡的边框颜色 */
-.skill-enhancement::before {
-  background-color: var(--primary-color);
-}
-
-.network-connection::before {
-  background-color: #8b5cf6;
-}
-
-.value-realization::before {
-  background-color: var(--success-color);
-}
-
-.task-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xs);
-}
-
-.task-icon {
-  font-size: var(--font-size-xl);
-  min-width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-}
-
-.task-header h4 {
-  margin: 0;
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--text-primary);
-  flex: 1;
-}
-
-.skill-enhancement .task-header h4 {
-  color: var(--primary-color);
-}
-
-.network-connection .task-header h4 {
-  color: #8b5cf6;
-}
-
-.value-realization .task-header h4 {
-  color: var(--success-color);
-}
-
-.task-arrow {
-  font-size: var(--font-size-xl);
-  font-weight: bold;
-  opacity: 0.6;
-  transition: all var(--transition-fast);
-  color: var(--text-secondary);
-}
-
-.task-card:hover .task-arrow {
-  transform: translateX(4px);
-  opacity: 1;
-  color: var(--primary-color);
-}
-
-.task-body {
-  flex: 1;
-}
-
-.task-description {
-  margin: 0 0 var(--spacing-md) 0;
-  font-size: var(--font-size-md);
-  color: var(--text-primary);
-  line-height: 1.5;
-  font-weight: 400;
-}
-
-.task-rewards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--border-color);
-}
-
-.reward {
   font-size: var(--font-size-sm);
-  font-weight: 500;
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--radius-full, 9999px);
-  background-color: var(--bg-tertiary);
+  cursor: pointer;
   transition: all var(--transition-fast);
 }
 
-.task-card:hover .reward {
+.calendar-btn:hover {
+  background-color: #40a9ff;
   transform: translateY(-1px);
 }
 
-.skill-enhancement .reward {
-  color: var(--primary-color);
-  background-color: rgba(24, 144, 255, 0.15);
+/* 自动归档样式 */
+.auto-archive-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.archive-prompt {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: rgba(24, 144, 255, 0.1);
   border: 1px solid rgba(24, 144, 255, 0.2);
+  border-radius: var(--radius-lg);
+  animation: slideIn 0.5s ease-out;
 }
 
-.network-connection .reward {
-  color: #8b5cf6;
-  background-color: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+.prompt-icon {
+  font-size: var(--font-size-xl);
+  min-width: 24px;
+  margin-top: -2px;
 }
 
-.value-realization .reward {
+.prompt-content {
+  flex: 1;
+}
+
+.prompt-title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-md);
+  color: var(--primary-color);
+}
+
+.prompt-text {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.prompt-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #40a9ff;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-tertiary);
+  transform: translateY(-1px);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.view-all-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.view-all-btn:hover {
+  text-decoration: underline;
+  transform: translateY(-1px);
+}
+
+/* 课程样式 */
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.course-card {
+  display: flex;
+  gap: var(--spacing-md);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.course-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.course-image {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.course-content {
+  flex: 1;
+  padding: var(--spacing-sm) 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.course-info {
+  margin-bottom: var(--spacing-sm);
+}
+
+.course-title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.course-category {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.course-meta {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.meta-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.course-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-full, 9999px);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: var(--radius-full, 9999px);
+  transition: width var(--transition-normal);
+}
+
+.progress-text {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+  min-width: 35px;
+  text-align: right;
+}
+
+/* 任务样式 */
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.task-card {
+  display: flex;
+  gap: var(--spacing-md);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm);
+  transition: all var(--transition-fast);
+  align-items: center;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.task-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.task-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.task-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.task-title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  flex: 1;
+  margin-right: var(--spacing-md);
+}
+
+.task-type {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full, 9999px);
+  white-space: nowrap;
+}
+
+.task-meta {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.meta-value.difficulty {
+  color: var(--warning-color);
+}
+
+.meta-value.difficulty-初级 {
   color: var(--success-color);
-  background-color: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.meta-value.difficulty-中级 {
+  color: var(--warning-color);
+}
+
+.meta-value.difficulty-高级 {
+  color: var(--error-color);
+}
+
+.meta-value.reward {
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+.accept-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.accept-btn:hover {
+  background-color: #40a9ff;
+  transform: translateY(-1px);
+}
+
+/* 成就样式 */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.achievement-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.achievement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.achievement-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius-full, 9999px);
+  margin-bottom: var(--spacing-sm);
+}
+
+.achievement-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.achievement-title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.achievement-type {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.achievement-date {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .growth-tasks {
-    padding: var(--spacing-lg);
-  }
-  
-  .card-header h3 {
-    font-size: var(--font-size-lg);
-  }
-  
-  .card-header h3::before {
-    width: 28px;
-    height: 28px;
-    font-size: var(--font-size-md);
-  }
-  
-  .tasks-container {
+  .course-card {
     flex-direction: column;
-    gap: var(--spacing-md);
+  }
+  
+  .course-image {
+    width: 100%;
+    height: auto;
   }
   
   .task-card {
-    min-width: auto;
-    padding: var(--spacing-md);
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  .task-icon {
-    font-size: var(--font-size-lg);
-    min-width: 32px;
-    height: 32px;
+  .task-image {
+    align-self: center;
   }
   
-  .task-header h4 {
-    font-size: var(--font-size-md);
-  }
-  
-  .task-description {
-    font-size: var(--font-size-sm);
-    line-height: 1.3;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .task-rewards {
-    gap: var(--spacing-xs);
-  }
-  
-  .reward {
-    font-size: var(--font-size-xs);
-    padding: 2px 8px;
+  .achievements-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 }
 </style>

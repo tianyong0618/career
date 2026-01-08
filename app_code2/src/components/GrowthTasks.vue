@@ -234,40 +234,42 @@ onMounted(() => {
 // 处理接受任务
 const acceptTask = (taskId) => {
   console.log('接受任务:', taskId)
-  // 模拟任务完成
+  // 立即显示反馈，提升响应速度
+  showAbilityBoost.value = true
+  // 模拟任务完成的后续处理
   setTimeout(() => {
-    showAbilityBoost.value = true
     // 这里可以添加更新技能标签的逻辑
     console.log('任务完成，能力提升！')
-  }, 1000)
+  }, 100)
 }
 
 // 连接日历
 const connectCalendar = () => {
   console.log('连接日历')
-  // 模拟日历连接成功
+  // 立即显示连接成功的反馈
   showCalendarConnected.value = true
-  // 3秒后模拟检测到项目结束会议
+  // 缩短延迟时间，加快反馈速度
   setTimeout(() => {
     showArchivePrompt.value = true
-  }, 3000)
+  }, 500)
 }
 
 // 归档成果
 const archiveAchievement = () => {
   console.log('归档成果')
+  // 立即隐藏提示，给用户即时反馈
   showArchivePrompt.value = false
-  // 模拟归档成功，显示成就
+  // 快速显示归档成功的反馈
   setTimeout(() => {
     showAchievementArchived.value = true
     showAbilityBoost.value = true
     // 这里可以添加更新技能标签的逻辑
     console.log('成果归档成功，更新能力标签！')
-    // 3秒后隐藏提示
+    // 缩短隐藏提示的延迟时间
     setTimeout(() => {
       showAchievementArchived.value = false
-    }, 3000)
-  }, 1000)
+    }, 2000)
+  }, 300)
 }
 </script>
 

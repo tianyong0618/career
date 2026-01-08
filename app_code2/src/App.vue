@@ -1,23 +1,17 @@
 <template>
   <div class="app-container" data-theme="dark">
-    <!-- 顶部导航栏 -->
-    <Header v-if="showNavigation" />
+    <!-- 新布局组件 -->
+    <Layout v-if="showNavigation" />
     
-    <!-- 主要内容区域 -->
-    <main class="main-content">
-      <router-view />
-    </main>
-    
-    <!-- 底部导航栏 -->
-    <BottomNav v-if="showNavigation" />
+    <!-- 引导页不需要布局 -->
+    <router-view v-else />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import Header from './components/Header.vue'
-import BottomNav from './components/BottomNav.vue'
+import Layout from './components/Layout.vue'
 
 const router = useRouter()
 
@@ -58,23 +52,33 @@ onMounted(() => {
 })
 </script>
 
+<style>
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: #0f172a;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
 <style scoped>
 .app-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-secondary);
-}
-
-.main-content {
-  flex: 1;
-  padding: var(--spacing-lg) 0;
-}
-
-/* 底部导航栏固定在底部 */
-@media (max-width: 768px) {
-  .main-content {
-    padding-bottom: 70px;
-  }
 }
 </style>

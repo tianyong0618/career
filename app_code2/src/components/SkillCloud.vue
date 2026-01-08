@@ -1,8 +1,10 @@
 <template>
   <div class="skill-cloud card">
     <div class="card-header">
-      <h3>能力云图</h3>
-      <span class="skill-count">{{ totalSkills }} 项技能</span>
+      <h3>能力云图：{{ totalSkills }} 项技能</h3>
+      <button class="action-btn" @click="startAIAssessment">
+        <span class="action-text">AI测评</span>
+      </button>
     </div>
     <div class="card-content">
       <!-- 技能类型切换 -->
@@ -70,7 +72,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { skillCloud } from '../assets/mock/data'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const activeTab = ref('hard')
 const showDetail = ref(false)
 const selectedSkill = ref(null)
@@ -121,6 +125,11 @@ const showSkillDetail = (skill) => {
 const closeDetail = () => {
   showDetail.value = false
   selectedSkill.value = null
+}
+
+// 开始AI测评
+const startAIAssessment = () => {
+  router.push('/ai-assessment')
 }
 </script>
 
@@ -383,6 +392,35 @@ const closeDetail = () => {
   }
 }
 
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.action-btn:hover {
+  background-color: var(--bg-tertiary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-icon {
+  font-size: var(--font-size-lg);
+}
+
+.action-text {
+  font-weight: 500;
+}
+
 /* 小屏设备优化 - 确保按钮大小合适 */
 @media (max-width: 480px) {
   .cloud-container {
@@ -412,6 +450,12 @@ const closeDetail = () => {
   /* 简化标题 */
   .card-header h3 {
     font-size: var(--font-size-lg);
+  }
+  
+  /* 调整AI测评按钮大小 */
+  .action-btn {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-md);
   }
 }
 </style>

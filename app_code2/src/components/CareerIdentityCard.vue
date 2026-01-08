@@ -1,7 +1,7 @@
 <template>
   <div class="career-identity-card card">
     <div class="card-header">
-      <h3>我的职业身份</h3>
+      <h3>数字职业孪生</h3>
       <button 
         class="edit-btn" 
         @click="toggleEditMode"
@@ -59,27 +59,6 @@
               <span class="tag" v-for="tag in user.tags" :key="tag">{{ tag }}</span>
             </div>
           </div>
-        </div>
-      </div>
-      
-
-      
-      <div class="identity-stats">
-        <div class="stat-item">
-          <div class="stat-value">{{ careerTendency.data[0] }}%</div>
-          <div class="stat-label">技术型</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ skillCloud.hardSkills.length }}</div>
-          <div class="stat-label">硬技能</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ skillCloud.softSkills.length }}</div>
-          <div class="stat-label">软技能</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ growthProgress.progress }}%</div>
-          <div class="stat-label">目标进度</div>
         </div>
       </div>
     </div>
@@ -151,6 +130,10 @@ const removeTag = (index) => {
 <style scoped>
 .career-identity-card {
   margin-bottom: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--border-color);
 }
 
 .card-header {
@@ -169,7 +152,7 @@ const removeTag = (index) => {
 }
 
 .edit-btn {
-  background: none;
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
@@ -182,10 +165,12 @@ const removeTag = (index) => {
 .edit-btn:hover {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .cancel-btn {
-  background: none;
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
@@ -199,6 +184,7 @@ const removeTag = (index) => {
   background-color: rgba(245, 34, 45, 0.1);
   color: var(--error-color);
   border-color: rgba(245, 34, 45, 0.2);
+  transform: translateY(-1px);
 }
 
 /* 编辑表单样式 */
@@ -217,12 +203,14 @@ const removeTag = (index) => {
   font-size: var(--font-size-md);
   color: var(--text-primary);
   background-color: var(--bg-primary);
+  transition: all var(--transition-fast);
 }
 
 .edit-input:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 .tags-edit {
@@ -245,12 +233,14 @@ const removeTag = (index) => {
   font-size: var(--font-size-sm);
   color: var(--text-primary);
   background-color: var(--bg-primary);
+  transition: all var(--transition-fast);
 }
 
 .tag-input:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 .add-tag-btn {
@@ -271,6 +261,7 @@ const removeTag = (index) => {
 .add-tag-btn:hover {
   background-color: #40a9ff;
   transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .tags {
@@ -284,13 +275,21 @@ const removeTag = (index) => {
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   border-radius: var(--radius-full, 9999px);
   font-size: var(--font-size-xs);
   color: var(--text-secondary);
   margin-right: var(--spacing-xs);
   margin-bottom: var(--spacing-xs);
   position: relative;
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.tag:hover {
+  background-color: var(--bg-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .remove-tag-btn {
@@ -319,6 +318,10 @@ const removeTag = (index) => {
   align-items: center;
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
 }
 
 .avatar {
@@ -327,6 +330,12 @@ const removeTag = (index) => {
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--primary-color);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-fast);
+}
+
+.avatar:hover {
+  transform: scale(1.05);
   box-shadow: var(--shadow-md);
 }
 
@@ -348,35 +357,16 @@ const removeTag = (index) => {
 
 
 
-.identity-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: var(--spacing-lg);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--border-color);
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-bottom: var(--spacing-xs);
-}
-
-.stat-label {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .career-identity-card {
+    padding: var(--spacing-lg);
+  }
+  
   .identity-main {
     flex-direction: column;
     text-align: center;
+    padding: var(--spacing-md);
   }
   
   .identity-stats {

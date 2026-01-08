@@ -1,20 +1,34 @@
 <template>
   <div class="radar-chart card">
     <div class="card-header">
-      <h3>职业倾向雷达图</h3>
+      <h3>能力图谱 (Career Radar)</h3>
     </div>
     <div class="card-content">
       <div class="chart-container">
         <canvas ref="chartRef"></canvas>
+      </div>
+      <div class="scores-container">
+        <div class="score-item">
+          <div class="score-value">88</div>
+          <div class="score-label">技术分</div>
+        </div>
+        <div class="score-item">
+          <div class="score-value">72</div>
+          <div class="score-label">商业感</div>
+        </div>
+        <div class="score-item">
+          <div class="score-value">95</div>
+          <div class="score-label">可靠性</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+
 import { ref, onMounted, watch } from 'vue'
 import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
-import { careerTendency } from '../assets/mock/data'
 
 // 注册Chart.js组件
 Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend)
@@ -31,85 +45,22 @@ const createChart = () => {
       chart.destroy()
     }
     
-    // 1. 获取画布的实际背景颜色
-    // 方法1: 从卡片元素获取背景色
-    const cardElement = chartRef.value.closest('.card');
-    let bgColor = '#ffffff'; // 默认白色背景
-    
-    if (cardElement) {
-      bgColor = getComputedStyle(cardElement).backgroundColor;
-      console.log('从卡片获取的背景色:', bgColor);
-    }
-    
-    // 2. 解析背景色并计算亮度
-    const parseColor = (color) => {
-      let r = 255, g = 255, b = 255;
-      
-      // 解析RGB格式
-      const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-      if (rgbMatch) {
-        r = parseInt(rgbMatch[1]);
-        g = parseInt(rgbMatch[2]);
-        b = parseInt(rgbMatch[3]);
-      }
-      // 解析RGBA格式
-      const rgbaMatch = color.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*[\d.]+\)/);
-      if (rgbaMatch) {
-        r = parseInt(rgbaMatch[1]);
-        g = parseInt(rgbaMatch[2]);
-        b = parseInt(rgbaMatch[3]);
-      }
-      // 解析十六进制格式
-      else if (color.startsWith('#')) {
-        const hex = color.slice(1);
-        r = parseInt(hex.length === 3 ? hex[0] + hex[0] : hex.slice(0, 2), 16);
-        g = parseInt(hex.length === 3 ? hex[1] + hex[1] : hex.slice(2, 4), 16);
-        b = parseInt(hex.length === 3 ? hex[2] + hex[2] : hex.slice(4, 6), 16);
-      }
-      
-      return { r, g, b };
-    };
-    
-    const { r, g, b } = parseColor(bgColor);
-    
-    // 计算相对亮度 (WCAG标准)
-    const calculateLuminance = (r, g, b) => {
-      const [rs, gs, bs] = [r, g, b].map(c => {
-        c = c / 255;
-        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-      });
-      return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
-    };
-    
-    const luminance = calculateLuminance(r, g, b);
-    console.log('背景色RGB:', r, g, b);
-    console.log('背景色亮度:', luminance);
-    
-    // 3. 根据亮度决定字体颜色
-    // 亮度 < 0.5 使用白色字体，否则使用黑色字体
-    const isDarkBackground = luminance < 0.5;
-    const textColor = isDarkBackground ? '#ffffff' : '#000000';
-    const secondaryTextColor = isDarkBackground ? '#b0b0b0' : '#666666';
-    const gridColor = isDarkBackground ? 'rgba(255, 255, 255, 0.3)' : '#666666';
-    
-    console.log('是否深色背景:', isDarkBackground);
-    console.log('使用的文本颜色:', textColor);
-    
     // 4. 创建图表，使用动态计算的颜色
     chart = new Chart(ctx, {
+
       type: 'radar',
       data: {
-        labels: careerTendency.labels,
+        labels: ['技术硬实力', '产品思维', '行业人脉', '软技能', '执行力', '学习速度'],
         datasets: [{
-          label: '我的职业倾向',
-          data: careerTendency.data,
-          backgroundColor: 'rgba(24, 144, 255, 0.2)',
-          borderColor: 'rgba(24, 144, 255, 1)',
+          label: '我的能力图谱',
+          data: [85, 60, 40, 50, 70, 90],
+          backgroundColor: 'rgba(59, 130, 246, 0.2)',
+          borderColor: 'rgba(59, 130, 246, 1)',
           borderWidth: 2,
-          pointBackgroundColor: 'rgba(24, 144, 255, 1)',
+          pointBackgroundColor: 'rgba(59, 130, 246, 1)',
           pointBorderColor: '#ffffff',
           pointHoverBackgroundColor: '#ffffff',
-          pointHoverBorderColor: 'rgba(24, 144, 255, 1)',
+          pointHoverBorderColor: 'rgba(59, 130, 246, 1)',
           pointRadius: 5,
           pointHoverRadius: 7
         }]
@@ -124,10 +75,10 @@ const createChart = () => {
           tooltip: {
             mode: 'index',
             intersect: false,
-            backgroundColor: isDarkBackground ? 'rgba(255, 255, 255, 0.95)' : 'rgba(0, 0, 0, 0.8)',
-            titleColor: isDarkBackground ? '#000000' : '#ffffff',
-            bodyColor: isDarkBackground ? '#000000' : '#ffffff',
-            borderColor: isDarkBackground ? '#cccccc' : '#404040',
+            backgroundColor: 'rgba(17, 24, 39, 0.95)',
+            titleColor: '#ffffff',
+            bodyColor: '#e2e8f0',
+            borderColor: 'rgba(59, 130, 246, 0.5)',
             borderWidth: 1,
             padding: 12,
             font: {
@@ -140,8 +91,9 @@ const createChart = () => {
             beginAtZero: true,
             max: 100,
             ticks: {
+              display: false,
               stepSize: 20,
-              color: textColor,
+              color: '#94a3b8',
               backdropColor: 'transparent',
               font: {
                 size: 12,
@@ -149,17 +101,17 @@ const createChart = () => {
               }
             },
             grid: {
-              color: gridColor
+              color: 'rgba(255, 255, 255, 0.1)'
             },
             pointLabels: {
-              color: textColor,
+              color: '#f8fafc',
               font: {
                 size: 13,
                 weight: '700'
               }
             },
             angleLines: {
-              color: gridColor
+              color: 'rgba(255, 255, 255, 0.1)'
             }
           }
         }
@@ -194,6 +146,9 @@ watch(() => window.innerWidth, () => {
 }
 
 .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: var(--spacing-lg);
 }
 
@@ -201,10 +156,79 @@ watch(() => window.innerWidth, () => {
   margin: 0;
   font-size: var(--font-size-xl);
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 .chart-container {
   width: 100%;
   height: 300px;
+  padding: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.scores-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.score-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--primary-color);
+}
+
+.score-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.score-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .chart-container {
+    height: 250px;
+    padding: var(--spacing-md);
+  }
+  
+  .scores-container {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .score-item {
+    flex-direction: row;
+    gap: var(--spacing-md);
+    min-width: auto;
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 </style>

@@ -37,40 +37,18 @@
         <div class="hint-icon">💡</div>
         <div class="hint-text">{{ growthProgress.hint }}</div>
       </div>
-      
-      <div class="quick-actions-section">
-        <button 
-          class="action-btn" 
-          v-for="action in quickActions" 
-          :key="action.id"
-          @click="handleAction(action)"
-        >
-          <span class="action-icon">{{ action.icon }}</span>
-          <span class="action-text">{{ action.text }}</span>
-        </button>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { growthProgress, quickActions } from '../assets/mock/data'
+import { growthProgress } from '../assets/mock/data'
 import { useRouter } from 'vue-router'
 import ProgressBar from './ProgressBar.vue'
 
+
 const router = useRouter()
-// 处理快捷行动点击
-const handleAction = (action) => {
-  if (action.link.startsWith('/')) {
-    router.push(action.link)
-  } else if (action.text === '开始AI测评') {
-    // 直接进入AI测评页面
-    router.push('/ai-assessment')
-  } else {
-    // 处理其他类型的链接
-    console.log('处理其他类型的链接:', action.link)
-  }
-}
+
 </script>
 
 <style scoped>
@@ -199,47 +177,8 @@ const handleAction = (action) => {
   flex: 1;
 }
 
-.quick-actions-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: var(--spacing-md);
-}
-
-.action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.action-btn:hover {
-  background-color: var(--bg-tertiary);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.action-icon {
-  font-size: var(--font-size-md);
-}
-
-.action-text {
-  font-weight: 500;
-}
-
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .quick-actions-section {
-    grid-template-columns: 1fr 1fr;
-  }
-  
   .progress-bar-container {
     flex-direction: column;
     align-items: stretch;

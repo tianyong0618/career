@@ -3,7 +3,7 @@
 // 用户信息
 export const userInfo = {
   id: 'user123',
-  name: '张小明',
+  name: '张小帅',
   avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ZhangXiaoMing',
   age: 24,
   major: '计算机科学',
@@ -11,11 +11,13 @@ export const userInfo = {
   tags: ['24岁', '计算机专业', 'Python熟练', '求职中']
 }
 
+
 // 职业倾向雷达图数据
 export const careerTendency = {
-  labels: ['技术型', '管理型', '创意型', '服务型', '创业型'],
-  data: [85, 30, 60, 40, 50]
+  labels: ['技术硬实力', '产品思维', '行业人脉', '软技能', '执行力', '学习速度'],
+  data: [85, 60, 40, 50, 70, 90]
 }
+
 
 // 能力云图数据
 export const skillCloud = {
@@ -49,8 +51,6 @@ export const growthProgress = {
 
 // 快捷行动区数据
 export const quickActions = [
-  { id: 1, icon: '🔍', text: '探索职业路径', link: '/path-sandbox' },
-  { id: 2, icon: '🧪', text: '开始AI测评', link: '#' },
   { id: 3, icon: '📌', text: '今日推荐', link: '/growth-center' }
 ]
 

@@ -16,9 +16,11 @@
         </div>
       </div>
       
-      <!-- 成长进度 -->
-      <GrowthProgress />
+      <!-- 路径模拟 -->
+      <PathSimulator />
       
+      <!-- 今日推荐行动 -->
+      <CareerTasks />      
 
     </div>
   </div>
@@ -28,7 +30,8 @@
 import CareerIdentityCard from '../components/CareerIdentityCard.vue'
 import RadarChart from '../components/RadarChart.vue'
 import SkillCloud from '../components/SkillCloud.vue'
-import GrowthProgress from '../components/GrowthProgress.vue'
+import CareerTasks from '../components/CareerTasks.vue'
+import PathSimulator from '../components/PathSimulator.vue'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 

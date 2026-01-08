@@ -20,7 +20,7 @@
       <PathSimulator />
       
       <!-- 今日推荐行动 -->
-      <GrowthTasks />      
+      <CareerTasks />      
 
     </div>
   </div>
@@ -30,7 +30,7 @@
 import CareerIdentityCard from '../components/CareerIdentityCard.vue'
 import RadarChart from '../components/RadarChart.vue'
 import SkillCloud from '../components/SkillCloud.vue'
-import GrowthTasks from '../components/GrowthTasks.vue'
+import CareerTasks from '../components/CareerTasks.vue'
 import PathSimulator from '../components/PathSimulator.vue'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
